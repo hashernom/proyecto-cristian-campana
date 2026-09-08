@@ -1,0 +1,23 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1920, "h": 1080, "title": "01 · Bienvenida" },
+    { "file": "Registro.dc.html", "x": 2020, "y": 0, "w": 1920, "h": 1080, "title": "02 · Registro" },
+    { "file": "Verificacion.dc.html", "x": 4040, "y": 0, "w": 1920, "h": 1080, "title": "03 · Verificación SMS" },
+    { "file": "Ingreso.dc.html", "x": 6060, "y": 0, "w": 1920, "h": 1080, "title": "04 · Ingreso" },
+    { "file": "Panel.dc.html", "x": 0, "y": 1180, "w": 1920, "h": 1080, "title": "05 · Panel del voluntario" },
+    { "file": "MiRed.dc.html", "x": 2020, "y": 1180, "w": 1920, "h": 1080, "title": "06 · Mi red" },
+    { "file": "Agregar.dc.html", "x": 4040, "y": 1180, "w": 1920, "h": 1080, "title": "07 · Agregar persona" },
+    { "file": "Ranking.dc.html", "x": 6060, "y": 1180, "w": 1920, "h": 1080, "title": "08 · Ranking de Capitanes" },
+    { "file": "Grupos.dc.html", "x": 0, "y": 2360, "w": 1920, "h": 1080, "title": "09 · Grupos" },
+    { "file": "Candidato.dc.html", "x": 2020, "y": 2360, "w": 1920, "h": 1080, "title": "10 · Candidato y campaña" },
+    { "file": "Propuesta.dc.html", "x": 4040, "y": 2360, "w": 1920, "h": 1080, "title": "11 · Mi propuesta" },
+    { "file": "PanelCandidato.dc.html", "x": 0, "y": 3540, "w": 2160, "h": 1215, "title": "12 · Panel de escritorio" }
+  ],
+  "annotations": [
+    { "id": "row-onboarding", "x": 0, "y": -90, "w": 900, "text": "FLUJO DE INGRESO — Bienvenida → Registro → Verificación por SMS → Login" },
+    { "id": "row-capitan", "x": 0, "y": 1090, "w": 900, "text": "GESTIÓN DEL LÍDER (CAPITÁN) — Panel → Mi red → Agregar y confirmar persona → Ranking" },
+    { "id": "row-comunidad", "x": 0, "y": 2270, "w": 900, "text": "COMUNIDAD Y CAMPAÑA — Grupos de WhatsApp → Candidato → Mi propuesta" },
+    { "id": "row-escritorio", "x": 0, "y": 3450, "w": 900, "text": "PANEL DE ESCRITORIO — Vista consolidada para el candidato / partido" }
+  ],
+  "launch": { "view": "canvas" }
+}

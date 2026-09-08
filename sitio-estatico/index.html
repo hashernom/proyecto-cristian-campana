@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App de Campaña — Simulación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  :root{
+    --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; --green:#0BA451; --red:#EB1F27;
+    --amber:#E8A93B; --blue-tint:#EBF0FE; --bg:#EEF1FA;
+  }
+  html,body{margin:0;height:100%;font-family:'Poppins',system-ui,sans-serif;background:var(--bg);color:var(--ink);}
+  button{font-family:inherit;border:none;background:none;padding:0;cursor:pointer;color:inherit;}
+  a{color:inherit;}
+  .fist{fill:currentColor;}
+
+  /* ---------- stage / device ---------- */
+  .stage{min-height:100dvh;display:flex;align-items:center;justify-content:center;}
+  .device{position:relative;width:100%;height:100dvh;background:#000;overflow:hidden;}
+  .viewport{position:absolute;inset:0;overflow:hidden;}
+  @media (min-width:760px){
+    .stage{background:var(--bg);padding:40px;}
+    .device{width:412px;height:860px;border:12px solid #151515;border-radius:58px;
+      box-shadow:0 44px 100px -24px rgba(20,40,120,.42),0 16px 34px rgba(0,0,0,.2);flex-shrink:0;}
+    .viewport{border-radius:46px;}
+  }
+
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:60px 26px 34px;
+    opacity:0;pointer-events:none;transform:translateY(6px);
+    transition:opacity .2s ease,transform .2s ease;overflow-y:auto;}
+  .screen.active{opacity:1;pointer-events:auto;transform:translateY(0);}
+  .screen.blue{background:var(--blue);color:#fff;}
+  .screen.white{background:#fff;color:var(--ink);}
+
+  .back{position:absolute;top:18px;left:18px;width:34px;height:34px;border-radius:50%;
+    background:rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;z-index:5;}
+  .screen.white .back{background:#F3F4F8;}
+  .back svg{width:16px;height:16px;}
+  .exit{position:absolute;top:22px;right:22px;font-size:11px;font-weight:600;opacity:.8;
+    display:flex;align-items:center;gap:6px;z-index:5;}
+
+  .pill{display:flex;align-items:center;justify-content:center;height:52px;border-radius:999px;
+    font-size:15px;font-weight:600;width:100%;}
+  .pill.white{background:#fff;color:var(--ink);}
+  .pill.dark{background:var(--ink);color:#fff;}
+  .pill.outline{background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.5);color:#fff;}
+
+  .field{margin-bottom:13px;}
+  .field label{font-size:11.5px;font-weight:600;margin-bottom:5px;display:block;}
+  .field label span{color:#c0392b;}
+  .field .box{width:100%;min-height:40px;border-radius:999px;background:var(--blue-tint);padding:9px 16px;
+    display:flex;align-items:center;font-size:12.5px;color:#8892b0;}
+  .field .box.area{border-radius:18px;align-items:flex-start;min-height:76px;line-height:1.5;}
+  .fh{display:flex;gap:10px;} .fh .field{flex:1;min-width:0;}
+
+  .tile{background:#fff;border:none;border-radius:20px;padding:18px 10px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:9px;text-align:center;color:var(--ink);
+    font-size:12.5px;font-weight:600;min-height:104px;width:100%;}
+  .tile:active{transform:scale(.97);}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+
+  .row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #F0F1F5;}
+  .row:last-child{border-bottom:none;}
+  .avatar{width:36px;height:36px;border-radius:50%;background:var(--blue-tint);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;flex-shrink:0;}
+  .rname{font-size:12.5px;font-weight:700;} .rmeta{font-size:9.5px;color:#9aa1b5;}
+  .badge{margin-left:auto;font-size:9px;font-weight:700;border-radius:999px;padding:6px 10px;
+    white-space:nowrap;flex-shrink:0;}
+  .badge.ok{background:#E3F7EB;color:var(--green);} .badge.pend{background:#FCF1DE;color:var(--amber);}
+  .badge.no{background:#FCE7E7;color:var(--red);}
+
+  .searchbar{background:#F3F5FB;border-radius:999px;height:36px;display:flex;align-items:center;
+    padding:0 14px;gap:8px;font-size:11px;color:#9aa1b5;margin:14px 0 4px;}
+  .fab{position:absolute;right:22px;bottom:22px;width:52px;height:52px;border-radius:50%;background:var(--ink);
+    color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 20px rgba(0,0,0,.25);}
+  .fab:active{transform:scale(.94);}
+
+  .card{width:100%;text-align:left;background:#fff;color:var(--ink);border-radius:20px;padding:18px;
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;}
+  .card .t{font-size:14px;font-weight:700;line-height:1.25;}
+  .card .s{font-size:9.5px;color:#9aa1b5;margin-top:2px;}
+  .joinbtn{width:32px;height:32px;border-radius:50%;background:#E3F7EB;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;transition:background .15s;}
+  .joinbtn.joined{background:var(--green);color:#fff;}
+
+  .podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:14px 0 16px;}
+  .pcol{display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .pav{border-radius:50%;background:#fff;color:var(--blue);display:flex;align-items:center;
+    justify-content:center;font-weight:800;flex-shrink:0;}
+  .pname{font-size:10px;font-weight:700;text-align:center;line-height:1.25;}
+  .pmeta{font-size:8px;opacity:.75;}
+  .listwrap{background:#fff;border-radius:20px;padding:4px 15px;color:var(--ink);flex:1;overflow-y:auto;}
+  .icons{margin-left:auto;display:flex;gap:5px;}
+  .ic{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;opacity:.35;transition:opacity .15s,transform .15s;}
+  .ic.sel{opacity:1;transform:scale(1.08);}
+
+  .reel{width:100%;height:280px;border-radius:20px;background:linear-gradient(160deg,#1b1b1b,#2b2b2e);
+    position:relative;overflow:hidden;margin-bottom:14px;flex-shrink:0;}
+
+  .segs{display:flex;gap:7px;margin-top:2px;}
+  .seg{flex:1;text-align:center;border-radius:999px;padding:8px 0;font-size:10px;font-weight:700;
+    border:1.5px solid #E4E7F2;color:#9aa1b5;background:transparent;}
+  .seg.ok{background:#E3F7EB;color:var(--green);border-color:transparent;}
+
+  .bartrack{height:30px;border-radius:999px;background:rgba(0,0,0,.28);overflow:hidden;position:relative;
+    display:flex;align-items:center;margin:10px 0 18px;}
+  .barfill{height:100%;width:34%;background:var(--ink);border-radius:999px;display:flex;align-items:center;
+    padding-left:12px;font-size:10.5px;font-weight:700;}
+  .barend{position:absolute;right:14px;font-size:10.5px;font-weight:700;}
+
+  /* ---------- toast ---------- */
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,12px);background:var(--ink);color:#fff;
+    font-size:12.5px;font-weight:600;padding:12px 20px;border-radius:999px;z-index:200;opacity:0;
+    transition:opacity .2s,transform .2s;box-shadow:0 12px 26px rgba(0,0,0,.25);pointer-events:none;
+    display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  /* ---------- app switcher ---------- */
+  .switcher{position:fixed;right:16px;bottom:16px;z-index:150;background:var(--ink);color:#fff;
+    font-size:11.5px;font-weight:600;padding:11px 16px;border-radius:999px;display:flex;align-items:center;
+    gap:8px;box-shadow:0 12px 26px rgba(0,0,0,.28);}
+  .switcher svg{width:14px;height:14px;}
+
+  /* ---------- desktop dashboard app ---------- */
+  #desktopApp{display:none;min-height:100dvh;padding:32px;align-items:flex-start;justify-content:center;}
+  #desktopApp.active{display:flex;}
+  .desktop-shell{width:100%;max-width:1320px;border-radius:16px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(20,40,120,.18);border:1px solid #E4E7F2;background:#fff;}
+  .browserbar{height:34px;background:#F3F4F8;display:flex;align-items:center;gap:6px;padding:0 14px;
+    border-bottom:1px solid #E4E7F2;}
+  .browserbar i{width:9px;height:9px;border-radius:50%;background:#DADCE5;}
+  .app-desktop{display:flex;min-height:640px;font-size:13px;}
+  .side{width:210px;flex-shrink:0;background:#fff;border-right:1px solid #ECEEF5;display:flex;
+    flex-direction:column;padding:20px 16px;gap:4px;}
+  .brand2{display:flex;align-items:center;gap:9px;padding:0 4px 20px;color:var(--blue);}
+  .brand2 .mk{width:32px;height:32px;border-radius:9px;background:var(--blue);color:#fff;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;}
+  .brand2 .tx{font-size:13px;font-weight:800;color:var(--ink);}
+  .brand2 .tx small{display:block;font-size:9px;font-weight:500;color:#9aa1b5;}
+  .nitem{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:12px;
+    font-weight:600;color:#6b7280;}
+  .nitem.active{background:var(--blue-tint);color:var(--blue);}
+  .dmain{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .dtop{height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;border-bottom:1px solid #ECEEF5;}
+  .dtop h2{font-size:15px;font-weight:800;margin:0;} .dtop .sub{font-size:10px;color:#9aa1b5;}
+  .who{display:flex;align-items:center;gap:8px;}
+  .avatar2{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:10.5px;flex-shrink:0;}
+  .dcontent{flex:1;overflow:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+  .stat{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid #ECEEF5;display:flex;
+    flex-direction:column;gap:5px;}
+  .stat .v{font-size:20px;font-weight:800;} .stat .l{font-size:10px;color:#9aa1b5;font-weight:600;}
+  .stat .d{font-size:9.5px;color:var(--green);font-weight:700;}
+  .row2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+  .panel{background:#fff;border-radius:14px;border:1px solid #ECEEF5;padding:18px 18px;
+    display:flex;flex-direction:column;min-width:0;}
+  .panel h3{font-size:13px;font-weight:700;margin:0 0 3px;}
+  .panel .ph{font-size:10px;color:#9aa1b5;margin-bottom:12px;}
+  .tbl-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:11px;min-width:420px;}
+  th{text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:#9aa1b5;
+    font-weight:700;padding:6px 8px;border-bottom:1px solid #ECEEF5;}
+  td{padding:9px 8px;border-bottom:1px solid #F3F4F8;font-weight:500;white-space:nowrap;}
+  .nm{display:flex;align-items:center;gap:8px;font-weight:700;}
+  .av2{width:26px;height:26px;border-radius:50%;background:var(--blue-tint);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;}
+  .bar2{width:90px;height:7px;border-radius:99px;background:#EEF0F6;overflow:hidden;}
+  .bar2 i{display:block;height:100%;background:var(--blue);border-radius:99px;}
+  .glist{display:flex;flex-direction:column;gap:10px;}
+  .gcard{display:flex;align-items:center;gap:10px;padding:11px;border-radius:12px;background:#F8F9FC;}
+  .gcard .ic2{width:32px;height:32px;border-radius:9px;background:#E3F7EB;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;}
+  .gcard .t{font-size:11px;font-weight:700;} .gcard .s{font-size:9.5px;color:#9aa1b5;}
+  .ring-wrap{display:flex;justify-content:center;padding:6px 0 14px;}
+
+  /* ---------- dashboard views ---------- */
+  .nitem{border:0;background:transparent;font-family:inherit;text-align:left;cursor:pointer;}
+  .nitem:focus-visible{outline:3px solid rgba(49,100,253,.28);outline-offset:2px;}
+  .dashboard-view{display:none;flex-direction:column;gap:16px;width:100%;}
+  .dashboard-view.active{display:flex;}
+  .view-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  .view-heading h3{font-size:16px;font-weight:800;margin:0;}
+  .view-heading p{font-size:10px;color:#9aa1b5;margin:3px 0 0;}
+  .view-heading .view-note{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-tint);
+    border-radius:999px;padding:8px 11px;white-space:nowrap;}
+  .view-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+  .view-stats .stat{min-height:94px;}
+  .view-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:16px;min-width:0;}
+  .view-panel{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:18px;min-width:0;}
+  .view-panel h3{font-size:13px;font-weight:700;margin:0 0 3px;}
+  .view-panel .ph{font-size:10px;color:#9aa1b5;margin-bottom:13px;}
+  .view-table-wrap{overflow-x:auto;}
+  .view-table{width:100%;border-collapse:collapse;font-size:11px;min-width:560px;}
+  .view-table th{text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.35px;color:#9aa1b5;
+    font-weight:700;padding:7px 8px;border-bottom:1px solid #ECEEF5;}
+  .view-table td{padding:10px 8px;border-bottom:1px solid #F3F4F8;font-weight:500;white-space:nowrap;}
+  .view-table tr:last-child td{border-bottom:0;}
+  .view-table .person{display:flex;align-items:center;gap:8px;font-weight:700;}
+  .view-table .muted{font-size:9.5px;color:#9aa1b5;}
+  .view-table .badge{display:inline-flex;margin-left:0;}
+  .view-action{border:0;border-radius:999px;background:var(--blue-tint);color:var(--blue);font:700 10px Poppins,sans-serif;
+    padding:7px 10px;cursor:pointer;white-space:nowrap;}
+  .view-action:hover{background:#DCE5FF;}
+  .view-action:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
+  .group-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .group-card{background:#F8F9FC;border:1px solid #ECEEF5;border-radius:14px;padding:14px;display:flex;gap:11px;align-items:flex-start;}
+  .group-card .ic2{width:34px;height:34px;border-radius:10px;background:#E3F7EB;color:var(--green);display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;}
+  .group-card .title{font-size:11px;font-weight:700;line-height:1.3;}
+  .group-card .meta{font-size:9.5px;color:#9aa1b5;margin-top:3px;}
+  .group-card .growth{font-size:9px;color:var(--green);font-weight:700;margin-top:7px;}
+  .group-card .view-action{margin-left:auto;padding:6px 8px;font-size:9px;}
+  .proposal-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .proposal-card{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:15px;display:flex;flex-direction:column;gap:9px;}
+  .proposal-card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  .proposal-card h4{font-size:12px;line-height:1.35;margin:0;}
+  .proposal-card p{font-size:10px;line-height:1.5;color:#6b7280;margin:0;}
+  .proposal-card .footer{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9px;color:#9aa1b5;}
+  .empty-state{background:#fff;border:1px dashed #D8DDEA;border-radius:14px;padding:32px;text-align:center;color:#9aa1b5;font-size:11px;}
+
+  @media (max-width:820px){
+    .app-desktop{flex-direction:column;}
+    .side{width:100%;flex-direction:row;overflow-x:auto;padding:12px 14px;border-right:none;
+      border-bottom:1px solid #ECEEF5;}
+    .brand2{display:none;}
+    .nitem{flex-shrink:0;}
+    .stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .row2{grid-template-columns:1fr;}
+    .view-grid{grid-template-columns:1fr;}
+    .group-grid,.proposal-list{grid-template-columns:1fr;}
+    .view-heading{align-items:stretch;flex-direction:column;gap:8px;}
+    .view-heading .view-note{align-self:flex-start;}
+    #desktopApp{padding:0;}
+  }
+
+  .logo3{display:block;}
+</style>
+</head>
+<body>
+
+<!-- ============ MOBILE APP SIMULATION ============ -->
+<div class="stage" id="mobileApp">
+  <div class="device">
+    <div class="viewport">
+
+      <!-- 1. BIENVENIDA -->
+      <div class="screen blue active" id="s1" style="align-items:center;justify-content:center;text-align:center;gap:16px;">
+        <svg class="logo3" width="88" height="57" viewBox="0 0 140 90"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+        <div style="font-size:28px;font-weight:800;">¡Bienvenido!</div>
+        <div style="font-size:13.5px;font-weight:400;opacity:.85;line-height:1.5;max-width:270px;">Súmate al equipo de la campaña de Cristiam y ayúdanos a llegar a más barrios de la ciudad.</div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:13px;margin-top:20px;">
+          <button class="pill white" onclick="go('s2')">Quiero ser voluntario</button>
+          <button class="pill outline" onclick="go('s4')">Ya soy voluntario</button>
+        </div>
+      </div>
+
+      <!-- 2. REGISTRO -->
+      <div class="screen white" id="s2">
+        <button class="back" onclick="go('s1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;font-size:22px;font-weight:800;">Registro</div>
+        <div style="font-size:10.5px;color:#8892b0;margin-bottom:14px;">Completa tus datos para unirte a la red de voluntarios.</div>
+        <div class="fh"><div class="field"><label>Nombres<span>*</span></label><div class="box">María Camila</div></div><div class="field"><label>Apellidos<span>*</span></label><div class="box">Ortega Ruiz</div></div></div>
+        <div class="fh"><div class="field"><label>Documento<span>*</span></label><div class="box">1 020 345 678</div></div><div class="field"><label>Celular<span>*</span></label><div class="box">300 123 4567</div></div></div>
+        <div class="fh"><div class="field"><label>Usuario de Instagram</label><div class="box">@mcortega</div></div><div class="field"><label>Email<span>*</span></label><div class="box">maria@correo.com</div></div></div>
+        <div class="fh">
+          <div class="field"><label>Género<span>*</span></label><div class="box" style="justify-content:space-between;">Femenino <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+          <div class="field"><label>F. nacimiento<span>*</span></label><div class="box">12/04/1994</div></div>
+        </div>
+        <div class="field"><label>Barrio<span>*</span></label><div class="box" style="justify-content:space-between;">El Prado <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Puesto de votación<span>*</span></label><div class="box" style="justify-content:space-between;">I.E. San Fernando <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0 14px;">
+          <div style="width:14px;height:14px;border-radius:4px;background:var(--blue);flex-shrink:0;"></div>
+          <div style="font-size:9.5px;font-style:italic;">He leído y acepto los términos y condiciones</div>
+        </div>
+        <button class="pill dark" onclick="toast('Código de verificación enviado por SMS');go('s3')">Registrarme</button>
+      </div>
+
+      <!-- 3. VERIFICACION -->
+      <div class="screen white" id="s3">
+        <button class="back" onclick="go('s2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;display:flex;align-items:center;gap:8px;background:var(--blue-tint);color:var(--blue-deep);
+          border-radius:999px;padding:8px 14px;font-size:10.5px;font-weight:600;margin-bottom:18px;width:fit-content;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+          Código recibido por SMS: 468263
+        </div>
+        <div style="font-size:22px;font-weight:800;">Confirmar código</div>
+        <div style="font-size:10.5px;color:#8892b0;margin-bottom:16px;line-height:1.5;">Ingresa de nuevo tu celular y el código que recibiste para crear tu contraseña.</div>
+        <div class="field"><label>Celular*</label><div class="box">300 123 4567</div></div>
+        <div class="field"><label>Código de verificación</label><div class="box">468263</div></div>
+        <div class="field"><label>Crea tu contraseña</label><div class="box">••••••••</div></div>
+        <div class="field"><label>Confirma tu contraseña</label><div class="box">••••••••</div></div>
+        <button class="pill dark" style="margin-top:8px;" onclick="toast('¡Cuenta verificada!');go('s5')">Verificar mi cuenta</button>
+      </div>
+
+      <!-- 4. INGRESO -->
+      <div class="screen blue" id="s4" style="justify-content:center;">
+        <button class="back" onclick="go('s1')" style="background:rgba(255,255,255,.18);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <svg class="logo3" width="76" height="49" viewBox="0 0 140 90" style="margin-bottom:16px;"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+        <div style="font-size:24px;font-weight:800;">¡Qué gusto tenerte aquí!</div>
+        <div style="font-size:12.5px;font-weight:400;opacity:.85;line-height:1.5;margin-bottom:22px;">Ingresa con tu cédula y tu contraseña para continuar.</div>
+        <div class="field"><div class="box" style="background:#fff;color:var(--ink);height:48px;">Cédula</div></div>
+        <div class="field"><div class="box" style="background:#fff;color:var(--ink);height:48px;">Contraseña</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:22px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:13px;height:13px;border-radius:3px;border:1.5px solid rgba(255,255,255,.7);"></div>Recuérdame</div>
+          <div style="text-decoration:underline;">¿Olvidaste tu contraseña?</div>
+        </div>
+        <button class="pill dark" onclick="go('s5')">Entrar</button>
+      </div>
+
+      <!-- 5. PANEL (HUB) -->
+      <div class="screen blue" id="s5">
+        <button class="exit" onclick="go('s1')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button>
+        <div style="margin-top:14px;font-size:23px;font-weight:800;">¡Hola, María!</div>
+        <div style="font-size:11px;font-weight:600;opacity:.85;">Meta de voluntarios confirmados</div>
+        <div class="bartrack"><div class="barfill">34%</div><div class="barend">100%</div></div>
+        <div style="font-size:10.5px;font-weight:400;opacity:.75;margin:0 0 14px;font-style:italic;">Cada persona que confirmas te acerca a tu meta y a nuevos beneficios.</div>
+        <div class="grid2">
+          <button class="tile" onclick="go('s6')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Quiero ser Capitán</button>
+          <button class="tile" onclick="go('s9')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Unirme al grupo de WhatsApp</button>
+          <button class="tile" onclick="go('s10')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="8"/><path d="M12 8v8M8 12h8"/></svg>Información sobre mi candidato</button>
+          <button class="tile" onclick="go('s11')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Mi propuesta para la ciudad</button>
+        </div>
+      </div>
+
+      <!-- 6. MI RED -->
+      <div class="screen white" id="s6">
+        <button class="back" onclick="go('s5')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;display:flex;justify-content:space-between;align-items:flex-start;">
+          <div><div style="font-size:21px;font-weight:800;">Tus voluntarios</div>
+          <div style="font-size:10.5px;color:#9aa1b5;margin-top:2px;">24 en tu red · 18 confirmadas</div></div>
+          <button onclick="go('s8')" style="font-size:10.5px;font-weight:700;color:var(--blue);background:var(--blue-tint);padding:8px 12px;border-radius:999px;white-space:nowrap;">Ranking →</button>
+        </div>
+        <div class="searchbar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9aa1b5" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Buscar en tu red...</div>
+        <div style="overflow-y:auto;flex:1;">
+          <div class="row"><div class="avatar">JZ</div><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">300 456 7890 · El Prado</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+          <div class="row"><div class="avatar">CV</div><div><div class="rname">Carmen Villalobos</div><div class="rmeta">301 234 5678 · La Floresta</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+          <div class="row"><div class="avatar">HP</div><div><div class="rname">Hernán Pérez</div><div class="rmeta">302 987 6543 · San Fernando</div></div><button class="badge pend" onclick="cycleBadge(this)">Pendiente</button></div>
+          <div class="row"><div class="avatar">SR</div><div><div class="rname">Susana Ramírez</div><div class="rmeta">304 555 1122 · Villa Nueva</div></div><button class="badge no" onclick="cycleBadge(this)">No confirma</button></div>
+          <div class="row"><div class="avatar">DL</div><div><div class="rname">David Londoño</div><div class="rmeta">315 222 3344 · El Prado</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+        </div>
+        <button class="fab" onclick="go('s7')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+
+      <!-- 7. AGREGAR -->
+      <div class="screen white" id="s7">
+        <button class="back" onclick="go('s6')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;font-size:20px;font-weight:800;">Nueva persona</div>
+        <div style="font-size:10px;color:#8892b0;margin-bottom:14px;">Regístrala en tu red y define su compromiso de voto.</div>
+        <div class="field"><label>Nombre completo</label><div class="box">Andrea Salazar</div></div>
+        <div class="fh"><div class="field"><label>Cédula</label><div class="box">1 098 234 552</div></div><div class="field"><label>Celular</label><div class="box">311 445 6677</div></div></div>
+        <div class="field"><label>Barrio</label><div class="box" style="justify-content:space-between;">San Fernando <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Puesto de votación</label><div class="box" style="justify-content:space-between;">Coliseo Municipal <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Estado de compromiso</label>
+          <div class="segs">
+            <button class="seg ok" onclick="selectSeg(this)">Confirmado</button>
+            <button class="seg" onclick="selectSeg(this)">Pendiente</button>
+            <button class="seg" onclick="selectSeg(this)">No confirma</button>
+          </div>
+        </div>
+        <div class="field"><label>Notas</label><div class="box area">Reunión el sábado en su casa</div></div>
+        <button class="pill dark" style="margin-top:6px;" onclick="toast('Persona guardada en tu red');go('s6')">Guardar persona</button>
+      </div>
+
+      <!-- 8. RANKING -->
+      <div class="screen blue" id="s8">
+        <button class="back" onclick="go('s6')" style="background:rgba(255,255,255,.18);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;text-align:center;font-size:21px;font-weight:800;">Ranking</div>
+        <div style="text-align:center;font-size:10px;opacity:.8;margin-top:-2px;">de los que más agregan personas</div>
+        <div class="podium">
+          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">CV</div><div class="pname">Carmen<br>Villalobos</div><div class="pmeta">20 voluntarios</div></div>
+          <div class="pcol"><svg width="24" height="16" viewBox="0 0 24 16" fill="#FCEE21" style="margin-bottom:-3px;"><path d="M2 14l-2-9 5 3 5-7 5 7 5-3-2 9z"/></svg><div class="pav" style="width:58px;height:58px;font-size:17px;">JZ</div><div class="pname">Juan Pablo<br>Zuluaga</div><div class="pmeta">30 voluntarios</div></div>
+          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">HP</div><div class="pname">Hernán<br>Pérez</div><div class="pmeta">15 voluntarios</div></div>
+        </div>
+        <div class="listwrap">
+          <div class="row"><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
+            <button class="ic sel" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
+            <button class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
+            <button class="ic" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div></div>
+          <div class="row"><div><div class="rname">Carmen Villalobos</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
+            <button class="ic sel" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
+            <button class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
+            <button class="ic" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div></div>
+          <div class="row"><div><div class="rname">Hernán Pérez</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
+            <button class="ic" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
+            <button class="ic sel" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
+            <button class="ic" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div></div>
+          <div class="row"><div><div class="rname">Susana Ramírez</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
+            <button class="ic" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
+            <button class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
+            <button class="ic sel" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 9. GRUPOS -->
+      <div class="screen blue" id="s9">
+        <button class="back" onclick="go('s5')" style="background:rgba(255,255,255,.18);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;font-size:21px;font-weight:800;margin-bottom:4px;">Grupos disponibles</div>
+        <div style="font-size:11px;opacity:.85;margin-bottom:16px;">Únete al grupo de WhatsApp de tu comunidad.</div>
+        <button class="card" onclick="toggleJoin(this)"><div><div class="t">Voluntarios<br>del Barrio</div><div class="s">312 integrantes</div></div><div class="joinbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div></button>
+        <button class="card" onclick="toggleJoin(this)"><div><div class="t">Voluntariado<br>de Mujeres</div><div class="s">186 integrantes</div></div><div class="joinbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div></button>
+        <button class="card" onclick="toggleJoin(this)"><div><div class="t">Voluntariado<br>Jóvenes</div><div class="s">204 integrantes</div></div><div class="joinbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div></button>
+      </div>
+
+      <!-- 10. CANDIDATO -->
+      <div class="screen blue" id="s10">
+        <button class="back" onclick="go('s5')" style="background:rgba(255,255,255,.18);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;font-size:11px;font-style:italic;opacity:.85;margin-bottom:10px;">Video de presentación de Cristiam</div>
+        <div class="reel">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <div style="width:54px;height:54px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div style="position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:8px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:#555;"></div>
+            <div style="font-size:9.5px;font-weight:600;color:#fff;">@campañacristiam</div>
+          </div>
+        </div>
+        <button class="card" style="flex-direction:column;gap:8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg><span style="font-size:13px;">Info del candidato</span></button>
+        <button class="card" style="flex-direction:column;gap:8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></svg><span style="font-size:13px;text-align:center;">Descargar información de la campaña</span></button>
+      </div>
+
+      <!-- 11. PROPUESTA -->
+      <div class="screen white" id="s11">
+        <button class="back" onclick="go('s5')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div style="margin-top:26px;font-size:21px;font-weight:800;">Mi propuesta</div>
+        <div style="font-size:10.5px;color:#8892b0;margin-bottom:16px;">Cuéntanos qué le hace falta a tu barrio.</div>
+        <div class="field"><label>Qué tipo de propuesta</label><div class="box" style="justify-content:space-between;">Movilidad y vías <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Para qué sector</label><div class="box" style="justify-content:space-between;">El Prado <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Tu propuesta</label><div class="box area">Mejorar el alumbrado público de la calle 45 entre carreras 8 y 12.</div></div>
+        <button class="pill dark" style="margin-top:10px;" onclick="toast('¡Propuesta enviada!');go('s5')">Enviar propuesta</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ DESKTOP APP (PANEL DEL CANDIDATO) ============ -->
+<div id="desktopApp">
+  <div class="desktop-shell">
+    <div class="browserbar"><i></i><i></i><i></i></div>
+    <div class="app-desktop">
+      <div class="side">
+        <div class="brand2">
+          <div class="mk"><svg width="18" height="12" viewBox="0 0 140 90"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg></div>
+          <div class="tx">Panel de Campaña<small>Cristiam 2026</small></div>
+        </div>
+        <button class="nitem active" type="button" data-view="resumen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Resumen</button>
+        <button class="nitem" type="button" data-view="capitanes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Capitanes</button>
+        <button class="nitem" type="button" data-view="voluntarios"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Voluntarios</button>
+        <button class="nitem" type="button" data-view="grupos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Grupos WhatsApp</button>
+        <button class="nitem" type="button" data-view="propuestas"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Propuestas</button>
+      </div>
+      <div class="dmain">
+        <div class="dtop">
+          <div><h2>Resumen de campaña</h2><div class="sub">Datos consolidados de toda la red de voluntarios</div></div>
+          <div class="who"><div class="avatar2">CR</div><div style="font-size:11px;font-weight:700;">Equipo Cristiam</div></div>
+        </div>
+        <div class="dcontent">
+          <section id="view-resumen" class="dashboard-view active" aria-label="Resumen de campaña">
+          <div class="stats">
+            <div class="stat"><div class="v">3 482</div><div class="l">Voluntarios confirmados</div><div class="d">+186 esta semana</div></div>
+            <div class="stat"><div class="v">124</div><div class="l">Capitanes activos</div><div class="d">+9 esta semana</div></div>
+            <div class="stat"><div class="v">58%</div><div class="l">Meta general de campaña</div><div class="d">Objetivo: 6 000</div></div>
+            <div class="stat"><div class="v">17</div><div class="l">Grupos activos</div><div class="d">+2 este mes</div></div>
+          </div>
+          <div class="row2">
+            <div class="panel">
+              <h3>Ranking de Capitanes</h3>
+              <div class="ph">Quiénes están sumando más personas confirmadas</div>
+              <div class="tbl-wrap"><table>
+                <tr><th>Capitán</th><th>Barrio</th><th>Agreg.</th><th>Avance</th><th>Estado</th></tr>
+                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>El Prado</td><td>30</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>La Floresta</td><td>20</td><td><div class="bar2"><i style="width:64%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>San Fernando</td><td>15</td><td><div class="bar2"><i style="width:48%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>11</td><td><div class="bar2"><i style="width:35%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>El Prado</td><td>9</td><td><div class="bar2"><i style="width:29%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+              </table></div>
+            </div>
+            <div class="panel">
+              <h3>Meta general</h3>
+              <div class="ph">3 482 de 6 000 confirmados</div>
+              <div class="ring-wrap">
+                <svg width="112" height="112" viewBox="0 0 132 132">
+                  <circle cx="66" cy="66" r="56" fill="none" stroke="#EEF0F6" stroke-width="14"/>
+                  <circle cx="66" cy="66" r="56" fill="none" stroke="#3164FD" stroke-width="14" stroke-linecap="round" stroke-dasharray="351.8" stroke-dashoffset="147.8" transform="rotate(-90 66 66)"/>
+                  <text x="66" y="72" text-anchor="middle" font-size="22" font-weight="800" fill="#231F20" font-family="Poppins">58%</text>
+                </svg>
+              </div>
+              <h3>Grupos de WhatsApp activos</h3>
+              <div class="glist">
+                <div class="gcard"><div class="ic2"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="t">Voluntarios del Barrio</div><div class="s">312 integrantes</div></div></div>
+                <div class="gcard"><div class="ic2"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="t">Voluntariado de Mujeres</div><div class="s">186 integrantes</div></div></div>
+                <div class="gcard"><div class="ic2"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="t">Voluntariado Jóvenes</div><div class="s">204 integrantes</div></div></div>
+              </div>
+            </div>
+          </div>
+          </section>
+          <section id="view-capitanes" class="dashboard-view" aria-label="Capitanes"></section>
+          <section id="view-voluntarios" class="dashboard-view" aria-label="Voluntarios"></section>
+          <section id="view-grupos" class="dashboard-view" aria-label="Grupos de WhatsApp"></section>
+          <section id="view-propuestas" class="dashboard-view" aria-label="Propuestas"></section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="switcher" id="switcherBtn" onclick="toggleApp()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+  Ver panel del candidato
+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function go(id){
+    document.querySelectorAll('#mobileApp .screen').forEach(function(s){ s.classList.toggle('active', s.id===id); });
+    document.querySelector('#mobileApp .viewport').scrollTop = 0;
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 1800);
+  }
+
+  function cycleBadge(el){
+    var states = ['ok','pend','no'];
+    var labels = {ok:'Confirmado', pend:'Pendiente', no:'No confirma'};
+    var cur = states.filter(function(s){ return el.classList.contains(s); })[0] || 'pend';
+    var next = states[(states.indexOf(cur)+1) % states.length];
+    states.forEach(function(s){ el.classList.remove(s); });
+    el.classList.add(next);
+    el.textContent = labels[next];
+  }
+
+  function selectSeg(el){
+    Array.prototype.forEach.call(el.parentElement.children, function(s){ s.classList.remove('ok'); });
+    el.classList.add('ok');
+  }
+
+  function selectIcon(el){
+    Array.prototype.forEach.call(el.parentElement.children, function(s){ s.classList.remove('sel'); });
+    el.classList.add('sel');
+  }
+
+  function toggleJoin(el){
+    el.querySelector('.joinbtn').classList.toggle('joined');
+    toast(el.querySelector('.joinbtn').classList.contains('joined') ? 'Te uniste al grupo' : 'Saliste del grupo');
+  }
+
+  const campaignMockData = {
+    capitanes: [
+      { initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'El Prado', added:30, progress:82, status:'ok' },
+      { initials:'CV', name:'Carmen Villalobos', neighborhood:'La Floresta', added:20, progress:64, status:'ok' },
+      { initials:'HP', name:'Hernán Pérez', neighborhood:'San Fernando', added:15, progress:48, status:'follow' },
+      { initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', added:11, progress:35, status:'follow' },
+      { initials:'DL', name:'David Londoño', neighborhood:'El Prado', added:9, progress:29, status:'follow' },
+      { initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', added:8, progress:25, status:'follow' }
+    ],
+    voluntarios: [
+      { initials:'MJ', name:'María José Cárdenas', neighborhood:'El Prado', captain:'Juan Pablo Zuluaga', date:'08 sep 2026', status:'ok' },
+      { initials:'LS', name:'Luis Eduardo Soto', neighborhood:'La Floresta', captain:'Carmen Villalobos', date:'08 sep 2026', status:'ok' },
+      { initials:'AR', name:'Alejandra Ríos', neighborhood:'San Fernando', captain:'Hernán Pérez', date:'07 sep 2026', status:'pending' },
+      { initials:'GM', name:'Gabriel Méndez', neighborhood:'Villa Nueva', captain:'Susana Ramírez', date:'07 sep 2026', status:'ok' },
+      { initials:'VC', name:'Valentina Castro', neighborhood:'Los Alpes', captain:'Andrea Márquez', date:'06 sep 2026', status:'pending' },
+      { initials:'NP', name:'Nicolás Pardo', neighborhood:'El Prado', captain:'Juan Pablo Zuluaga', date:'05 sep 2026', status:'no' }
+    ],
+    grupos: [
+      { name:'Voluntarios del Barrio', zone:'Comunidades urbanas', members:312, growth:'+28 esta semana', status:'ok' },
+      { name:'Voluntariado de Mujeres', zone:'Red de mujeres', members:186, growth:'+16 esta semana', status:'ok' },
+      { name:'Voluntariado Jóvenes', zone:'Juventud Cristiam', members:204, growth:'+22 esta semana', status:'ok' },
+      { name:'Líderes de San Fernando', zone:'San Fernando', members:98, growth:'+9 esta semana', status:'ok' },
+      { name:'Red El Prado', zone:'El Prado', members:74, growth:'+6 esta semana', status:'ok' },
+      { name:'Equipo de movilidad', zone:'Sector transporte', members:51, growth:'Creado ayer', status:'new' }
+    ],
+    propuestas: [
+      { title:'Alumbrado seguro en la calle 45', description:'Mejorar el alumbrado público entre carreras 8 y 12 para recuperar el tránsito nocturno.', category:'Seguridad', neighborhood:'El Prado', author:'María Camila Ortega', date:'08 sep 2026', status:'review' },
+      { title:'Rutas de transporte para San Fernando', description:'Extender la ruta alimentadora hasta el centro comunitario del barrio.', category:'Movilidad', neighborhood:'San Fernando', author:'Hernán Pérez', date:'07 sep 2026', status:'approved' },
+      { title:'Parque de bolsillo para La Floresta', description:'Convertir el lote junto a la cancha en un espacio verde para familias.', category:'Espacio público', neighborhood:'La Floresta', author:'Carmen Villalobos', date:'06 sep 2026', status:'review' },
+      { title:'Primer empleo para jóvenes', description:'Crear alianzas con comercios locales para prácticas remuneradas.', category:'Empleo', neighborhood:'Villa Nueva', author:'Susana Ramírez', date:'05 sep 2026', status:'pending' },
+      { title:'Mercado campesino mensual', description:'Reservar una plaza para productores rurales el primer domingo de cada mes.', category:'Economía local', neighborhood:'Los Alpes', author:'Andrea Márquez', date:'04 sep 2026', status:'approved' },
+      { title:'Más puntos de reciclaje', description:'Instalar puntos de separación en parques y zonas de alta circulación.', category:'Ambiente', neighborhood:'El Prado', author:'David Londoño', date:'03 sep 2026', status:'pending' }
+    ]
+  };
+
+  const dashboardViewMeta = {
+    resumen: { title:'Resumen de campaña', subtitle:'Datos consolidados de toda la red de voluntarios' },
+    capitanes: { title:'Capitanes', subtitle:'Seguimiento a los líderes que hacen crecer la red' },
+    voluntarios: { title:'Voluntarios', subtitle:'Personas registradas y estado de confirmación' },
+    grupos: { title:'Grupos de WhatsApp', subtitle:'Comunidades activas y crecimiento de la conversación' },
+    propuestas: { title:'Propuestas', subtitle:'Ideas ciudadanas recibidas desde los barrios' }
+  };
+
+  function escapeHtml(value){
+    return String(value).replace(/[&<>'"]/g, function(character){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character];
+    });
+  }
+
+  function dashboardBadge(status){
+    const labels = {
+      ok:{className:'ok', label:'Al día'},
+      follow:{className:'pend', label:'Seguimiento'},
+      pending:{className:'pend', label:'Pendiente'},
+      no:{className:'no', label:'No confirma'},
+      new:{className:'ok', label:'Nuevo'},
+      review:{className:'pend', label:'En revisión'},
+      approved:{className:'ok', label:'Aprobada'}
+    };
+    const item = labels[status] || labels.pending;
+    return '<span class="badge '+item.className+'">'+item.label+'</span>';
+  }
+
+  function dashboardMetrics(items){
+    return items.map(function(item){
+      return '<div class="stat"><div class="v">'+item.value+'</div><div class="l">'+item.label+'</div><div class="d">'+item.delta+'</div></div>';
+    }).join('');
+  }
+
+  function renderCapitanes(){
+    const rows = campaignMockData.capitanes.map(function(captain){
+      return '<tr><td><div class="person"><div class="av2">'+escapeHtml(captain.initials)+'</div>'+escapeHtml(captain.name)+'</div></td>'+
+        '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.added+'</td><td><div class="bar2"><i style="width:'+captain.progress+'%;"></i></div></td>'+
+        '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain">Ver red</button></td></tr>';
+    }).join('');
+    return '<div class="view-heading"><div><h3>Capitanes de la red</h3><p>Quiénes están sumando más personas confirmadas a la campaña.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:'124',label:'Capitanes activos',delta:'+9 esta semana'},
+        {value:'18',label:'En seguimiento',delta:'14% del total'},
+        {value:'16,8',label:'Promedio por capitán',delta:'+1,2 vs. agosto'}
+      ])+'</div>'+
+      '<div class="view-grid"><div class="view-panel"><h3>Ranking de capitanes</h3><div class="ph">Avance de cada líder frente a su meta de confirmados.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+
+      '<div class="view-panel"><h3>Lectura rápida</h3><div class="ph">Señales para priorizar el acompañamiento.</div><div class="glist"><div class="gcard"><div class="ic2">↗</div><div><div class="t">El Prado lidera la red</div><div class="s">39 personas agregadas por 2 capitanes.</div></div></div><div class="gcard"><div class="ic2">!</div><div><div class="t">18 capitanes requieren apoyo</div><div class="s">Revisar avances antes del próximo encuentro.</div></div></div><div class="gcard"><div class="ic2">★</div><div><div class="t">Meta semanal superada</div><div class="s">+186 voluntarios confirmados.</div></div></div></div></div></div>';
+  }
+
+  function renderVoluntarios(){
+    const rows = campaignMockData.voluntarios.map(function(volunteer){
+      return '<tr><td><div class="person"><div class="av2">'+escapeHtml(volunteer.initials)+'</div>'+escapeHtml(volunteer.name)+'</div></td>'+
+        '<td>'+escapeHtml(volunteer.neighborhood)+'</td><td>'+escapeHtml(volunteer.captain)+'</td><td class="muted">'+escapeHtml(volunteer.date)+'</td><td>'+dashboardBadge(volunteer.status)+'</td><td><button class="view-action" type="button" data-demo-action="volunteer">Abrir</button></td></tr>';
+    }).join('');
+    return '<div class="view-heading"><div><h3>Voluntarios registrados</h3><p>La red completa de personas que participan en la campaña.</p></div><div class="view-note">3 482 confirmados</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:'3 482',label:'Confirmados',delta:'+186 esta semana'},
+        {value:'246',label:'Pendientes',delta:'6,6% del total'},
+        {value:'82',label:'Nuevos hoy',delta:'+12 vs. ayer'}
+      ])+'</div>'+
+      '<div class="view-panel"><h3>Últimos registros</h3><div class="ph">Muestra de voluntarios captados por la red de capitanes.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Capitán</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  }
+
+  function renderGrupos(){
+    const cards = campaignMockData.grupos.map(function(group){
+      return '<div class="group-card"><div class="ic2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="title">'+escapeHtml(group.name)+'</div><div class="meta">'+escapeHtml(group.zone)+' · '+group.members+' integrantes</div><div class="growth">'+escapeHtml(group.growth)+'</div></div><button class="view-action" type="button" data-demo-action="group">Ver</button></div>';
+    }).join('');
+    return '<div class="view-heading"><div><h3>Comunidades de WhatsApp</h3><p>Grupos activos para coordinar voluntariado por territorio y afinidad.</p></div><div class="view-note">17 grupos activos</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:'17',label:'Grupos activos',delta:'+2 este mes'},
+        {value:'1 248',label:'Integrantes totales',delta:'+81 esta semana'},
+        {value:'73',label:'Mensajes coordinados',delta:'Últimas 24 horas'}
+      ])+'</div>'+
+      '<div class="view-panel"><h3>Grupos de la campaña</h3><div class="ph">Comunidades con actividad reciente.</div><div class="group-grid">'+cards+'</div></div>';
+  }
+
+  function renderPropuestas(){
+    const cards = campaignMockData.propuestas.map(function(proposal){
+      const action = proposal.status === 'review' ? '<button class="view-action" type="button" data-demo-action="proposal">Marcar revisada</button>' : '';
+      return '<article class="proposal-card"><div class="top"><h4>'+escapeHtml(proposal.title)+'</h4>'+dashboardBadge(proposal.status)+'</div><p>'+escapeHtml(proposal.description)+'</p><div class="footer"><span>'+escapeHtml(proposal.category)+' · '+escapeHtml(proposal.neighborhood)+'</span><span>'+escapeHtml(proposal.date)+'</span></div><div class="footer"><span>Por '+escapeHtml(proposal.author)+'</span>'+action+'</div></article>';
+    }).join('');
+    return '<div class="view-heading"><div><h3>Propuestas ciudadanas</h3><p>Ideas recibidas desde los barrios para orientar la agenda de campaña.</p></div><div class="view-note">6 recibidas esta semana</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:'86',label:'Propuestas recibidas',delta:'+14 este mes'},
+        {value:'31',label:'En revisión',delta:'36% del total'},
+        {value:'24',label:'Aprobadas',delta:'+5 esta semana'}
+      ])+'</div>'+
+      '<div class="proposal-list">'+cards+'</div>';
+  }
+
+  const dashboardRenderers = {capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
+
+  function renderDashboardView(viewId){
+    if(dashboardRenderers[viewId]) document.getElementById('view-'+viewId).innerHTML = dashboardRenderers[viewId]();
+  }
+
+  function selectDashboardView(viewId){
+    const meta = dashboardViewMeta[viewId] || dashboardViewMeta.resumen;
+    document.querySelectorAll('#desktopApp .dashboard-view').forEach(function(view){ view.classList.toggle('active', view.id === 'view-'+viewId); });
+    document.querySelectorAll('#desktopApp .nitem').forEach(function(item){ item.classList.toggle('active', item.dataset.view === viewId); });
+    document.querySelector('#desktopApp .dtop h2').textContent = meta.title;
+    document.querySelector('#desktopApp .dtop .sub').textContent = meta.subtitle;
+    document.querySelector('#desktopApp .dcontent').scrollTop = 0;
+  }
+
+  document.querySelectorAll('#desktopApp .nitem').forEach(function(item){
+    item.addEventListener('click', function(){ selectDashboardView(item.dataset.view); });
+  });
+  Object.keys(dashboardRenderers).forEach(renderDashboardView);
+  document.getElementById('desktopApp').addEventListener('click', function(event){
+    const action = event.target.closest('[data-demo-action]');
+    if(!action) return;
+    const messages = {captain:'Vista de red del capitán abierta', volunteer:'Ficha del voluntario abierta', group:'Detalle del grupo abierto'};
+    if(action.dataset.demoAction === 'proposal'){
+      action.parentElement.parentElement.querySelector('.badge').className = 'badge ok';
+      action.parentElement.parentElement.querySelector('.badge').textContent = 'Revisada';
+      action.remove();
+      toast('Propuesta marcada como revisada');
+      return;
+    }
+    toast(messages[action.dataset.demoAction] || 'Acción completada');
+  });
+
+  function toggleApp(){
+    var mobile = document.getElementById('mobileApp');
+    var desktop = document.getElementById('desktopApp');
+    var btn = document.getElementById('switcherBtn');
+    var showingDesktop = desktop.classList.toggle('active');
+    mobile.style.display = showingDesktop ? 'none' : 'flex';
+    btn.innerHTML = showingDesktop
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg> Ver app móvil'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg> Ver panel del candidato';
+  }
+</script>
+</body>
+</html>

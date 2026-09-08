@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; --green:#0BA451; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:56px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:36px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:420px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;padding:60px;gap:56px;position:relative;}
+    .phone{width:340px;height:696px;background:#151515;border-radius:50px;padding:11px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:110px;height:32px;} .phone .sb.l2{left:-4px;top:154px;height:56px;} .phone .sb.r1{right:-4px;top:136px;height:74px;}
+    .screen{width:100%;height:100%;border-radius:40px;overflow:hidden;background:var(--blue);position:relative;display:flex;flex-direction:column;padding:32px 26px;color:#fff;}
+    .card{background:#fff;color:var(--ink);border-radius:22px;padding:20px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .card .t{font-size:15px;font-weight:700;line-height:1.25;}
+    .card .s{font-size:10px;color:#9aa1b5;margin-top:2px;}
+    .joinbtn{width:34px;height:34px;border-radius:50%;background:#E3F7EB;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <div class="kicker">Grupos de voluntarios</div>
+    <h1>Comunidades<em>por perfil</em></h1>
+    <p class="desc">Cada voluntario entra al grupo de WhatsApp que le corresponde: su barrio, o los grupos de mujeres y jóvenes, para mantenerse activo en la campaña.</p>
+    <div class="step">PANTALLA 09 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen">
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px;">Grupos disponibles</div>
+        <div style="font-size:11px;opacity:.85;margin-bottom:18px;">Únete al grupo de WhatsApp de tu comunidad.</div>
+        <div class="card"><div><div class="t">Voluntarios<br>del Barrio</div><div class="s">312 integrantes</div></div><div class="joinbtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div></div>
+        <div class="card"><div><div class="t">Voluntariado<br>de Mujeres</div><div class="s">186 integrantes</div></div><div class="joinbtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div></div>
+        <div class="card"><div><div class="t">Voluntariado<br>Jóvenes</div><div class="s">204 integrantes</div></div><div class="joinbtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

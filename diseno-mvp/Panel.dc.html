@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; --green:#0BA451; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:56px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:36px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:420px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;padding:60px;position:relative;}
+    .phone{width:360px;height:736px;background:#151515;border-radius:54px;padding:12px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:120px;height:34px;} .phone .sb.l2{left:-4px;top:170px;height:60px;} .phone .sb.r1{right:-4px;top:150px;height:80px;}
+    .screen{width:100%;height:100%;border-radius:44px;overflow:hidden;background:var(--blue);position:relative;display:flex;flex-direction:column;padding:36px 30px;color:#fff;}
+    .bartrack{height:32px;border-radius:999px;background:rgba(0,0,0,.28);overflow:hidden;position:relative;display:flex;align-items:center;margin:10px 0 22px;}
+    .barfill{height:100%;width:34%;background:var(--ink);border-radius:999px;display:flex;align-items:center;padding-left:12px;font-size:11px;font-weight:700;}
+    .barend{position:absolute;right:14px;font-size:11px;font-weight:700;}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+    .tile{background:#fff;border-radius:22px;padding:18px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:var(--ink);font-size:12.5px;font-weight:600;height:106px;}
+    .note{font-size:11px;font-weight:400;opacity:.75;margin:14px 0 4px;font-style:italic;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <div class="kicker">Panel de interacción</div>
+    <h1>Panel del<em>Voluntario y Capitán</em></h1>
+    <p class="desc">El centro de mando de cada persona: ve su avance hacia la meta de confirmados, y desde aquí gestiona su equipo, su grupo de WhatsApp y la información de campaña.</p>
+    <div class="step">PANTALLA 05 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen">
+        <div style="font-size:24px;font-weight:800;">¡Hola, María!</div>
+        <div style="font-size:11px;font-weight:600;opacity:.85;">Meta de voluntarios confirmados</div>
+        <div class="bartrack"><div class="barfill">34%</div><div class="barend">100%</div></div>
+        <div class="note">Cada persona que confirmas te acerca a tu meta y a nuevos beneficios.</div>
+        <div class="grid2">
+          <div class="tile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Quiero ser Capitán</div>
+          <div class="tile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Unirme al grupo de WhatsApp</div>
+          <div class="tile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="8"/><path d="M12 8v8M8 12h8"/></svg>Información sobre mi candidato</div>
+          <div class="tile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Mi propuesta para la ciudad</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

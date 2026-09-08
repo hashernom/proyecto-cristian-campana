@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; --blue-tint:#EBF0FE; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:56px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:36px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:420px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;padding:60px;position:relative;}
+    .phone{width:340px;height:696px;background:#151515;border-radius:50px;padding:11px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:110px;height:32px;} .phone .sb.l2{left:-4px;top:154px;height:56px;} .phone .sb.r1{right:-4px;top:136px;height:74px;}
+    .screen{width:100%;height:100%;border-radius:40px;overflow:hidden;background:#fff;position:relative;display:flex;flex-direction:column;padding:28px 24px;color:var(--ink);}
+    .pill{display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;font-size:14px;font-weight:600;width:100%;}
+    .pill.dark{background:var(--ink);color:#fff;}
+    .field{margin-bottom:14px;}
+    .field label{font-size:11px;font-weight:600;margin-bottom:5px;display:block;}
+    .field .box{width:100%;height:38px;border-radius:999px;background:var(--blue-tint);padding:0 16px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:#8892b0;}
+    .field .box.area{height:120px;border-radius:18px;align-items:flex-start;padding-top:12px;line-height:1.5;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <div class="kicker">Mi propuesta para la ciudad</div>
+    <h1>La voz del<em>voluntario</em></h1>
+    <p class="desc">Cualquier voluntario puede enviar una propuesta ciudadana directo al equipo de campaña, clasificada por tipo y por sector de la ciudad.</p>
+    <div class="step">PANTALLA 11 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen">
+        <div style="font-size:22px;font-weight:800;">Mi propuesta</div>
+        <div style="font-size:10.5px;color:#8892b0;margin-bottom:16px;">Cuéntanos qué le hace falta a tu barrio.</div>
+        <div class="field"><label>Qué tipo de propuesta</label><div class="box">Movilidad y vías <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Para qué sector</label><div class="box">El Prado <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Tu propuesta</label><div class="box area">Mejorar el alumbrado público de la calle 45 entre carreras 8 y 12.</div></div>
+        <div class="pill dark" style="margin-top:auto;">Enviar propuesta</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; --green:#0BA451; --red:#EB1F27; --amber:#E8A93B; --blue-tint:#EBF0FE; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    .app{width:2160px;height:1215px;background:#F5F7FB;display:flex;overflow:hidden;font-family:'Poppins',sans-serif;color:var(--ink);}
+    .side{width:250px;flex-shrink:0;background:#fff;border-right:1px solid #ECEEF5;display:flex;flex-direction:column;padding:28px 20px;gap:6px;}
+    .fist{fill:#fff;}
+    .brand{display:flex;align-items:center;gap:10px;padding:0 8px 26px;}
+    .brand .mk{width:36px;height:36px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;}
+    .brand .tx{font-size:15px;font-weight:800;}
+    .brand .tx small{display:block;font-size:10px;font-weight:500;color:#9aa1b5;}
+    .nav{display:flex;flex-direction:column;gap:2px;}
+    .nitem{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;font-size:13.5px;font-weight:600;color:#6b7280;}
+    .nitem.active{background:var(--blue-tint);color:var(--blue);}
+    .main{flex:1;display:flex;flex-direction:column;min-width:0;}
+    .topbar{height:82px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid #ECEEF5;background:#fff;}
+    .topbar h2{font-size:19px;font-weight:800;margin:0;}
+    .topbar .sub{font-size:11.5px;color:#9aa1b5;margin-top:2px;}
+    .who{display:flex;align-items:center;gap:10px;}
+    .avatar{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+    .content{flex:1;overflow:hidden;padding:30px 36px;display:flex;flex-direction:column;gap:22px;}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
+    .stat{background:#fff;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:8px;border:1px solid #ECEEF5;}
+    .stat .v{font-size:28px;font-weight:800;}
+    .stat .l{font-size:12px;color:#9aa1b5;font-weight:600;}
+    .stat .d{font-size:11px;color:var(--green);font-weight:700;}
+    .row2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;flex:1;min-height:0;}
+    .panel{background:#fff;border-radius:18px;border:1px solid #ECEEF5;padding:24px 26px;display:flex;flex-direction:column;min-height:0;}
+    .panel h3{font-size:15px;font-weight:700;margin:0 0 4px;}
+    .panel .ph{font-size:11.5px;color:#9aa1b5;margin-bottom:16px;}
+    table{width:100%;border-collapse:collapse;font-size:12.5px;}
+    th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#9aa1b5;font-weight:700;padding:8px 10px;border-bottom:1px solid #ECEEF5;}
+    td{padding:12px 10px;border-bottom:1px solid #F3F4F8;font-weight:500;}
+    .nm{display:flex;align-items:center;gap:10px;font-weight:700;}
+    .av2{width:30px;height:30px;border-radius:50%;background:var(--blue-tint);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;flex-shrink:0;}
+    .bar{width:120px;height:8px;border-radius:99px;background:#EEF0F6;overflow:hidden;}
+    .bar i{display:block;height:100%;background:var(--blue);border-radius:99px;}
+    .badge{font-size:10px;font-weight:700;border-radius:999px;padding:5px 10px;white-space:nowrap;}
+    .badge.ok{background:#E3F7EB;color:var(--green);}
+    .badge.pend{background:#FCF1DE;color:var(--amber);}
+    .glist{display:flex;flex-direction:column;gap:12px;overflow:hidden;}
+    .gcard{display:flex;align-items:center;gap:12px;padding:13px;border-radius:14px;background:#F8F9FC;}
+    .gcard .ic{width:38px;height:38px;border-radius:11px;background:#E3F7EB;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .gcard .t{font-size:12.5px;font-weight:700;}
+    .gcard .s{font-size:10.5px;color:#9aa1b5;}
+    .ring{width:132px;height:132px;flex-shrink:0;}
+  </style>
+</helmet>
+<div class="app">
+  <div class="side">
+    <div class="brand">
+      <div class="mk"><svg width="20" height="14" viewBox="0 0 140 90"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg></div>
+      <div class="tx">Panel de Campaña<small>Cristiam 2026</small></div>
+    </div>
+    <div class="nav">
+      <div class="nitem active"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Resumen</div>
+      <div class="nitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Capitanes</div>
+      <div class="nitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Voluntarios</div>
+      <div class="nitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Grupos WhatsApp</div>
+      <div class="nitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Propuestas</div>
+      <div class="nitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Configuración</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div><h2>Resumen de campaña</h2><div class="sub">Datos consolidados de toda la red de voluntarios</div></div>
+      <div class="who"><div class="avatar">CR</div><div style="font-size:12.5px;font-weight:700;">Equipo Cristiam</div></div>
+    </div>
+    <div class="content">
+      <div class="stats">
+        <div class="stat"><div class="v">3 482</div><div class="l">Voluntarios confirmados</div><div class="d">+186 esta semana</div></div>
+        <div class="stat"><div class="v">124</div><div class="l">Capitanes activos</div><div class="d">+9 esta semana</div></div>
+        <div class="stat"><div class="v">58%</div><div class="l">Meta general de campaña</div><div class="d">Objetivo: 6 000</div></div>
+        <div class="stat"><div class="v">17</div><div class="l">Grupos de WhatsApp activos</div><div class="d">2 nuevos este mes</div></div>
+      </div>
+      <div class="row2">
+        <div class="panel">
+          <h3>Ranking de Capitanes</h3>
+          <div class="ph">Quiénes están sumando más personas confirmadas a la campaña</div>
+          <table>
+            <tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th></tr>
+            <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>El Prado</td><td>30</td><td><div class="bar"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+            <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>La Floresta</td><td>20</td><td><div class="bar"><i style="width:64%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+            <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>San Fernando</td><td>15</td><td><div class="bar"><i style="width:48%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+            <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>11</td><td><div class="bar"><i style="width:35%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+            <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>El Prado</td><td>9</td><td><div class="bar"><i style="width:29%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+          </table>
+        </div>
+        <div class="panel">
+          <h3>Meta general de la campaña</h3>
+          <div class="ph">3 482 de 6 000 voluntarios confirmados</div>
+          <div style="display:flex;justify-content:center;padding:6px 0 18px;">
+            <svg class="ring" viewBox="0 0 132 132">
+              <circle cx="66" cy="66" r="56" fill="none" stroke="#EEF0F6" stroke-width="14"/>
+              <circle cx="66" cy="66" r="56" fill="none" stroke="#3164FD" stroke-width="14" stroke-linecap="round" stroke-dasharray="351.8" stroke-dashoffset="147.8" transform="rotate(-90 66 66)"/>
+              <text x="66" y="72" text-anchor="middle" font-size="24" font-weight="800" fill="#231F20" font-family="Poppins">58%</text>
+            </svg>
+          </div>
+          <h3 style="margin-top:4px;">Grupos de WhatsApp activos</h3>
+          <div class="glist">
+            <div class="gcard"><div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="t">Voluntarios del Barrio</div><div class="s">312 integrantes</div></div></div>
+            <div class="gcard"><div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="t">Voluntariado de Mujeres</div><div class="s">186 integrantes</div></div></div>
+            <div class="gcard"><div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="t">Voluntariado Jóvenes</div><div class="s">204 integrantes</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; --blue-tint:#EBF0FE; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:56px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:36px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:400px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;gap:56px;padding:60px;position:relative;}
+    .phone{width:340px;height:696px;background:#151515;border-radius:50px;padding:11px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:110px;height:32px;} .phone .sb.l2{left:-4px;top:154px;height:56px;} .phone .sb.r1{right:-4px;top:136px;height:74px;}
+    .screen{width:100%;height:100%;border-radius:40px;overflow:hidden;background:#fff;position:relative;display:flex;flex-direction:column;}
+    .pill{display:flex;align-items:center;justify-content:center;height:48px;border-radius:999px;font-size:15px;font-weight:600;width:100%;}
+    .pill.dark{background:var(--ink);color:#fff;}
+    .field{margin-bottom:13px;}
+    .field label{font-size:11px;font-weight:600;color:var(--ink);margin-bottom:5px;display:block;}
+    .field .box{width:100%;height:38px;border-radius:999px;background:var(--blue-tint);padding:0 16px;display:flex;align-items:center;font-size:13px;color:#8892b0;}
+    .bubble{background:#e5e5ea;border-radius:18px 18px 18px 4px;padding:12px 14px;font-size:12.5px;line-height:1.5;color:#111;max-width:88%;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <div class="kicker">Creación de la contraseña</div>
+    <h1>Verificación<em>por SMS</em></h1>
+    <p class="desc">Confirmamos que el celular es real antes de crear la cuenta: enviamos un código por SMS y la persona define su propia contraseña.</p>
+    <div class="step">PANTALLA 03 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen" style="padding:26px 20px;gap:14px;background:#fff;">
+        <div style="display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #eee;">
+          <div style="width:34px;height:34px;border-radius:50%;background:#d9d9de;"></div>
+          <div style="font-size:13px;font-weight:600;color:var(--ink);">Campaña Cristiam</div>
+        </div>
+        <div style="font-size:10px;color:#999;text-align:center;">Hoy, 8:00 a.m.</div>
+        <div class="bubble">Para confirmar tu cuenta de voluntario, introduce el código: <strong>468263</strong></div>
+      </div>
+    </div>
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen" style="padding:28px 26px;">
+        <div style="font-size:22px;font-weight:800;color:var(--ink);">Confirmar código</div>
+        <div style="font-size:11px;color:#8892b0;margin-bottom:18px;line-height:1.5;">Ingresa de nuevo tu celular y el código que recibiste para validar tu inscripción y crear tu contraseña.</div>
+        <div class="field"><label>Celular*</label><div class="box">300 123 4567</div></div>
+        <div class="field"><label>Código de verificación</label><div class="box">468263</div></div>
+        <div class="field"><label>Crea tu contraseña</label><div class="box">••••••••</div></div>
+        <div class="field"><label>Confirma tu contraseña</label><div class="box">••••••••</div></div>
+        <div class="pill dark" style="margin-top:16px;">Verificar mi cuenta</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

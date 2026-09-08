@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    a{color:var(--blue);text-decoration:none;} a:hover{color:var(--blue-deep);}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:56px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:36px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:400px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;gap:56px;padding:60px;position:relative;}
+    .phone{width:340px;height:696px;background:#151515;border-radius:50px;padding:11px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone.small{width:300px;height:614px;border-radius:44px;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:110px;height:32px;} .phone .sb.l2{left:-4px;top:154px;height:56px;} .phone .sb.r1{right:-4px;top:136px;height:74px;}
+    .screen{width:100%;height:100%;border-radius:40px;overflow:hidden;background:var(--blue);position:relative;display:flex;flex-direction:column;}
+    .screen.white{background:#fff;}
+    .pill{display:flex;align-items:center;justify-content:center;height:48px;border-radius:999px;font-size:15px;font-weight:600;width:100%;}
+    .pill.white{background:#fff;color:var(--ink);}
+    .pill.dark{background:var(--ink);color:#fff;}
+    .fist{fill:#fff;}
+    .field{margin-bottom:11px;}
+    .field label{font-size:11px;font-weight:600;color:var(--ink);margin-bottom:4px;display:block;}
+    .field label span{color:#B0433A;}
+    .field .box{width:100%;height:34px;border-radius:999px;background:var(--blue-tint,#EBF0FE);padding:0 15px;display:flex;align-items:center;font-size:12px;color:#8892b0;}
+    .fh{display:flex;gap:10px;}
+    .fh .field{flex:1;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <div class="kicker">Regístrate como voluntario</div>
+    <h1>Registro<em>de nuevos voluntarios</em></h1>
+    <p class="desc">Un formulario corto y guiado: datos personales, barrio y puesto de votación. La información queda lista para que su Capitán la confirme más adelante.</p>
+    <div class="step">PANTALLA 02 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone small">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen" style="align-items:center;justify-content:center;padding:0 30px;text-align:center;color:#fff;gap:14px;">
+        <div style="font-size:24px;font-weight:800;">¡Bienvenido!</div>
+        <div style="font-size:12px;font-weight:400;opacity:.85;line-height:1.5;">Súmate al equipo y ayúdanos a llegar a más barrios.</div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+          <div class="pill white" style="height:42px;font-size:13px;">Quiero ser voluntario</div>
+          <div class="pill" style="height:42px;font-size:13px;background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.5);">Ya soy voluntario</div>
+        </div>
+      </div>
+    </div>
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen white" style="padding:22px 22px 18px;overflow:hidden;">
+        <div style="font-size:22px;font-weight:800;color:var(--ink);">Registro</div>
+        <div style="font-size:10.5px;color:#8892b0;margin-bottom:12px;">Completa tus datos para unirte a la red de voluntarios.</div>
+        <div class="fh"><div class="field"><label>Nombres<span>*</span></label><div class="box">María Camila</div></div><div class="field"><label>Apellidos<span>*</span></label><div class="box">Ortega Ruiz</div></div></div>
+        <div class="fh"><div class="field"><label>Documento<span>*</span></label><div class="box">1 020 345 678</div></div><div class="field"><label>Celular<span>*</span></label><div class="box">300 123 4567</div></div></div>
+        <div class="fh"><div class="field"><label>Usuario de Instagram</label><div class="box">@mcortega</div></div><div class="field"><label>Email<span>*</span></label><div class="box">maria@correo.com</div></div></div>
+        <div class="fh">
+          <div class="field"><label>Género<span>*</span></label><div class="box" style="justify-content:space-between;">Femenino <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+          <div class="field"><label>Fecha de nacimiento<span>*</span></label><div class="box">12/04/1994</div></div>
+        </div>
+        <div class="field"><label>Barrio<span>*</span></label><div class="box" style="justify-content:space-between;">El Prado <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Puesto de votación<span>*</span></label><div class="box" style="justify-content:space-between;">I.E. San Fernando <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div style="display:flex;align-items:center;gap:8px;margin:10px 0 14px;">
+          <div style="width:14px;height:14px;border-radius:4px;border:1.5px solid var(--blue);background:var(--blue);flex-shrink:0;"></div>
+          <div style="font-size:9.5px;color:var(--ink);font-style:italic;">He leído y acepto los términos y condiciones</div>
+        </div>
+        <div class="pill dark">Registrarme</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

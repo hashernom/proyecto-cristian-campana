@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{
+      --blue:#3164FD; --blue-deep:#1E3FA6; --blue-tint:#EBF0FE; --blue-tint-2:#D6E0FE;
+      --ink:#231F20; --green:#0BA451; --red:#EB1F27;
+    }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    a{color:var(--blue);text-decoration:none;} a:hover{color:var(--blue-deep);}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .mark{position:absolute;top:56px;left:88px;opacity:.9;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:58px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:38px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:420px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;gap:70px;padding:60px;position:relative;}
+    .phone{width:360px;height:736px;background:#151515;border-radius:54px;padding:12px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:120px;height:34px;} .phone .sb.l2{left:-4px;top:170px;height:60px;} .phone .sb.r1{right:-4px;top:150px;height:80px;}
+    .screen{width:100%;height:100%;border-radius:44px;overflow:hidden;background:var(--blue);position:relative;display:flex;flex-direction:column;}
+    .pill{display:flex;align-items:center;justify-content:center;height:54px;border-radius:999px;font-size:16px;font-weight:600;width:100%;}
+    .pill.white{background:#fff;color:var(--ink);}
+    .pill.dark{background:var(--ink);color:#fff;}
+    .fist{fill:#fff;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <svg class="mark" width="72" height="46" viewBox="0 0 140 90"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+    <div class="kicker">Interfaz inicial</div>
+    <h1>Bienvenida<em>al equipo de campaña</em></h1>
+    <p class="desc">La puerta de entrada a la app. Desde aquí cualquier persona decide sumarse como voluntario o, si ya tiene cuenta, ingresar directamente a su panel.</p>
+    <div class="step">PANTALLA 01 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen" style="align-items:center;justify-content:center;padding:0 40px;text-align:center;color:#fff;gap:18px;">
+        <svg width="96" height="62" viewBox="0 0 140 90" style="margin-bottom:6px;"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+        <div style="font-size:30px;font-weight:800;">¡Bienvenido!</div>
+        <div style="font-size:14px;font-weight:400;opacity:.85;line-height:1.5;max-width:260px;">Súmate al equipo de la campaña de Cristiam y ayúdanos a llegar a más barrios de la ciudad.</div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:14px;margin-top:22px;">
+          <div class="pill white">Quiero ser voluntario</div>
+          <div class="pill" style="background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.5);">Ya soy voluntario</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *{box-sizing:border-box;}
+    :root{ --blue:#3164FD; --blue-deep:#1E3FA6; --ink:#231F20; }
+    body{margin:0;font-family:'Poppins',system-ui,sans-serif;}
+    a{color:#fff;text-decoration:underline;}
+    .slide{width:1920px;height:1080px;background:#fff;display:flex;overflow:hidden;position:relative;}
+    .rail{width:600px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 88px;gap:22px;position:relative;}
+    .rail .step{position:absolute;bottom:56px;left:88px;font-size:14px;font-weight:600;letter-spacing:2px;opacity:.6;}
+    .rail .kicker{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:.7;}
+    .rail h1{font-size:58px;font-weight:800;line-height:1.06;margin:0;text-transform:uppercase;letter-spacing:-.5px;}
+    .rail h1 em{display:block;font-style:normal;font-weight:300;text-transform:none;font-size:38px;margin-top:4px;}
+    .rail p.desc{font-size:19px;line-height:1.6;font-weight:400;opacity:.92;max-width:420px;margin:8px 0 0;}
+    .stage{flex:1;background:#F5F7FF;display:flex;align-items:center;justify-content:center;padding:60px;position:relative;}
+    .phone{width:360px;height:736px;background:#151515;border-radius:54px;padding:12px;box-shadow:0 40px 80px -20px rgba(20,40,120,.35),0 10px 30px rgba(0,0,0,.15);position:relative;flex-shrink:0;}
+    .phone .sb{position:absolute;width:4px;background:#151515;border-radius:2px;}
+    .phone .sb.l1{left:-4px;top:120px;height:34px;} .phone .sb.l2{left:-4px;top:170px;height:60px;} .phone .sb.r1{right:-4px;top:150px;height:80px;}
+    .screen{width:100%;height:100%;border-radius:44px;overflow:hidden;background:var(--blue);position:relative;display:flex;flex-direction:column;padding:64px 40px;color:#fff;}
+    .pill{display:flex;align-items:center;justify-content:center;height:54px;border-radius:999px;font-size:16px;font-weight:600;width:100%;}
+    .pill.dark{background:var(--ink);color:#fff;}
+    .fist{fill:#fff;}
+    .field{margin-bottom:16px;}
+    .field .box{width:100%;height:52px;border-radius:999px;background:#fff;padding:0 20px;display:flex;align-items:center;font-size:15px;color:var(--ink);font-weight:500;}
+  </style>
+</helmet>
+<div class="slide">
+  <div class="rail">
+    <div class="kicker">Ingreso de voluntario</div>
+    <h1>Inicia<em>sesión</em></h1>
+    <p class="desc">Con cédula y contraseña, cada voluntario y Capitán entra directo a su panel personal para seguir sumando gente a la campaña.</p>
+    <div class="step">PANTALLA 04 · 12</div>
+  </div>
+  <div class="stage">
+    <div class="phone">
+      <span class="sb l1"></span><span class="sb l2"></span><span class="sb r1"></span>
+      <div class="screen" style="align-items:flex-start;">
+        <svg width="80" height="52" viewBox="0 0 140 90" style="margin-bottom:18px;"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+        <div style="font-size:26px;font-weight:800;">¡Qué gusto tenerte aquí!</div>
+        <div style="font-size:13px;font-weight:400;opacity:.85;line-height:1.5;margin-bottom:26px;">Ingresa con tu cédula y tu contraseña para continuar.</div>
+        <div class="field"><div class="box">Cédula</div></div>
+        <div class="field"><div class="box">Contraseña</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;margin-bottom:26px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:13px;height:13px;border-radius:3px;border:1.5px solid rgba(255,255,255,.7);"></div>Recuérdame</div>
+          <div style="text-decoration:underline;">¿Olvidaste tu contraseña?</div>
+        </div>
+        <div class="pill dark">Entrar</div>
+        <div style="width:100%;text-align:center;font-size:12px;margin-top:18px;text-decoration:underline;">¿Volver atrás?</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
