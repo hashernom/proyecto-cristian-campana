@@ -3,10 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon.png">
 <title>App de Campaña — Simulación</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   :root{
@@ -16,7 +18,6 @@
   html,body{margin:0;height:100%;font-family:'Poppins',system-ui,sans-serif;background:var(--bg);color:var(--ink);}
   button{font-family:inherit;border:none;background:none;padding:0;cursor:pointer;color:inherit;}
   a{color:inherit;}
-  .fist{fill:currentColor;}
 
   /* ---------- stage / device ---------- */
   .stage{min-height:100dvh;display:flex;align-items:center;justify-content:center;}
@@ -190,8 +191,9 @@
   .view-heading p{font-size:10px;color:#9aa1b5;margin:3px 0 0;}
   .view-heading .view-note{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-tint);
     border-radius:999px;padding:8px 11px;white-space:nowrap;}
-  .view-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+  .view-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;}
   .view-stats .stat{min-height:94px;}
+  .stat .d.warn{color:var(--red);}
   .view-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:16px;min-width:0;}
   .view-panel{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:18px;min-width:0;}
   .view-panel h3{font-size:13px;font-weight:700;margin:0 0 3px;}
@@ -225,6 +227,79 @@
   .proposal-card .footer{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9px;color:#9aa1b5;}
   .empty-state{background:#fff;border:1px dashed #D8DDEA;border-radius:14px;padding:32px;text-align:center;color:#9aa1b5;font-size:11px;}
 
+  /* ---------- captain network detail ---------- */
+  .back-link{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--blue);
+    font:700 11px Poppins,sans-serif;cursor:pointer;padding:4px 0;align-self:flex-start;}
+  .back-link:hover{text-decoration:underline;}
+  .back-link svg{flex-shrink:0;}
+  .filter-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .filter-chip{border:1.5px solid #E4E7F2;background:#fff;color:#6b7280;font:700 10px Poppins,sans-serif;
+    border-radius:999px;padding:7px 13px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+  .filter-chip:hover{border-color:#C7CEE0;}
+  .filter-chip.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .filter-chip:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
+
+  /* ---------- Ocaña zones map ---------- */
+  .map-layout{display:grid;grid-template-columns:1.3fr .9fr;gap:16px;min-width:0;}
+  .map-panel{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:18px;min-width:0;}
+  .map-panel h3{font-size:13px;font-weight:700;margin:0 0 3px;}
+  .map-panel .ph{font-size:10px;color:#9aa1b5;margin-bottom:13px;}
+  .map-zone-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .map-zone-btn{border:1.5px solid #E4E7F2;background:#fff;color:#6b7280;font:700 9.5px Poppins,sans-serif;
+    border-radius:999px;padding:6px 12px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+  .map-zone-btn:hover{border-color:#C7CEE0;}
+  .map-zone-btn.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .map-zone-btn:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
+  .map-leaflet{width:100%;height:360px;border-radius:14px;overflow:hidden;border:1px solid #ECEEF5;}
+  .map-leaflet .leaflet-container{font-family:Poppins,sans-serif;background:#F8F9FC;}
+  .map-caption{font-size:9px;color:#9aa1b5;font-style:italic;text-align:center;margin-top:8px;}
+  .map-legend{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;}
+  .map-legend-item{display:flex;align-items:center;gap:6px;font-size:9.5px;color:#6b7280;font-weight:600;}
+  .map-legend-swatch{width:12px;height:12px;border-radius:4px;flex-shrink:0;}
+  .map-side{display:flex;flex-direction:column;gap:14px;}
+  .map-side .zone-code{font-size:9.5px;color:var(--blue);font-weight:700;}
+  .map-side .zone-name{font-size:15px;font-weight:800;margin-top:1px;}
+  .map-side-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+  .map-side-stat{background:#F8F9FC;border-radius:10px;padding:10px 8px;text-align:center;}
+  .map-side-stat .v{font-size:14px;font-weight:800;}
+  .map-side-stat .l{font-size:8px;color:#9aa1b5;font-weight:600;margin-top:2px;}
+  .map-side h4{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#9aa1b5;font-weight:700;margin:0 0 8px;}
+  .map-top-barrios{display:flex;flex-direction:column;gap:8px;}
+  .map-top-barrio{display:flex;align-items:center;gap:8px;font-size:10px;}
+  .map-top-barrio .name{width:92px;flex-shrink:0;font-weight:600;color:var(--ink);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+  .map-top-barrio .bar-track{flex:1;height:6px;border-radius:99px;background:#EEF0F6;overflow:hidden;}
+  .map-top-barrio .bar-track i{display:block;height:100%;background:var(--blue);border-radius:99px;}
+  .map-top-barrio .pct{width:28px;text-align:right;font-weight:800;color:var(--blue);flex-shrink:0;}
+  .map-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .map-chip{font-size:9.5px;font-weight:700;color:var(--blue);background:var(--blue-tint);border-radius:999px;
+    padding:6px 10px;}
+
+  /* ---------- person detail modal ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,20,35,.44);display:flex;align-items:center;
+    justify-content:center;padding:24px;z-index:300;opacity:0;pointer-events:none;transition:opacity .18s ease;}
+  .modal-overlay.show{opacity:1;pointer-events:auto;}
+  .modal-card{background:#fff;border-radius:20px;max-width:480px;width:100%;max-height:86vh;overflow-y:auto;
+    padding:26px 26px 22px;position:relative;box-shadow:0 30px 70px rgba(20,30,60,.28);
+    transform:translateY(10px);transition:transform .18s ease;}
+  .modal-overlay.show .modal-card{transform:translateY(0);}
+  .modal-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:#F3F4F8;
+    color:#6b7280;display:flex;align-items:center;justify-content:center;}
+  .modal-close:hover{background:#E7E9F1;}
+  .modal-close:focus-visible{outline:3px solid rgba(49,100,253,.28);outline-offset:2px;}
+  .modal-head{display:flex;align-items:center;gap:12px;padding-right:34px;margin-bottom:18px;}
+  .modal-avatar{width:44px;height:44px;border-radius:50%;background:var(--blue-tint);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;}
+  .modal-name{font-size:15px;font-weight:800;}
+  .modal-status{margin-top:4px;}
+  .modal-body{display:flex;flex-direction:column;gap:16px;}
+  .modal-group h4{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#9aa1b5;font-weight:700;
+    margin:0 0 8px;}
+  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;}
+  .modal-row{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .modal-label{font-size:9px;color:#9aa1b5;font-weight:600;}
+  .modal-value{font-size:11.5px;font-weight:600;color:var(--ink);word-break:break-word;}
+
   @media (max-width:820px){
     .app-desktop{flex-direction:column;}
     .side{width:100%;flex-direction:row;overflow-x:auto;padding:12px 14px;border-right:none;
@@ -238,6 +313,9 @@
     .view-heading{align-items:stretch;flex-direction:column;gap:8px;}
     .view-heading .view-note{align-self:flex-start;}
     #desktopApp{padding:0;}
+    .map-layout{grid-template-columns:1fr;}
+    .modal-card{padding:22px 18px 18px;}
+    .modal-grid{grid-template-columns:1fr;}
   }
 
   .logo3{display:block;}
@@ -252,7 +330,7 @@
 
       <!-- 1. BIENVENIDA -->
       <div class="screen blue active" id="s1" style="align-items:center;justify-content:center;text-align:center;gap:16px;">
-        <svg class="logo3" width="88" height="57" viewBox="0 0 140 90"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+        <img class="logo3" src="protesta.png" width="88" height="57" alt="Campaña Cristiam">
         <div style="font-size:28px;font-weight:800;">¡Bienvenido!</div>
         <div style="font-size:13.5px;font-weight:400;opacity:.85;line-height:1.5;max-width:270px;">Súmate al equipo de la campaña de Cristiam y ayúdanos a llegar a más barrios de la ciudad.</div>
         <div style="width:100%;display:flex;flex-direction:column;gap:13px;margin-top:20px;">
@@ -273,8 +351,8 @@
           <div class="field"><label>Género<span>*</span></label><div class="box" style="justify-content:space-between;">Femenino <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
           <div class="field"><label>F. nacimiento<span>*</span></label><div class="box">12/04/1994</div></div>
         </div>
-        <div class="field"><label>Barrio<span>*</span></label><div class="box" style="justify-content:space-between;">El Prado <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
-        <div class="field"><label>Puesto de votación<span>*</span></label><div class="box" style="justify-content:space-between;">I.E. San Fernando <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Barrio<span>*</span></label><div class="box" style="justify-content:space-between;">Cristo Rey <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Puesto de votación<span>*</span></label><div class="box" style="justify-content:space-between;">Colegio Nacional José Eusebio Caro <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
         <div style="display:flex;align-items:center;gap:8px;margin:8px 0 14px;">
           <div style="width:14px;height:14px;border-radius:4px;background:var(--blue);flex-shrink:0;"></div>
           <div style="font-size:9.5px;font-style:italic;">He leído y acepto los términos y condiciones</div>
@@ -302,7 +380,7 @@
       <!-- 4. INGRESO -->
       <div class="screen blue" id="s4" style="justify-content:center;">
         <button class="back" onclick="go('s1')" style="background:rgba(255,255,255,.18);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
-        <svg class="logo3" width="76" height="49" viewBox="0 0 140 90" style="margin-bottom:16px;"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg>
+        <img class="logo3" src="protesta.png" width="76" height="49" style="margin-bottom:16px;" alt="Campaña Cristiam">
         <div style="font-size:24px;font-weight:800;">¡Qué gusto tenerte aquí!</div>
         <div style="font-size:12.5px;font-weight:400;opacity:.85;line-height:1.5;margin-bottom:22px;">Ingresa con tu cédula y tu contraseña para continuar.</div>
         <div class="field"><div class="box" style="background:#fff;color:var(--ink);height:48px;">Cédula</div></div>
@@ -339,11 +417,11 @@
         </div>
         <div class="searchbar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9aa1b5" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Buscar en tu red...</div>
         <div style="overflow-y:auto;flex:1;">
-          <div class="row"><div class="avatar">JZ</div><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">300 456 7890 · El Prado</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
-          <div class="row"><div class="avatar">CV</div><div><div class="rname">Carmen Villalobos</div><div class="rmeta">301 234 5678 · La Floresta</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
-          <div class="row"><div class="avatar">HP</div><div><div class="rname">Hernán Pérez</div><div class="rmeta">302 987 6543 · San Fernando</div></div><button class="badge pend" onclick="cycleBadge(this)">Pendiente</button></div>
+          <div class="row"><div class="avatar">JZ</div><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">300 456 7890 · Cristo Rey</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+          <div class="row"><div class="avatar">CV</div><div><div class="rname">Carmen Villalobos</div><div class="rmeta">301 234 5678 · Buenos Aires</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+          <div class="row"><div class="avatar">HP</div><div><div class="rname">Hernán Pérez</div><div class="rmeta">302 987 6543 · La Piñuela</div></div><button class="badge pend" onclick="cycleBadge(this)">Pendiente</button></div>
           <div class="row"><div class="avatar">SR</div><div><div class="rname">Susana Ramírez</div><div class="rmeta">304 555 1122 · Villa Nueva</div></div><button class="badge no" onclick="cycleBadge(this)">No confirma</button></div>
-          <div class="row"><div class="avatar">DL</div><div><div class="rname">David Londoño</div><div class="rmeta">315 222 3344 · El Prado</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+          <div class="row"><div class="avatar">DL</div><div><div class="rname">David Londoño</div><div class="rmeta">315 222 3344 · Cristo Rey</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
         </div>
         <button class="fab" onclick="go('s7')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
@@ -355,8 +433,8 @@
         <div style="font-size:10px;color:#8892b0;margin-bottom:14px;">Regístrala en tu red y define su compromiso de voto.</div>
         <div class="field"><label>Nombre completo</label><div class="box">Andrea Salazar</div></div>
         <div class="fh"><div class="field"><label>Cédula</label><div class="box">1 098 234 552</div></div><div class="field"><label>Celular</label><div class="box">311 445 6677</div></div></div>
-        <div class="field"><label>Barrio</label><div class="box" style="justify-content:space-between;">San Fernando <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
-        <div class="field"><label>Puesto de votación</label><div class="box" style="justify-content:space-between;">Coliseo Municipal <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Barrio</label><div class="box" style="justify-content:space-between;">La Piñuela <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Puesto de votación</label><div class="box" style="justify-content:space-between;">Puesto Comuna 3 · Olaya Herrera <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
         <div class="field"><label>Estado de compromiso</label>
           <div class="segs">
             <button class="seg ok" onclick="selectSeg(this)">Confirmado</button>
@@ -437,7 +515,7 @@
         <div style="margin-top:26px;font-size:21px;font-weight:800;">Mi propuesta</div>
         <div style="font-size:10.5px;color:#8892b0;margin-bottom:16px;">Cuéntanos qué le hace falta a tu barrio.</div>
         <div class="field"><label>Qué tipo de propuesta</label><div class="box" style="justify-content:space-between;">Movilidad y vías <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
-        <div class="field"><label>Para qué sector</label><div class="box" style="justify-content:space-between;">El Prado <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div class="field"><label>Para qué sector</label><div class="box" style="justify-content:space-between;">Cristo Rey <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
         <div class="field"><label>Tu propuesta</label><div class="box area">Mejorar el alumbrado público de la calle 45 entre carreras 8 y 12.</div></div>
         <button class="pill dark" style="margin-top:10px;" onclick="toast('¡Propuesta enviada!');go('s5')">Enviar propuesta</button>
       </div>
@@ -453,7 +531,7 @@
     <div class="app-desktop">
       <div class="side">
         <div class="brand2">
-          <div class="mk"><svg width="18" height="12" viewBox="0 0 140 90"><g transform="translate(0,18)"><rect class="fist" x="6" y="34" width="20" height="8" rx="4"/><rect class="fist" x="10" y="18" width="12" height="24" rx="6"/><rect class="fist" x="8" y="8" width="6" height="13" rx="3"/><rect class="fist" x="14" y="6" width="6" height="15" rx="3"/><rect class="fist" x="20" y="8" width="6" height="13" rx="3"/></g><g transform="translate(46,0)"><rect class="fist" x="6" y="46" width="22" height="9" rx="4.5"/><rect class="fist" x="10" y="26" width="14" height="28" rx="7"/><rect class="fist" x="8" y="14" width="7" height="15" rx="3.5"/><rect class="fist" x="15" y="11" width="7" height="18" rx="3.5"/><rect class="fist" x="22" y="14" width="7" height="15" rx="3.5"/></g><g transform="translate(96,20)"><rect class="fist" x="6" y="32" width="20" height="8" rx="4"/><rect class="fist" x="10" y="16" width="12" height="24" rx="6"/><rect class="fist" x="8" y="6" width="6" height="13" rx="3"/><rect class="fist" x="14" y="4" width="6" height="15" rx="3"/><rect class="fist" x="20" y="6" width="6" height="13" rx="3"/></g></svg></div>
+          <div class="mk"><img src="protesta.png" width="18" height="12" alt="Campaña Cristiam"></div>
           <div class="tx">Panel de Campaña<small>Cristiam 2026</small></div>
         </div>
         <button class="nitem active" type="button" data-view="resumen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Resumen</button>
@@ -475,17 +553,18 @@
             <div class="stat"><div class="v">58%</div><div class="l">Meta general de campaña</div><div class="d">Objetivo: 6 000</div></div>
             <div class="stat"><div class="v">17</div><div class="l">Grupos activos</div><div class="d">+2 este mes</div></div>
           </div>
+          <div class="map-layout" id="ocanaMap"></div>
           <div class="row2">
             <div class="panel">
               <h3>Ranking de Capitanes</h3>
               <div class="ph">Quiénes están sumando más personas confirmadas</div>
               <div class="tbl-wrap"><table>
                 <tr><th>Capitán</th><th>Barrio</th><th>Agreg.</th><th>Avance</th><th>Estado</th></tr>
-                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>El Prado</td><td>30</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>La Floresta</td><td>20</td><td><div class="bar2"><i style="width:64%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>San Fernando</td><td>15</td><td><div class="bar2"><i style="width:48%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>30</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>20</td><td><div class="bar2"><i style="width:64%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>15</td><td><div class="bar2"><i style="width:48%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
                 <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>11</td><td><div class="bar2"><i style="width:35%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>El Prado</td><td>9</td><td><div class="bar2"><i style="width:29%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>9</td><td><div class="bar2"><i style="width:29%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
               </table></div>
             </div>
             <div class="panel">
@@ -511,6 +590,7 @@
           <section id="view-voluntarios" class="dashboard-view" aria-label="Voluntarios"></section>
           <section id="view-grupos" class="dashboard-view" aria-label="Grupos de WhatsApp"></section>
           <section id="view-propuestas" class="dashboard-view" aria-label="Propuestas"></section>
+          <section id="view-capitan-red" class="dashboard-view" aria-label="Red del capitán"></section>
         </div>
       </div>
     </div>
@@ -524,6 +604,23 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card" id="personModal" role="dialog" aria-modal="true" aria-labelledby="modalNameHeading">
+    <button class="modal-close" type="button" aria-label="Cerrar ficha">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="modal-avatar"></div>
+      <div>
+        <div class="modal-name" id="modalNameHeading"></div>
+        <div class="modal-status"></div>
+      </div>
+    </div>
+    <div class="modal-body"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   function go(id){
     document.querySelectorAll('#mobileApp .screen').forEach(function(s){ s.classList.toggle('active', s.id===id); });
@@ -564,38 +661,136 @@
     toast(el.querySelector('.joinbtn').classList.contains('joined') ? 'Te uniste al grupo' : 'Saliste del grupo');
   }
 
+  const ocanaZones = [
+    {
+      id:'comuna-1', code:'Comuna 1', name:'Central · José Eusebio Caro', shortName:'Central',
+      support:52, volunteers:512, captains:22, trend:'+3% esta semana',
+      barrios:['Las Llanadas','20 de Julio','El Llano Echávez','Las Cajas','Barrios Unidos','Santa Ana','San José','Hacaritama','Tacaloa','San Agustín','La Modelo','Caracolí','El Playón'],
+      topBarrios:[{name:'Hacaritama',pct:59},{name:'La Modelo',pct:55},{name:'20 de Julio',pct:48}]
+    },
+    {
+      id:'comuna-2', code:'Comuna 2', name:'Nororiental · Cristo Rey', shortName:'Cristo Rey',
+      support:74, volunteers:890, captains:38, trend:'+9% esta semana',
+      barrios:['Cristo Rey','El Dorado','Nuevo Horizonte','Cañaveral','El Carmen','Simón Bolívar','Sesquicentenario','Fundadores','Comuneros','Urb. Los Alpes','El Retiro','El Peñón','Urb. Bruselas','Betania','Nueve de Octubre','Palomar'],
+      topBarrios:[{name:'Cristo Rey',pct:81},{name:'El Dorado',pct:76},{name:'Simón Bolívar',pct:70}]
+    },
+    {
+      id:'comuna-3', code:'Comuna 3', name:'Suroriental · Olaya Herrera', shortName:'Olaya Herrera',
+      support:63, volunteers:780, captains:33, trend:'+6% esta semana',
+      barrios:['Olaya Herrera','La Piñuela-San Antonio','El Carretero','Villa Nueva','Camino Real','Santa Lucía','Gustavo Alayón','La Palmita','Las Mercedes','La Costa','La Favorita','La Quinta','San Fermín','El Llanito','La Esperanza','Doce de Octubre','El Bosque','Los Almendros','Jorge Eliécer Gaitán','Belén','La Paz'],
+      topBarrios:[{name:'La Piñuela',pct:68},{name:'Villa Nueva',pct:64},{name:'El Carretero',pct:58}]
+    },
+    {
+      id:'comuna-4', code:'Comuna 4', name:'Suroccidental · Adolfo Milanés', shortName:'Adolfo Milanés',
+      support:39, volunteers:350, captains:15, trend:'+1% esta semana',
+      barrios:['Marabel','Marabelito','La Torcoroma','Juan XXIII','Santa Cruz','El Tejarito','Junín','La Libertad','El Landia','La Esmeralda','Nueva España','IV Centenario','Camilo Torres','San Rafael','Primero de Mayo'],
+      topBarrios:[{name:'Marabel',pct:44},{name:'La Torcoroma',pct:40},{name:'Juan XXIII',pct:36}]
+    },
+    {
+      id:'comuna-5', code:'Comuna 5', name:'Francisco Fernández de Contreras', shortName:'Fdez. de Contreras',
+      support:58, volunteers:560, captains:24, trend:'+5% esta semana',
+      barrios:['Buenos Aires','La Primavera','Las Palmeras','Ciudad Jardín','El Lago','Las Ferias','El Llano','Las Llanadas','Punta del Llano','Tutumalito','El Uvito','Villas de Antón'],
+      topBarrios:[{name:'Buenos Aires',pct:66},{name:'La Primavera',pct:60},{name:'Ciudad Jardín',pct:53}]
+    },
+    {
+      id:'comuna-6', code:'Comuna 6', name:'Ciudadela Norte', shortName:'Ciudadela Norte',
+      support:46, volunteers:390, captains:17, trend:'+2% esta semana',
+      barrios:['José Antonio Galán','Santa Clara','Bermejal','Colinas de la Florida','El Líbano','La Ondina','La Gloria','2 de Octubre','Villa Paraíso','Los Cristales','La Perla','Los Sauces','Villamar','La Riviera','Altos del Norte'],
+      topBarrios:[{name:'José Antonio Galán',pct:51},{name:'Santa Clara',pct:47},{name:'Bermejal',pct:42}]
+    }
+  ];
+
   const campaignMockData = {
     capitanes: [
-      { initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'El Prado', added:30, progress:82, status:'ok' },
-      { initials:'CV', name:'Carmen Villalobos', neighborhood:'La Floresta', added:20, progress:64, status:'ok' },
-      { initials:'HP', name:'Hernán Pérez', neighborhood:'San Fernando', added:15, progress:48, status:'follow' },
-      { initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', added:11, progress:35, status:'follow' },
-      { initials:'DL', name:'David Londoño', neighborhood:'El Prado', added:9, progress:29, status:'follow' },
-      { initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', added:8, progress:25, status:'follow' }
+      { initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, progress:82, status:'ok',
+        team:[
+          { initials:'CR', name:'Camila Restrepo', neighborhood:'Cristo Rey', phone:'300 512 4471', date:'08 sep 2026', status:'ok' },
+          { initials:'AP', name:'Andrés Peñaranda', neighborhood:'El Dorado', phone:'301 663 2290', date:'07 sep 2026', status:'ok' },
+          { initials:'LQ', name:'Laura Quintero', neighborhood:'Simón Bolívar', phone:'302 447 1183', date:'07 sep 2026', status:'ok' },
+          { initials:'KO', name:'Kevin Ortega', neighborhood:'Fundadores', phone:'304 890 3321', date:'06 sep 2026', status:'ok' },
+          { initials:'DC', name:'Diana Cárdenas', neighborhood:'Betania', phone:'313 225 6690', date:'05 sep 2026', status:'pending' },
+          { initials:'FR', name:'Felipe Rincón', neighborhood:'Comuneros', phone:'315 778 9042', date:'04 sep 2026', status:'ok' },
+          { initials:'PC', name:'Paola Contreras', neighborhood:'Nueve de Octubre', phone:'316 340 5518', date:'03 sep 2026', status:'rejected' },
+          { initials:'MS', name:'Marcela Sánchez', neighborhood:'Cañaveral', phone:'317 902 7734', date:'02 sep 2026', status:'ok' }
+        ]
+      },
+      { initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, progress:64, status:'ok',
+        team:[
+          { initials:'TV', name:'Tatiana Vergel', neighborhood:'Buenos Aires', phone:'300 224 8871', date:'08 sep 2026', status:'ok' },
+          { initials:'OL', name:'Óscar Lobo', neighborhood:'La Primavera', phone:'301 556 4423', date:'07 sep 2026', status:'ok' },
+          { initials:'YA', name:'Yesenia Angarita', neighborhood:'Ciudad Jardín', phone:'302 778 1190', date:'06 sep 2026', status:'pending' },
+          { initials:'RP', name:'Ronald Pacheco', neighborhood:'Las Palmeras', phone:'304 331 6602', date:'06 sep 2026', status:'ok' },
+          { initials:'IC', name:'Ingrid Claro', neighborhood:'El Lago', phone:'313 449 2278', date:'05 sep 2026', status:'ok' },
+          { initials:'WG', name:'Wilmer Guerrero', neighborhood:'Las Ferias', phone:'315 667 3391', date:'04 sep 2026', status:'rejected' },
+          { initials:'LR', name:'Lorena Ropero', neighborhood:'El Llano', phone:'316 883 5540', date:'03 sep 2026', status:'ok' }
+        ]
+      },
+      { initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, progress:48, status:'follow',
+        team:[
+          { initials:'EV', name:'Édgar Villamizar', neighborhood:'La Piñuela', phone:'300 665 2214', date:'07 sep 2026', status:'ok' },
+          { initials:'SC', name:'Silvia Carvajalino', neighborhood:'Camino Real', phone:'301 887 9032', date:'07 sep 2026', status:'pending' },
+          { initials:'DT', name:'Deyvis Trigos', neighborhood:'Santa Lucía', phone:'302 445 6671', date:'06 sep 2026', status:'ok' },
+          { initials:'KO', name:'Katherine Osorio', neighborhood:'Gustavo Alayón', phone:'304 223 8850', date:'05 sep 2026', status:'rejected' },
+          { initials:'AM', name:'Alexánder Meneses', neighborhood:'Las Mercedes', phone:'313 776 4429', date:'04 sep 2026', status:'pending' },
+          { initials:'NP', name:'Nataly Pabón', neighborhood:'El Carretero', phone:'315 990 1123', date:'03 sep 2026', status:'ok' }
+        ]
+      },
+      { initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, progress:35, status:'follow',
+        team:[
+          { initials:'YB', name:'Yeison Blanco', neighborhood:'Villa Nueva', phone:'300 887 4412', date:'07 sep 2026', status:'pending' },
+          { initials:'MA', name:'Milena Ascanio', neighborhood:'La Costa', phone:'301 445 6690', date:'06 sep 2026', status:'ok' },
+          { initials:'FC', name:'Ferney Corzo', neighborhood:'La Favorita', phone:'302 663 2281', date:'06 sep 2026', status:'pending' },
+          { initials:'AM', name:'Adriana Maldonado', neighborhood:'San Fermín', phone:'304 778 9930', date:'05 sep 2026', status:'rejected' },
+          { initials:'CU', name:'Cristian Uscátegui', neighborhood:'El Llanito', phone:'313 224 5581', date:'04 sep 2026', status:'ok' },
+          { initials:'ZN', name:'Zulay Navarro', neighborhood:'La Esperanza', phone:'315 556 3347', date:'03 sep 2026', status:'ok' }
+        ]
+      },
+      { initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, progress:29, status:'follow',
+        team:[
+          { initials:'RS', name:'Robinson Solano', neighborhood:'Cristo Rey', phone:'300 224 6675', date:'07 sep 2026', status:'pending' },
+          { initials:'KD', name:'Katerine Duarte', neighborhood:'El Peñón', phone:'301 667 3392', date:'06 sep 2026', status:'ok' },
+          { initials:'HJ', name:'Harold Jaimes', neighborhood:'Urb. Bruselas', phone:'302 889 1147', date:'05 sep 2026', status:'rejected' },
+          { initials:'YC', name:'Yudy Cáceres', neighborhood:'El Retiro', phone:'304 445 8823', date:'04 sep 2026', status:'pending' },
+          { initials:'NP', name:'Nelson Prada', neighborhood:'Palomar', phone:'313 778 2290', date:'03 sep 2026', status:'ok' },
+          { initials:'MP', name:'Marisol Peña', neighborhood:'Comuneros', phone:'315 990 4456', date:'02 sep 2026', status:'ok' }
+        ]
+      },
+      { initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, progress:25, status:'follow',
+        team:[
+          { initials:'BA', name:'Brenda Amaya', neighborhood:'Los Alpes', phone:'300 445 2298', date:'07 sep 2026', status:'pending' },
+          { initials:'WT', name:'Wilson Toloza', neighborhood:'El Carmen', phone:'301 667 8834', date:'06 sep 2026', status:'ok' },
+          { initials:'SB', name:'Sandra Bautista', neighborhood:'Sesquicentenario', phone:'302 889 5561', date:'05 sep 2026', status:'rejected' },
+          { initials:'JA', name:'Jhon Álvarez', neighborhood:'Nuevo Horizonte', phone:'304 223 6670', date:'04 sep 2026', status:'pending' },
+          { initials:'DR', name:'Diana Ríos', neighborhood:'Fundadores', phone:'313 556 9912', date:'03 sep 2026', status:'ok' },
+          { initials:'CR', name:'Camilo Rey', neighborhood:'Betania', phone:'315 778 3345', date:'02 sep 2026', status:'pending' }
+        ]
+      }
     ],
     voluntarios: [
-      { initials:'MJ', name:'María José Cárdenas', neighborhood:'El Prado', captain:'Juan Pablo Zuluaga', date:'08 sep 2026', status:'ok' },
-      { initials:'LS', name:'Luis Eduardo Soto', neighborhood:'La Floresta', captain:'Carmen Villalobos', date:'08 sep 2026', status:'ok' },
-      { initials:'AR', name:'Alejandra Ríos', neighborhood:'San Fernando', captain:'Hernán Pérez', date:'07 sep 2026', status:'pending' },
-      { initials:'GM', name:'Gabriel Méndez', neighborhood:'Villa Nueva', captain:'Susana Ramírez', date:'07 sep 2026', status:'ok' },
-      { initials:'VC', name:'Valentina Castro', neighborhood:'Los Alpes', captain:'Andrea Márquez', date:'06 sep 2026', status:'pending' },
-      { initials:'NP', name:'Nicolás Pardo', neighborhood:'El Prado', captain:'Juan Pablo Zuluaga', date:'05 sep 2026', status:'no' }
+      { initials:'MJ', name:'María José Cárdenas', firstName:'María José', lastName:'Cárdenas Rincón', document:'1 097 452 118', phone:'300 654 2211', email:'majo.cardenas@correo.com', instagram:'@majocardenas', gender:'Femenino', birthDate:'14/03/1998', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStation:'Colegio Nacional José Eusebio Caro', captain:'Juan Pablo Zuluaga', date:'08 sep 2026', status:'ok', notes:'Ayuda a coordinar el grupo de WhatsApp del barrio.' },
+      { initials:'LS', name:'Luis Eduardo Soto', firstName:'Luis Eduardo', lastName:'Soto Delgado', document:'1 102 334 890', phone:'301 778 4432', email:'luis.soto@correo.com', instagram:'@luiseduardosoto', gender:'Masculino', birthDate:'02/11/1990', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', pollingStation:'Puesto Comuna 5 · Fernández de Contreras', captain:'Carmen Villalobos', date:'08 sep 2026', status:'ok', notes:'Disponible los fines de semana para brigadas puerta a puerta.' },
+      { initials:'AR', name:'Alejandra Ríos', firstName:'Alejandra', lastName:'Ríos Angarita', document:'1 095 220 673', phone:'302 445 9981', email:'alejandra.rios@correo.com', instagram:'@ale.rios', gender:'Femenino', birthDate:'27/06/1995', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', pollingStation:'Puesto Comuna 3 · Olaya Herrera', captain:'Hernán Pérez', date:'07 sep 2026', status:'pending', notes:'Pendiente por confirmar número de cédula.' },
+      { initials:'GM', name:'Gabriel Méndez', firstName:'Gabriel', lastName:'Méndez Contreras', document:'1 088 765 234', phone:'304 221 6650', email:'gabriel.mendez@correo.com', instagram:'—', gender:'Masculino', birthDate:'19/09/1987', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', pollingStation:'Puesto Comuna 3 · Olaya Herrera', captain:'Susana Ramírez', date:'07 sep 2026', status:'ok', notes:'Referido por su capitana en la jornada del barrio.' },
+      { initials:'VC', name:'Valentina Castro', firstName:'Valentina', lastName:'Castro Bayona', document:'1 099 543 210', phone:'315 887 3302', email:'valentina.castro@correo.com', instagram:'@valecastro', gender:'Femenino', birthDate:'05/01/2001', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStation:'Colegio Nacional José Eusebio Caro', captain:'Andrea Márquez', date:'06 sep 2026', status:'pending', notes:'Solicitó información sobre el grupo de Voluntariado Jóvenes.' },
+      { initials:'NP', name:'Nicolás Pardo', firstName:'Nicolás', lastName:'Pardo Estévez', document:'1 101 456 789', phone:'316 903 1187', email:'nicolas.pardo@correo.com', instagram:'@nicopardo', gender:'Masculino', birthDate:'23/04/1993', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStation:'Colegio Nacional José Eusebio Caro', captain:'Juan Pablo Zuluaga', date:'05 sep 2026', status:'rejected', notes:'No confirmó datos de contacto tras dos intentos.' },
+      { initials:'DP', name:'Diego Pabón', firstName:'Diego', lastName:'Pabón Ortega', document:'1 093 778 445', phone:'313 220 5567', email:'diego.pabon@correo.com', instagram:'—', gender:'Masculino', birthDate:'11/12/1989', neighborhood:'El Dorado', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStation:'Colegio Nacional José Eusebio Caro', captain:'Juan Pablo Zuluaga', date:'04 sep 2026', status:'rejected', notes:'Documento reportado como duplicado en el censo.' },
+      { initials:'KL', name:'Karen Luna', firstName:'Karen', lastName:'Luna Quintero', document:'1 096 334 221', phone:'317 665 9043', email:'karen.luna@correo.com', instagram:'@karenluna', gender:'Femenino', birthDate:'30/07/1999', neighborhood:'La Primavera', comuna:'Comuna 5 · Francisco Fernández de Contreras', pollingStation:'Puesto Comuna 5 · Fernández de Contreras', captain:'Carmen Villalobos', date:'04 sep 2026', status:'pending', notes:'Registrada en la jornada de la Ciudad Jardín.' }
     ],
     grupos: [
       { name:'Voluntarios del Barrio', zone:'Comunidades urbanas', members:312, growth:'+28 esta semana', status:'ok' },
       { name:'Voluntariado de Mujeres', zone:'Red de mujeres', members:186, growth:'+16 esta semana', status:'ok' },
       { name:'Voluntariado Jóvenes', zone:'Juventud Cristiam', members:204, growth:'+22 esta semana', status:'ok' },
-      { name:'Líderes de San Fernando', zone:'San Fernando', members:98, growth:'+9 esta semana', status:'ok' },
-      { name:'Red El Prado', zone:'El Prado', members:74, growth:'+6 esta semana', status:'ok' },
+      { name:'Líderes de La Piñuela', zone:'La Piñuela', members:98, growth:'+9 esta semana', status:'ok' },
+      { name:'Red Cristo Rey', zone:'Cristo Rey', members:74, growth:'+6 esta semana', status:'ok' },
       { name:'Equipo de movilidad', zone:'Sector transporte', members:51, growth:'Creado ayer', status:'new' }
     ],
     propuestas: [
-      { title:'Alumbrado seguro en la calle 45', description:'Mejorar el alumbrado público entre carreras 8 y 12 para recuperar el tránsito nocturno.', category:'Seguridad', neighborhood:'El Prado', author:'María Camila Ortega', date:'08 sep 2026', status:'review' },
-      { title:'Rutas de transporte para San Fernando', description:'Extender la ruta alimentadora hasta el centro comunitario del barrio.', category:'Movilidad', neighborhood:'San Fernando', author:'Hernán Pérez', date:'07 sep 2026', status:'approved' },
-      { title:'Parque de bolsillo para La Floresta', description:'Convertir el lote junto a la cancha en un espacio verde para familias.', category:'Espacio público', neighborhood:'La Floresta', author:'Carmen Villalobos', date:'06 sep 2026', status:'review' },
+      { title:'Alumbrado seguro en la calle 45', description:'Mejorar el alumbrado público entre carreras 8 y 12 para recuperar el tránsito nocturno.', category:'Seguridad', neighborhood:'Cristo Rey', author:'María Camila Ortega', date:'08 sep 2026', status:'review' },
+      { title:'Rutas de transporte para La Piñuela', description:'Extender la ruta alimentadora hasta el centro comunitario del barrio.', category:'Movilidad', neighborhood:'La Piñuela', author:'Hernán Pérez', date:'07 sep 2026', status:'approved' },
+      { title:'Parque de bolsillo para Buenos Aires', description:'Convertir el lote junto a la cancha en un espacio verde para familias.', category:'Espacio público', neighborhood:'Buenos Aires', author:'Carmen Villalobos', date:'06 sep 2026', status:'review' },
       { title:'Primer empleo para jóvenes', description:'Crear alianzas con comercios locales para prácticas remuneradas.', category:'Empleo', neighborhood:'Villa Nueva', author:'Susana Ramírez', date:'05 sep 2026', status:'pending' },
       { title:'Mercado campesino mensual', description:'Reservar una plaza para productores rurales el primer domingo de cada mes.', category:'Economía local', neighborhood:'Los Alpes', author:'Andrea Márquez', date:'04 sep 2026', status:'approved' },
-      { title:'Más puntos de reciclaje', description:'Instalar puntos de separación en parques y zonas de alta circulación.', category:'Ambiente', neighborhood:'El Prado', author:'David Londoño', date:'03 sep 2026', status:'pending' }
+      { title:'Más puntos de reciclaje', description:'Instalar puntos de separación en parques y zonas de alta circulación.', category:'Ambiente', neighborhood:'Cristo Rey', author:'David Londoño', date:'03 sep 2026', status:'pending' }
     ]
   };
 
@@ -604,7 +799,8 @@
     capitanes: { title:'Capitanes', subtitle:'Seguimiento a los líderes que hacen crecer la red' },
     voluntarios: { title:'Voluntarios', subtitle:'Personas registradas y estado de confirmación' },
     grupos: { title:'Grupos de WhatsApp', subtitle:'Comunidades activas y crecimiento de la conversación' },
-    propuestas: { title:'Propuestas', subtitle:'Ideas ciudadanas recibidas desde los barrios' }
+    propuestas: { title:'Propuestas', subtitle:'Ideas ciudadanas recibidas desde los barrios' },
+    'capitan-red': { title:'Red del capitán', subtitle:'Voluntarios vinculados a este capitán', nav:'capitanes' }
   };
 
   function escapeHtml(value){
@@ -618,7 +814,7 @@
       ok:{className:'ok', label:'Al día'},
       follow:{className:'pend', label:'Seguimiento'},
       pending:{className:'pend', label:'Pendiente'},
-      no:{className:'no', label:'No confirma'},
+      rejected:{className:'no', label:'Rechazado'},
       new:{className:'ok', label:'Nuevo'},
       review:{className:'pend', label:'En revisión'},
       approved:{className:'ok', label:'Aprobada'}
@@ -629,15 +825,16 @@
 
   function dashboardMetrics(items){
     return items.map(function(item){
-      return '<div class="stat"><div class="v">'+item.value+'</div><div class="l">'+item.label+'</div><div class="d">'+item.delta+'</div></div>';
+      const toneClass = item.tone ? ' '+item.tone : '';
+      return '<div class="stat"><div class="v">'+item.value+'</div><div class="l">'+item.label+'</div><div class="d'+toneClass+'">'+item.delta+'</div></div>';
     }).join('');
   }
 
   function renderCapitanes(){
-    const rows = campaignMockData.capitanes.map(function(captain){
+    const rows = campaignMockData.capitanes.map(function(captain, index){
       return '<tr><td><div class="person"><div class="av2">'+escapeHtml(captain.initials)+'</div>'+escapeHtml(captain.name)+'</div></td>'+
         '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.added+'</td><td><div class="bar2"><i style="width:'+captain.progress+'%;"></i></div></td>'+
-        '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain">Ver red</button></td></tr>';
+        '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
     }).join('');
     return '<div class="view-heading"><div><h3>Capitanes de la red</h3><p>Quiénes están sumando más personas confirmadas a la campaña.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
@@ -646,21 +843,22 @@
         {value:'16,8',label:'Promedio por capitán',delta:'+1,2 vs. agosto'}
       ])+'</div>'+
       '<div class="view-grid"><div class="view-panel"><h3>Ranking de capitanes</h3><div class="ph">Avance de cada líder frente a su meta de confirmados.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+
-      '<div class="view-panel"><h3>Lectura rápida</h3><div class="ph">Señales para priorizar el acompañamiento.</div><div class="glist"><div class="gcard"><div class="ic2">↗</div><div><div class="t">El Prado lidera la red</div><div class="s">39 personas agregadas por 2 capitanes.</div></div></div><div class="gcard"><div class="ic2">!</div><div><div class="t">18 capitanes requieren apoyo</div><div class="s">Revisar avances antes del próximo encuentro.</div></div></div><div class="gcard"><div class="ic2">★</div><div><div class="t">Meta semanal superada</div><div class="s">+186 voluntarios confirmados.</div></div></div></div></div></div>';
+      '<div class="view-panel"><h3>Lectura rápida</h3><div class="ph">Señales para priorizar el acompañamiento.</div><div class="glist"><div class="gcard"><div class="ic2">↗</div><div><div class="t">Cristo Rey lidera la red</div><div class="s">39 personas agregadas por 2 capitanes.</div></div></div><div class="gcard"><div class="ic2">!</div><div><div class="t">18 capitanes requieren apoyo</div><div class="s">Revisar avances antes del próximo encuentro.</div></div></div><div class="gcard"><div class="ic2">★</div><div><div class="t">Meta semanal superada</div><div class="s">+186 voluntarios confirmados.</div></div></div></div></div></div>';
   }
 
   function renderVoluntarios(){
-    const rows = campaignMockData.voluntarios.map(function(volunteer){
+    const rows = campaignMockData.voluntarios.map(function(volunteer, index){
       return '<tr><td><div class="person"><div class="av2">'+escapeHtml(volunteer.initials)+'</div>'+escapeHtml(volunteer.name)+'</div></td>'+
-        '<td>'+escapeHtml(volunteer.neighborhood)+'</td><td>'+escapeHtml(volunteer.captain)+'</td><td class="muted">'+escapeHtml(volunteer.date)+'</td><td>'+dashboardBadge(volunteer.status)+'</td><td><button class="view-action" type="button" data-demo-action="volunteer">Abrir</button></td></tr>';
+        '<td>'+escapeHtml(volunteer.neighborhood)+'</td><td>'+escapeHtml(volunteer.captain)+'</td><td class="muted">'+escapeHtml(volunteer.date)+'</td><td>'+dashboardBadge(volunteer.status)+'</td><td><button class="view-action" type="button" data-demo-action="volunteer" data-person="'+index+'">Abrir</button></td></tr>';
     }).join('');
     return '<div class="view-heading"><div><h3>Voluntarios registrados</h3><p>La red completa de personas que participan en la campaña.</p></div><div class="view-note">3 482 confirmados</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
         {value:'3 482',label:'Confirmados',delta:'+186 esta semana'},
         {value:'246',label:'Pendientes',delta:'6,6% del total'},
-        {value:'82',label:'Nuevos hoy',delta:'+12 vs. ayer'}
+        {value:'82',label:'Nuevos hoy',delta:'+12 vs. ayer'},
+        {value:'128',label:'Rechazados',delta:'3,4% del total',tone:'warn'}
       ])+'</div>'+
-      '<div class="view-panel"><h3>Últimos registros</h3><div class="ph">Muestra de voluntarios captados por la red de capitanes.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Capitán</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+      '<div class="view-panel"><h3>Nuevos ingresos</h3><div class="ph">Últimas personas registradas por la red de capitanes.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Capitán</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
 
   function renderGrupos(){
@@ -690,6 +888,195 @@
       '<div class="proposal-list">'+cards+'</div>';
   }
 
+  const zoneLayout = {
+    'comuna-1': {center:[8.2461, -73.3553], radius:0.0055},
+    'comuna-2': {center:[8.2521, -73.3483], radius:0.0060},
+    'comuna-3': {center:[8.2401, -73.3483], radius:0.0070},
+    'comuna-4': {center:[8.2401, -73.3623], radius:0.0050},
+    'comuna-5': {center:[8.2511, -73.3613], radius:0.0055},
+    'comuna-6': {center:[8.2581, -73.3553], radius:0.0050}
+  };
+
+  const mapLegendTiers = [
+    {key:'alto', label:'Alto (65%+)', fill:'#1E3FA6', stroke:'#152C7A'},
+    {key:'medio-alto', label:'Medio-alto (50-64%)', fill:'#3164FD', stroke:'#1E3FA6'},
+    {key:'medio', label:'Medio (40-49%)', fill:'#7B93F5', stroke:'#3164FD'},
+    {key:'bajo', label:'Bajo (<40%)', fill:'#C7D2FA', stroke:'#7B93F5'}
+  ];
+
+  function mapTier(support){
+    if(support >= 65) return mapLegendTiers[0];
+    if(support >= 50) return mapLegendTiers[1];
+    if(support >= 40) return mapLegendTiers[2];
+    return mapLegendTiers[3];
+  }
+
+  function hexPoints(centerLat, centerLng, radiusDeg){
+    const angles = [10, 70, 130, 190, 250, 310];
+    const radiusScale = [1, 0.88, 1.05, 0.92, 1.08, 0.95];
+    return angles.map(function(angle, i){
+      const rad = angle * Math.PI / 180;
+      const r = radiusDeg * radiusScale[i];
+      const lat = centerLat + r * Math.sin(rad);
+      const lng = centerLng + (r * Math.cos(rad)) / Math.cos(centerLat * Math.PI / 180);
+      return [lat, lng];
+    });
+  }
+
+  let activeZoneId = ocanaZones.reduce(function(best, zone){
+    return (!best || zone.support > best.support) ? zone : best;
+  }, null).id;
+
+  function renderZoneSide(zone){
+    const topBarriosHtml = zone.topBarrios.map(function(barrio){
+      return '<div class="map-top-barrio"><span class="name">'+escapeHtml(barrio.name)+'</span>'+
+        '<span class="bar-track"><i style="width:'+barrio.pct+'%;"></i></span>'+
+        '<span class="pct">'+barrio.pct+'%</span></div>';
+    }).join('');
+    const chipsHtml = zone.barrios.map(function(barrio){ return '<span class="map-chip">'+escapeHtml(barrio)+'</span>'; }).join('');
+    return '<div><div class="zone-code">'+escapeHtml(zone.code)+'</div><div class="zone-name">'+escapeHtml(zone.name)+'</div></div>'+
+      '<div class="map-side-stats">'+
+        '<div class="map-side-stat"><div class="v">'+zone.support+'%</div><div class="l">Apoyo estimado</div></div>'+
+        '<div class="map-side-stat"><div class="v">'+zone.volunteers+'</div><div class="l">Voluntarios</div></div>'+
+        '<div class="map-side-stat"><div class="v">'+zone.captains+'</div><div class="l">Capitanes</div></div>'+
+      '</div>'+
+      '<div style="font-size:9.5px;color:var(--green);font-weight:700;">'+escapeHtml(zone.trend)+'</div>'+
+      '<div><h4>Barrios con mayor popularidad</h4><div class="map-top-barrios">'+topBarriosHtml+'</div></div>'+
+      '<div><h4>Todos los barrios de la comuna</h4><div class="map-chips">'+chipsHtml+'</div></div>';
+  }
+
+  function renderOcanaMapShell(){
+    const legend = mapLegendTiers.map(function(tier){
+      return '<div class="map-legend-item"><span class="map-legend-swatch" style="background:'+tier.fill+';"></span>'+escapeHtml(tier.label)+'</div>';
+    }).join('');
+    const picker = ocanaZones.map(function(zone){
+      return '<button type="button" class="map-zone-btn'+(zone.id===activeZoneId?' active':'')+'" data-zone="'+zone.id+'">'+escapeHtml(zone.code)+' · '+escapeHtml(zone.shortName)+'</button>';
+    }).join('');
+    const activeZone = ocanaZones.find(function(zone){ return zone.id === activeZoneId; }) || ocanaZones[0];
+    return '<div class="map-panel"><h3>Mapa de popularidad por comuna</h3>'+
+      '<div class="ph">Nivel de apoyo estimado según barrio y comuna, sobre el mapa real de Ocaña.</div>'+
+      '<div class="map-zone-picker">'+picker+'</div>'+
+      '<div class="map-leaflet" id="ocanaLeafletMap"></div>'+
+      '<div class="map-caption">Mapa aproximado · límites de comuna no oficiales, solo referenciales</div>'+
+      '<div class="map-legend">'+legend+'</div>'+
+      '</div>'+
+      '<div class="map-panel map-side" id="mapSide">'+renderZoneSide(activeZone)+'</div>';
+  }
+
+  let ocanaLeafletMap = null;
+  const zonePolygons = {};
+
+  function initOcanaMap(){
+    const mapEl = document.getElementById('ocanaLeafletMap');
+    if(!mapEl || typeof L === 'undefined') return;
+
+    ocanaLeafletMap = L.map(mapEl, {
+      center: [8.2481, -73.3553],
+      zoom: 14,
+      scrollWheelZoom: false
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+    }).addTo(ocanaLeafletMap);
+
+    ocanaZones.forEach(function(zone){
+      const layout = zoneLayout[zone.id];
+      const tier = mapTier(zone.support);
+      const polygon = L.polygon(hexPoints(layout.center[0], layout.center[1], layout.radius), {
+        color: tier.stroke,
+        weight: 2,
+        fillColor: tier.fill,
+        fillOpacity: 0.55
+      }).addTo(ocanaLeafletMap);
+      polygon.bindTooltip(zone.code+' · '+zone.shortName+' — '+zone.support+'% de apoyo', {sticky:true});
+      polygon.on('click', function(){ selectZone(zone.id); });
+      zonePolygons[zone.id] = polygon;
+    });
+
+    const bounds = L.featureGroup(Object.values(zonePolygons)).getBounds();
+    ocanaLeafletMap.fitBounds(bounds, {padding:[26, 26]});
+
+    applyZoneSelectionStyles();
+  }
+
+  function applyZoneSelectionStyles(){
+    Object.keys(zonePolygons).forEach(function(id){
+      const zone = ocanaZones.find(function(z){ return z.id === id; });
+      const tier = mapTier(zone.support);
+      const isActive = id === activeZoneId;
+      zonePolygons[id].setStyle({
+        color: isActive ? '#231F20' : tier.stroke,
+        weight: isActive ? 4 : 2,
+        fillOpacity: isActive ? 0.75 : 0.5
+      });
+    });
+    document.querySelectorAll('.map-zone-btn').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.zone === activeZoneId);
+    });
+  }
+
+  function selectZone(zoneId){
+    const zone = ocanaZones.find(function(z){ return z.id === zoneId; });
+    if(!zone) return;
+    activeZoneId = zoneId;
+    applyZoneSelectionStyles();
+    const sideEl = document.getElementById('mapSide');
+    if(sideEl) sideEl.innerHTML = renderZoneSide(zone);
+    const polygon = zonePolygons[zoneId];
+    if(polygon && ocanaLeafletMap) ocanaLeafletMap.fitBounds(polygon.getBounds(), {padding:[70, 70], maxZoom:16});
+  }
+
+
+  let activeCaptainIndex = null;
+  let activeCaptainFilter = 'all';
+
+  function captainNetworkCounts(team){
+    return team.reduce(function(acc, member){
+      acc[member.status] = (acc[member.status]||0) + 1;
+      return acc;
+    }, {ok:0, pending:0, rejected:0});
+  }
+
+  function captainNetworkRows(team, filter){
+    const filtered = filter && filter !== 'all' ? team.filter(function(member){ return member.status === filter; }) : team;
+    if(!filtered.length){
+      return '<div class="empty-state">No hay voluntarios con este estado en la red de este capitán.</div>';
+    }
+    const rows = filtered.map(function(member){
+      const memberIndex = team.indexOf(member);
+      return '<tr><td><div class="person"><div class="av2">'+escapeHtml(member.initials)+'</div>'+escapeHtml(member.name)+'</div></td>'+
+        '<td>'+escapeHtml(member.neighborhood)+'</td><td class="muted">'+escapeHtml(member.phone)+'</td><td class="muted">'+escapeHtml(member.date)+'</td>'+
+        '<td>'+dashboardBadge(member.status)+'</td><td><button class="view-action" type="button" data-demo-action="team-person" data-captain="'+activeCaptainIndex+'" data-team-member="'+memberIndex+'">Abrir</button></td></tr>';
+    }).join('');
+    return '<div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Celular</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  }
+
+  function renderCaptainNetwork(){
+    const captain = campaignMockData.capitanes[activeCaptainIndex];
+    if(!captain){
+      return '<div class="empty-state">No se encontró información de este capitán.</div>';
+    }
+    const counts = captainNetworkCounts(captain.team);
+    const filters = [
+      {key:'all', label:'Todos'},
+      {key:'ok', label:'Confirmados'},
+      {key:'pending', label:'Pendientes'},
+      {key:'rejected', label:'Rechazados'}
+    ];
+    const chips = filters.map(function(filter){
+      return '<button class="filter-chip'+(activeCaptainFilter===filter.key?' active':'')+'" type="button" data-demo-action="team-filter" data-team-filter="'+filter.key+'">'+filter.label+'</button>';
+    }).join('');
+    return '<button class="back-link" type="button" data-demo-action="back-to-capitanes"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 19l-7-7 7-7"/></svg>Volver a capitanes</button>'+
+      '<div class="view-heading"><div><h3>Red de '+escapeHtml(captain.name)+'</h3><p>'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</p></div><div class="view-note">'+captain.team.length+' personas en la red</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:String(counts.ok||0), label:'Confirmados', delta:captain.team.length+' en total'},
+        {value:String(counts.pending||0), label:'Pendientes', delta:'Por confirmar'},
+        {value:String(counts.rejected||0), label:'Rechazados', delta:'Requieren revisión', tone:'warn'}
+      ])+'</div>'+
+      '<div class="view-panel"><h3>Voluntarios de la red</h3><div class="ph">Filtra por estado de confirmación.</div><div class="filter-chips">'+chips+'</div>'+captainNetworkRows(captain.team, activeCaptainFilter)+'</div>';
+  }
+
   const dashboardRenderers = {capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
 
   function renderDashboardView(viewId){
@@ -698,29 +1085,138 @@
 
   function selectDashboardView(viewId){
     const meta = dashboardViewMeta[viewId] || dashboardViewMeta.resumen;
+    const navKey = meta.nav || viewId;
     document.querySelectorAll('#desktopApp .dashboard-view').forEach(function(view){ view.classList.toggle('active', view.id === 'view-'+viewId); });
-    document.querySelectorAll('#desktopApp .nitem').forEach(function(item){ item.classList.toggle('active', item.dataset.view === viewId); });
+    document.querySelectorAll('#desktopApp .nitem').forEach(function(item){ item.classList.toggle('active', item.dataset.view === navKey); });
     document.querySelector('#desktopApp .dtop h2').textContent = meta.title;
     document.querySelector('#desktopApp .dtop .sub').textContent = meta.subtitle;
     document.querySelector('#desktopApp .dcontent').scrollTop = 0;
   }
 
+  function personDetailGroups(person){
+    const fullName = person.name || ((person.firstName||'')+' '+(person.lastName||'')).trim();
+    return [
+      { title:'Datos personales', rows:[
+        ['Nombre completo', fullName],
+        ['Documento', person.document],
+        ['Celular', person.phone],
+        ['Email', person.email],
+        ['Instagram', person.instagram],
+        ['Género', person.gender],
+        ['Fecha de nacimiento', person.birthDate]
+      ]},
+      { title:'Ubicación y votación', rows:[
+        ['Barrio', person.neighborhood],
+        ['Comuna', person.comuna],
+        ['Puesto de votación', person.pollingStation]
+      ]},
+      { title:'Vinculación a la campaña', rows:[
+        ['Capitán responsable', person.captain],
+        ['Fecha de registro', person.date]
+      ]},
+      { title:'Notas', rows:[
+        ['Notas', person.notes]
+      ]}
+    ];
+  }
+
+  function renderPersonModal(person){
+    const fullName = person.name || ((person.firstName||'')+' '+(person.lastName||'')).trim();
+    const initials = person.initials || fullName.split(' ').filter(Boolean).map(function(part){ return part[0]; }).slice(0,2).join('').toUpperCase();
+    const groupsHtml = personDetailGroups(person).map(function(group){
+      const filteredRows = group.rows.filter(function(row){ return row[1] !== undefined && row[1] !== null && row[1] !== ''; });
+      if(!filteredRows.length) return '';
+      const rowsHtml = filteredRows.map(function(row){ return '<div class="modal-row"><span class="modal-label">'+escapeHtml(row[0])+'</span><span class="modal-value">'+escapeHtml(row[1])+'</span></div>'; }).join('');
+      const gridStyle = filteredRows.length === 1 ? ' style="grid-template-columns:1fr;"' : '';
+      return '<div class="modal-group"><h4>'+escapeHtml(group.title)+'</h4><div class="modal-grid"'+gridStyle+'>'+rowsHtml+'</div></div>';
+    }).filter(Boolean).join('');
+
+    const card = document.getElementById('personModal');
+    card.querySelector('.modal-avatar').textContent = initials;
+    card.querySelector('.modal-name').textContent = fullName;
+    card.querySelector('.modal-status').innerHTML = dashboardBadge(person.status);
+    card.querySelector('.modal-body').innerHTML = groupsHtml;
+    document.getElementById('modalOverlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openPersonModal(source, indexOne, indexTwo){
+    const person = source === 'team'
+      ? (campaignMockData.capitanes[indexOne] && campaignMockData.capitanes[indexOne].team[indexTwo])
+      : campaignMockData.voluntarios[indexOne];
+    if(!person) return;
+    renderPersonModal(person);
+  }
+
+  function closePersonModal(){
+    document.getElementById('modalOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(event){
+    if(event.key === 'Escape'){
+      const overlay = document.getElementById('modalOverlay');
+      if(overlay && overlay.classList.contains('show')) closePersonModal();
+    }
+  });
+
+  document.getElementById('modalOverlay').addEventListener('click', function(event){
+    if(event.target === this) closePersonModal();
+  });
+  document.querySelector('.modal-close').addEventListener('click', closePersonModal);
+
   document.querySelectorAll('#desktopApp .nitem').forEach(function(item){
     item.addEventListener('click', function(){ selectDashboardView(item.dataset.view); });
   });
   Object.keys(dashboardRenderers).forEach(renderDashboardView);
+
+  document.getElementById('ocanaMap').innerHTML = renderOcanaMapShell();
+  document.getElementById('ocanaMap').addEventListener('click', function(event){
+    const btn = event.target.closest('.map-zone-btn');
+    if(btn) selectZone(btn.dataset.zone);
+  });
+  initOcanaMap();
+
   document.getElementById('desktopApp').addEventListener('click', function(event){
     const action = event.target.closest('[data-demo-action]');
     if(!action) return;
-    const messages = {captain:'Vista de red del capitán abierta', volunteer:'Ficha del voluntario abierta', group:'Detalle del grupo abierto'};
-    if(action.dataset.demoAction === 'proposal'){
+    const kind = action.dataset.demoAction;
+
+    if(kind === 'captain'){
+      activeCaptainIndex = Number(action.dataset.captain);
+      activeCaptainFilter = 'all';
+      document.getElementById('view-capitan-red').innerHTML = renderCaptainNetwork();
+      selectDashboardView('capitan-red');
+      return;
+    }
+    if(kind === 'back-to-capitanes'){
+      selectDashboardView('capitanes');
+      return;
+    }
+    if(kind === 'team-filter'){
+      activeCaptainFilter = action.dataset.teamFilter;
+      document.getElementById('view-capitan-red').innerHTML = renderCaptainNetwork();
+      return;
+    }
+    if(kind === 'volunteer'){
+      openPersonModal('voluntario', Number(action.dataset.person));
+      return;
+    }
+    if(kind === 'team-person'){
+      openPersonModal('team', Number(action.dataset.captain), Number(action.dataset.teamMember));
+      return;
+    }
+    if(kind === 'proposal'){
       action.parentElement.parentElement.querySelector('.badge').className = 'badge ok';
       action.parentElement.parentElement.querySelector('.badge').textContent = 'Revisada';
       action.remove();
       toast('Propuesta marcada como revisada');
       return;
     }
-    toast(messages[action.dataset.demoAction] || 'Acción completada');
+    if(kind === 'group'){
+      toast('Detalle del grupo abierto');
+      return;
+    }
   });
 
   function toggleApp(){
@@ -732,6 +1228,13 @@
     btn.innerHTML = showingDesktop
       ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg> Ver app móvil'
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg> Ver panel del candidato';
+    if(showingDesktop && ocanaLeafletMap){
+      setTimeout(function(){
+        ocanaLeafletMap.invalidateSize();
+        const activePolygon = zonePolygons[activeZoneId];
+        if(activePolygon) ocanaLeafletMap.fitBounds(activePolygon.getBounds(), {padding:[70, 70], maxZoom:16});
+      }, 60);
+    }
   }
 </script>
 </body>
