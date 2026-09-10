@@ -775,15 +775,17 @@
     }
   ];
 
+  /* targetAssigned y targetRegistered definen cuántos voluntarios mock se generan
+     por puesto. assigned y registered se calculan desde volunteerRegistry. */
   const pollingStations = [
-    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:42, assigned:31, registered:24, captainIds:['juan-pablo'], status:'active' },
-    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:48, assigned:36, registered:29, captainIds:['juan-pablo','david'], status:'active' },
-    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:36, assigned:18, registered:11, captainIds:['andrea','juan-pablo'], status:'pending' },
-    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:44, assigned:29, registered:21, captainIds:['hernan'], status:'active' },
-    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:40, assigned:22, registered:14, captainIds:['susana'], status:'pending' },
-    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:32, assigned:13, registered:8, captainIds:[], status:'pending' },
-    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:46, assigned:28, registered:20, captainIds:['carmen'], status:'active' },
-    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:34, assigned:16, registered:9, captainIds:['andrea'], status:'pending' }
+    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:42, targetAssigned:31, targetRegistered:24, captainIds:['juan-pablo'], status:'active' },
+    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:48, targetAssigned:36, targetRegistered:29, captainIds:['juan-pablo','david'], status:'active' },
+    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:36, targetAssigned:18, targetRegistered:11, captainIds:['andrea','juan-pablo'], status:'pending' },
+    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:44, targetAssigned:29, targetRegistered:21, captainIds:['hernan'], status:'active' },
+    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:40, targetAssigned:22, targetRegistered:14, captainIds:['susana'], status:'pending' },
+    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:32, targetAssigned:13, targetRegistered:8, captainIds:[], status:'pending' },
+    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:46, targetAssigned:28, targetRegistered:20, captainIds:['carmen'], status:'active' },
+    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:34, targetAssigned:16, targetRegistered:9, captainIds:['andrea'], status:'pending' }
   ];
 
   const campaignMockData = {
@@ -879,6 +881,73 @@
       { title:'Más puntos de reciclaje', description:'Instalar puntos de separación en parques y zonas de alta circulación.', category:'Ambiente', neighborhood:'Cristo Rey', author:'David Londoño', date:'03 sep 2026', status:'pending' }
     ]
   };
+
+  const volunteerNamePool = {
+    first:['Ana','Andrés','Beatriz','Carlos','Carolina','César','Claudia','Daniel','Diana','Eduardo','Elena','Emilio','Fabián','Gabriela','Germán','Gloria','Gustavo','Héctor','Iván','Javier','Julián','Laura','Leonardo','Liliana','Lucía','Mauricio','Mónica','Néstor','Olga','Óscar','Paola','Patricia','Rafael','Rosa','Sandra','Sergio','Silvia','Tomás','Valentina','Víctor','Yolanda','Zulma'],
+    last:['Acevedo','Aguilar','Álvarez','Amaya','Arévalo','Arias','Bautista','Bermúdez','Blanco','Cabrera','Cáceres','Camacho','Cárdenas','Carvajal','Castillo','Contreras','Correa','Delgado','Duarte','Estupiñán','Flórez','Gaitán','García','Gómez','González','Guerrero','Hernández','Jaimes','López','Martínez','Medina','Mendoza','Molina','Moreno','Navarro','Ortega','Ortiz','Pacheco','Pardo','Peña','Pérez','Quintero','Ramírez','Reyes','Ríos','Rodríguez','Rojas','Romero','Ruiz','Salazar','Sánchez','Sierra','Silva','Solano','Suárez','Torres','Vargas','Vega','Villamizar','Zapata']
+  };
+
+  function seededRandom(seed){
+    let state = seed % 2147483647;
+    if(state <= 0) state += 2147483646;
+    return function(){
+      state = state * 16807 % 2147483647;
+      return (state - 1) / 2147483646;
+    };
+  }
+
+  function buildVolunteerRegistry(){
+    const random = seededRandom(20260909);
+    const registry = campaignMockData.voluntarios.slice();
+    const zonesById = {};
+    ocanaZones.forEach(function(zone){ zonesById[zone.id] = zone; });
+    pollingStations.forEach(function(station){
+      const linked = registry.filter(function(person){
+        return person.pollingStationId === station.id && person.status !== 'rejected';
+      });
+      const confirmed = linked.filter(function(person){ return person.status === 'ok'; }).length;
+      const extra = Math.max(0, stationNumber(station.targetAssigned) - linked.length);
+      const extraConfirmed = Math.max(0, Math.min(extra, stationNumber(station.targetRegistered) - confirmed));
+      const zone = zonesById[station.comunaId];
+      const captain = campaignMockData.capitanes.find(function(item){ return station.captainIds.indexOf(item.id) !== -1; });
+      for(let i = 0; i < extra; i++){
+        const first = volunteerNamePool.first[Math.floor(random() * volunteerNamePool.first.length)];
+        const last = volunteerNamePool.last[Math.floor(random() * volunteerNamePool.last.length)];
+        const emailName = (first + '.' + last).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        registry.push({
+          initials:(first.charAt(0) + last.charAt(0)).toUpperCase(),
+          name:first + ' ' + last,
+          firstName:first,
+          lastName:last,
+          document:'1 ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)),
+          phone:'3' + (10 + Math.floor(random() * 89)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (1000 + Math.floor(random() * 8999)),
+          email:emailName + '@correo.com',
+          instagram:'—',
+          gender:random() > 0.5 ? 'Femenino' : 'Masculino',
+          birthDate:String(1 + Math.floor(random() * 28)).padStart(2,'0') + '/' + String(1 + Math.floor(random() * 12)).padStart(2,'0') + '/' + (1960 + Math.floor(random() * 40)),
+          neighborhood:station.barrio,
+          comuna:zone ? zone.name : station.comunaId,
+          pollingStationId:station.id,
+          pollingStation:station.name,
+          captain:captain ? captain.name : 'Red territorial',
+          date:'0' + (1 + Math.floor(random() * 8)) + ' sep 2026',
+          status:i < extraConfirmed ? 'ok' : 'pending',
+          notes:''
+        });
+      }
+    });
+    return registry;
+  }
+
+  const volunteerRegistry = buildVolunteerRegistry();
+
+  pollingStations.forEach(function(station){
+    const linked = volunteerRegistry.filter(function(person){
+      return person.pollingStationId === station.id && person.status !== 'rejected';
+    });
+    station.assigned = linked.length;
+    station.registered = linked.filter(function(person){ return person.status === 'ok'; }).length;
+  });
 
   const dashboardViewMeta = {
     resumen: { title:'Resumen de campaña', subtitle:'Datos consolidados de toda la red de voluntarios' },
