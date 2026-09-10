@@ -31,5 +31,6 @@ assert.match(html, /function volunteerRegistryCounts\(/);
 assert.match(html, /Confirmadas/);
 assert.match(html, /function renderPriorizacion\(/);
 assert.match(html, /data-view="priorizacion"/);
+assert.equal((html.match(/id:'puesto-\d+'/g) || []).length, 19);
 
 console.log('Panel de campaña: navegación y vistas mock presentes.');

@@ -254,7 +254,7 @@
   .map-zone-btn:hover{border-color:#C7CEE0;}
   .map-zone-btn.active{background:var(--ink);border-color:var(--ink);color:#fff;}
   .map-zone-btn:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
-  .map-leaflet{position:relative;z-index:0;width:100%;height:360px;border-radius:14px;overflow:hidden;border:1px solid #ECEEF5;}
+  .map-leaflet{position:relative;z-index:0;width:100%;height:440px;border-radius:14px;overflow:hidden;border:1px solid #ECEEF5;}
   .map-leaflet .leaflet-container{font-family:Poppins,sans-serif;background:#F8F9FC;}
   .map-fallback{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;
     background:linear-gradient(135deg,#F8F9FC,#EEF1FA);color:#6b7280;font-size:10px;line-height:1.5;}
@@ -741,37 +741,37 @@
   const ocanaZones = [
     {
       id:'comuna-1', code:'Comuna 1', name:'Central · José Eusebio Caro', shortName:'Central',
-      support:52, volunteers:512, captains:22, stationGoal:2, trend:'+3% esta semana',
+      support:52, volunteers:512, captains:22, stationGoal:4, trend:'+3% esta semana',
       barrios:['Las Llanadas','20 de Julio','El Llano Echávez','Las Cajas','Barrios Unidos','Santa Ana','San José','Hacaritama','Tacaloa','San Agustín','La Modelo','Caracolí','El Playón'],
       topBarrios:[{name:'Hacaritama',pct:59},{name:'La Modelo',pct:55},{name:'20 de Julio',pct:48}]
     },
     {
       id:'comuna-2', code:'Comuna 2', name:'Nororiental · Cristo Rey', shortName:'Cristo Rey',
-      support:74, volunteers:890, captains:38, stationGoal:3, trend:'+9% esta semana',
+      support:74, volunteers:890, captains:38, stationGoal:5, trend:'+9% esta semana',
       barrios:['Cristo Rey','El Dorado','Nuevo Horizonte','Cañaveral','El Carmen','Simón Bolívar','Sesquicentenario','Fundadores','Comuneros','Urb. Los Alpes','El Retiro','El Peñón','Urb. Bruselas','Betania','Nueve de Octubre','Palomar'],
       topBarrios:[{name:'Cristo Rey',pct:81},{name:'El Dorado',pct:76},{name:'Simón Bolívar',pct:70}]
     },
     {
       id:'comuna-3', code:'Comuna 3', name:'Suroriental · Olaya Herrera', shortName:'Olaya Herrera',
-      support:63, volunteers:780, captains:33, stationGoal:3, trend:'+6% esta semana',
+      support:63, volunteers:780, captains:33, stationGoal:5, trend:'+6% esta semana',
       barrios:['Olaya Herrera','La Piñuela-San Antonio','El Carretero','Villa Nueva','Camino Real','Santa Lucía','Gustavo Alayón','La Palmita','Las Mercedes','La Costa','La Favorita','La Quinta','San Fermín','El Llanito','La Esperanza','Doce de Octubre','El Bosque','Los Almendros','Jorge Eliécer Gaitán','Belén','La Paz'],
       topBarrios:[{name:'La Piñuela',pct:68},{name:'Villa Nueva',pct:64},{name:'El Carretero',pct:58}]
     },
     {
       id:'comuna-4', code:'Comuna 4', name:'Suroccidental · Adolfo Milanés', shortName:'Adolfo Milanés',
-      support:39, volunteers:350, captains:15, stationGoal:2, trend:'+1% esta semana',
+      support:39, volunteers:350, captains:15, stationGoal:3, trend:'+1% esta semana',
       barrios:['Marabel','Marabelito','La Torcoroma','Juan XXIII','Santa Cruz','El Tejarito','Junín','La Libertad','El Landia','La Esmeralda','Nueva España','IV Centenario','Camilo Torres','San Rafael','Primero de Mayo'],
       topBarrios:[{name:'Marabel',pct:44},{name:'La Torcoroma',pct:40},{name:'Juan XXIII',pct:36}]
     },
     {
       id:'comuna-5', code:'Comuna 5', name:'Francisco Fernández de Contreras', shortName:'Fdez. de Contreras',
-      support:58, volunteers:560, captains:24, stationGoal:2, trend:'+5% esta semana',
+      support:58, volunteers:560, captains:24, stationGoal:4, trend:'+5% esta semana',
       barrios:['Buenos Aires','La Primavera','Las Palmeras','Ciudad Jardín','El Lago','Las Ferias','El Llano','Las Llanadas','Punta del Llano','Tutumalito','El Uvito','Villas de Antón'],
       topBarrios:[{name:'Buenos Aires',pct:66},{name:'La Primavera',pct:60},{name:'Ciudad Jardín',pct:53}]
     },
     {
       id:'comuna-6', code:'Comuna 6', name:'Ciudadela Norte', shortName:'Ciudadela Norte',
-      support:46, volunteers:390, captains:17, stationGoal:2, trend:'+2% esta semana',
+      support:46, volunteers:390, captains:17, stationGoal:3, trend:'+2% esta semana',
       barrios:['José Antonio Galán','Santa Clara','Bermejal','Colinas de la Florida','El Líbano','La Ondina','La Gloria','2 de Octubre','Villa Paraíso','Los Cristales','La Perla','Los Sauces','Villamar','La Riviera','Altos del Norte'],
       topBarrios:[{name:'José Antonio Galán',pct:51},{name:'Santa Clara',pct:47},{name:'Bermejal',pct:42}]
     }
@@ -780,14 +780,25 @@
   /* targetAssigned y targetRegistered definen cuántos voluntarios mock se generan
      por puesto. assigned y registered se calculan desde volunteerRegistry. */
   const pollingStations = [
-    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:640, targetAssigned:590, targetRegistered:512, captainIds:['juan-pablo'], status:'active' },
-    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:720, targetAssigned:600, targetRegistered:480, captainIds:['juan-pablo','david'], status:'active' },
-    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:820, targetAssigned:620, targetRegistered:410, captainIds:['andrea','juan-pablo'], status:'pending' },
-    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:700, targetAssigned:560, targetRegistered:420, captainIds:['hernan'], status:'active' },
-    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:760, targetAssigned:760, targetRegistered:360, captainIds:['susana'], status:'pending' },
-    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:780, targetAssigned:720, targetRegistered:350, captainIds:[], status:'pending' },
-    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:740, targetAssigned:640, targetRegistered:560, captainIds:['carmen'], status:'active' },
-    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:840, targetAssigned:800, targetRegistered:390, captainIds:['andrea'], status:'pending' }
+    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:420, targetAssigned:300, targetRegistered:250, captainIds:['juan-pablo'], status:'active' },
+    { id:'puesto-9', name:'Puesto Comuna 1 · 20 de Julio', comunaId:'comuna-1', barrio:'20 de Julio', position:[8.2447,-73.3585], meta:240, targetAssigned:240, targetRegistered:202, captainIds:[], status:'pending' },
+    { id:'puesto-10', name:'I.E. Santa Ana', comunaId:'comuna-1', barrio:'Santa Ana', position:[8.24182,-73.35389], meta:140, targetAssigned:130, targetRegistered:60, captainIds:[], status:'pending' },
+    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2553,-73.3451], meta:560, targetAssigned:340, targetRegistered:300, captainIds:['juan-pablo','david'], status:'active' },
+    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2553,-73.3515], meta:480, targetAssigned:430, targetRegistered:260, captainIds:['andrea','juan-pablo'], status:'pending' },
+    { id:'puesto-11', name:'Colegio El Carmen', comunaId:'comuna-2', barrio:'El Carmen', position:[8.2489,-73.3515], meta:360, targetAssigned:240, targetRegistered:180, captainIds:['david'], status:'active' },
+    { id:'puesto-12', name:'I.E. Betania', comunaId:'comuna-2', barrio:'Betania', position:[8.2489,-73.3451], meta:300, targetAssigned:210, targetRegistered:150, captainIds:['andrea'], status:'active' },
+    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2433,-73.3451], meta:460, targetAssigned:330, targetRegistered:260, captainIds:['hernan'], status:'active' },
+    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.24390,-73.35068], meta:450, targetAssigned:380, targetRegistered:180, captainIds:['susana'], status:'pending' },
+    { id:'puesto-13', name:'Colegio Santa Lucía', comunaId:'comuna-3', barrio:'Santa Lucía', position:[8.2369,-73.3515], meta:280, targetAssigned:240, targetRegistered:180, captainIds:['hernan'], status:'pending' },
+    { id:'puesto-14', name:'I.E. Camino Real', comunaId:'comuna-3', barrio:'Camino Real', position:[8.2369,-73.3451], meta:210, targetAssigned:200, targetRegistered:160, captainIds:['susana'], status:'active' },
+    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.24010,-73.36640], meta:320, targetAssigned:320, targetRegistered:270, captainIds:[], status:'pending' },
+    { id:'puesto-15', name:'I.E. Juan XXIII', comunaId:'comuna-4', barrio:'Juan XXIII', position:[8.23600,-73.36230], meta:180, targetAssigned:170, targetRegistered:80, captainIds:[], status:'pending' },
+    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2556,-73.3613], meta:460, targetAssigned:300, targetRegistered:260, captainIds:['carmen'], status:'active' },
+    { id:'puesto-16', name:'Colegio Ciudad Jardín', comunaId:'comuna-5', barrio:'Ciudad Jardín', position:[8.2511,-73.36585], meta:320, targetAssigned:260, targetRegistered:180, captainIds:['carmen'], status:'active' },
+    { id:'puesto-17', name:'I.E. La Primavera', comunaId:'comuna-5', barrio:'La Primavera', position:[8.24705,-73.36328], meta:220, targetAssigned:200, targetRegistered:120, captainIds:['carmen'], status:'pending' },
+    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2601,-73.35184], meta:250, targetAssigned:250, targetRegistered:220, captainIds:['andrea'], status:'pending' },
+    { id:'puesto-18', name:'I.E. José Antonio Galán', comunaId:'comuna-6', barrio:'José Antonio Galán', position:[8.2601,-73.35876], meta:270, targetAssigned:250, targetRegistered:170, captainIds:[], status:'pending' },
+    { id:'puesto-19', name:'Puesto Comuna 6 · Altos del Norte', comunaId:'comuna-6', barrio:'Altos del Norte', position:[8.2541,-73.3553], meta:80, targetAssigned:0, targetRegistered:0, captainIds:[], status:'pending' }
   ];
 
   const campaignMockData = {
@@ -1157,6 +1168,13 @@
   let ocanaLeafletMap = null;
   const zoneLayers = {};
 
+  function fitOcanaMapToCity(){
+    if(!ocanaLeafletMap) return;
+    const bounds = L.featureGroup(ocanaZones.map(function(zone){ return zoneLayers[zone.id].halo; })).getBounds();
+    pollingStations.forEach(function(station){ bounds.extend(station.position); });
+    ocanaLeafletMap.fitBounds(bounds, {padding:[30, 30]});
+  }
+
   function initOcanaMap(){
     const mapEl = document.getElementById('ocanaLeafletMap');
     if(!mapEl) return;
@@ -1202,8 +1220,7 @@
       zoneLayers[zone.id] = {halo:halo, outline:outline};
     });
 
-    const bounds = L.featureGroup(ocanaZones.map(function(zone){ return zoneLayers[zone.id].halo; })).getBounds();
-    ocanaLeafletMap.fitBounds(bounds, {padding:[26, 26]});
+    fitOcanaMapToCity();
     renderPollingStations();
     applyZoneSelectionStyles();
   }
@@ -1494,6 +1511,7 @@
       return '<tr><td><div class="person">'+escapeHtml(item.station.name)+'</div><div class="muted">'+escapeHtml(item.station.barrio)+'</div></td>'+
         '<td>'+escapeHtml(item.zone ? item.zone.code : item.station.comunaId)+'</td>'+
         '<td>'+escapeHtml(item.captains.length ? item.captains.join(', ') : 'Sin asignar')+'</td>'+
+        '<td>'+formatNumber(item.station.meta)+'</td>'+
         '<td>'+formatNumber(item.station.registered)+' / '+formatNumber(item.station.assigned)+'</td>'+
         '<td><div class="bar2"><i style="width:'+Math.min(item.progress, 100)+'%;"></i></div><div class="muted">'+item.progress+'% confirmadas</div></td>'+
         '<td>'+alerts+'</td>'+
@@ -1509,7 +1527,7 @@
         {value:String(low),label:'Bajo 50%',delta:'Avance de confirmación'},
         {value:average+'%',label:'Avance promedio',delta:noCaptain+' sin capitán asignado'}
       ])+'</div>'+
-      '<div class="view-panel"><h3>Tablero de priorización</h3><div class="ph">Peores primero: revisa cobertura, capitán y confirmaciones antes de la próxima jornada.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Puesto</th><th>Comuna</th><th>Capitán</th><th>Confirmadas / Asignadas</th><th>Avance</th><th>Alertas</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+      '<div class="view-panel"><h3>Tablero de priorización</h3><div class="ph">Peores primero: revisa meta, cobertura, capitán y confirmaciones antes de la próxima jornada.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Puesto</th><th>Comuna</th><th>Capitán</th><th>Meta</th><th>Confirmadas / Asignadas</th><th>Avance</th><th>Alertas</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
 
   const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
@@ -1527,6 +1545,13 @@
     document.querySelector('#desktopApp .dtop h2').textContent = meta.title;
     document.querySelector('#desktopApp .dtop .sub').textContent = meta.subtitle;
     document.querySelector('#desktopApp .dcontent').scrollTop = 0;
+    if(viewId === 'resumen' && ocanaLeafletMap){
+      const wasHidden = ocanaLeafletMap.getSize().x === 0;
+      setTimeout(function(){
+        ocanaLeafletMap.invalidateSize();
+        if(wasHidden) fitOcanaMapToCity();
+      }, 0);
+    }
   }
 
   function personDetailGroups(person){
@@ -1697,8 +1722,7 @@
     if(showingDesktop && ocanaLeafletMap){
       setTimeout(function(){
         ocanaLeafletMap.invalidateSize();
-        const activeLayer = zoneLayers[activeZoneId];
-        if(activeLayer) ocanaLeafletMap.fitBounds(activeLayer.halo.getBounds(), {padding:[70, 70], maxZoom:16});
+        fitOcanaMapToCity();
       }, 60);
     }
     if(showingDesktop && captainNetworkMap){
