@@ -17,5 +17,12 @@ for (const section of ['capitanes', 'voluntarios', 'grupos', 'propuestas']) {
 
 assert.match(html, /function selectDashboardView\(/);
 assert.match(html, /const campaignMockData =/);
+assert.match(html, /const pollingStations =/);
+assert.match(html, /function renderPollingStationCard\(/);
+assert.match(html, /function renderCaptainNetworkMap\(/);
+assert.match(html, /function selectPollingStation\(/);
+assert.match(html, /data-demo-action="reference-toggle"/);
+assert.match(html, /showReferenceStations/);
+assert.match(html, /stationGoal/);
 
 console.log('Panel de campaña: navegación y vistas mock presentes.');
