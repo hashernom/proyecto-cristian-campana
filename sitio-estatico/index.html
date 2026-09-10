@@ -153,7 +153,7 @@
   .who{display:flex;align-items:center;gap:8px;}
   .avatar2{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;
     align-items:center;justify-content:center;font-weight:700;font-size:10.5px;flex-shrink:0;}
-  .dcontent{flex:1;overflow:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;}
+  .dcontent{flex:1;overflow:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;position:relative;}
   .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
   .stat{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid #ECEEF5;display:flex;
     flex-direction:column;gap:5px;}
@@ -241,9 +241,13 @@
 
   /* ---------- Ocaña zones map ---------- */
   .map-layout{display:grid;grid-template-columns:1.3fr .9fr;gap:16px;min-width:0;}
-  .map-panel{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:18px;min-width:0;}
+  .map-panel{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:18px;min-width:0;position:relative;}
   .map-panel h3{font-size:13px;font-weight:700;margin:0 0 3px;}
   .map-panel .ph{font-size:10px;color:#9aa1b5;margin-bottom:13px;}
+  .map-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .map-tools .map-zone-picker{flex:1;margin-bottom:0;}
+  .map-tools-side{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .map-note{font-size:9px;color:#9aa1b5;line-height:1.35;}
   .map-zone-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
   .map-zone-btn{border:1.5px solid #E4E7F2;background:#fff;color:#6b7280;font:700 9.5px Poppins,sans-serif;
     border-radius:999px;padding:6px 12px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
@@ -252,6 +256,16 @@
   .map-zone-btn:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
   .map-leaflet{width:100%;height:360px;border-radius:14px;overflow:hidden;border:1px solid #ECEEF5;}
   .map-leaflet .leaflet-container{font-family:Poppins,sans-serif;background:#F8F9FC;}
+  .map-fallback{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;
+    background:linear-gradient(135deg,#F8F9FC,#EEF1FA);color:#6b7280;font-size:10px;line-height:1.5;}
+  .station-marker-wrap{background:transparent;border:0;}
+  .station-pin{width:34px;height:34px;border:2px solid #fff;border-radius:12px 12px 12px 4px;display:flex;
+    align-items:center;justify-content:center;transform:rotate(-45deg);box-shadow:0 5px 12px rgba(35,31,32,.24);color:#fff;}
+  .station-pin .station-count{font-size:9px;font-weight:800;line-height:1;transform:rotate(45deg);}
+  .station-pin.ok{background:var(--green);}
+  .station-pin.pend{background:var(--amber);}
+  .station-pin.dim{opacity:.42;filter:saturate(.55);box-shadow:0 3px 8px rgba(35,31,32,.14);}
+  .station-pin:focus-visible{outline:3px solid rgba(49,100,253,.4);outline-offset:2px;}
   .map-caption{font-size:9px;color:#9aa1b5;font-style:italic;text-align:center;margin-top:8px;}
   .map-legend{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;}
   .map-legend-item{display:flex;align-items:center;gap:6px;font-size:9.5px;color:#6b7280;font-weight:600;}
@@ -273,7 +287,41 @@
   .map-top-barrio .pct{width:28px;text-align:right;font-weight:800;color:var(--blue);flex-shrink:0;}
   .map-chips{display:flex;flex-wrap:wrap;gap:6px;}
   .map-chip{font-size:9.5px;font-weight:700;color:var(--blue);background:var(--blue-tint);border-radius:999px;
-    padding:6px 10px;}
+     padding:6px 10px;}
+  .map-station-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
+  .map-station-stat{background:#F8F9FC;border-radius:9px;padding:8px 5px;text-align:center;}
+  .map-station-stat .v{font-size:12px;font-weight:800;line-height:1.1;}
+  .map-station-stat .l{font-size:7.5px;color:#9aa1b5;font-weight:600;margin-top:3px;line-height:1.2;}
+  .map-station-list{display:flex;flex-direction:column;gap:6px;}
+  .map-station-row{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;border:1px solid #EEF0F6;
+    border-radius:9px;text-align:left;background:#fff;transition:border-color .15s,background .15s;}
+  .map-station-row:hover{border-color:#C7D2FA;background:#F8F9FC;}
+  .map-station-row:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
+  .map-station-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;}
+  .map-station-dot.pend{background:var(--amber);}
+  .map-station-row .name{font-size:9px;font-weight:700;line-height:1.25;min-width:0;flex:1;}
+  .map-station-row .count{font-size:8px;color:#6b7280;white-space:nowrap;}
+  .station-card{display:none;position:absolute;z-index:20;top:148px;right:24px;width:min(300px,calc(100% - 48px));
+    background:rgba(255,255,255,.98);border:1px solid #DCE5FF;border-radius:16px;padding:15px;
+    box-shadow:0 18px 38px rgba(20,40,120,.2);}
+  .station-card.show{display:block;}
+  .station-card.reference{border-color:#F0D59A;}
+  .station-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .station-card-title{font-size:12px;font-weight:800;line-height:1.3;padding-right:2px;}
+  .station-card-close{width:25px;height:25px;border-radius:50%;background:#F3F4F8;color:#6b7280;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;}
+  .station-card-close:hover{background:#E7E9F1;}
+  .station-card-close:focus-visible{outline:3px solid rgba(49,100,253,.28);outline-offset:2px;}
+  .station-card-meta{font-size:9px;color:#9aa1b5;margin-top:3px;}
+  .station-reference{display:inline-flex;margin-top:8px;padding:5px 8px;border-radius:999px;background:#FCF1DE;color:#9A6916;
+    font-size:8px;font-weight:700;}
+  .station-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px;}
+  .station-metric{background:#F8F9FC;border-radius:9px;padding:8px 6px;text-align:center;}
+  .station-metric .v{display:block;font-size:13px;font-weight:800;line-height:1.1;}
+  .station-metric .l{display:block;font-size:8px;color:#9aa1b5;font-weight:600;margin-top:3px;}
+  .station-progress{height:7px;border-radius:99px;background:#EEF0F6;overflow:hidden;margin-top:12px;}
+  .station-progress i{display:block;height:100%;border-radius:99px;background:var(--blue);}
+  .station-progress-meta{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:8px;color:#9aa1b5;font-weight:600;}
 
   /* ---------- person detail modal ---------- */
   .modal-overlay{position:fixed;inset:0;background:rgba(15,20,35,.44);display:flex;align-items:center;
@@ -316,6 +364,10 @@
     .map-layout{grid-template-columns:1fr;}
     .modal-card{padding:22px 18px 18px;}
     .modal-grid{grid-template-columns:1fr;}
+    .map-tools{align-items:stretch;}
+    .map-tools-side{justify-content:space-between;}
+    .station-card{top:154px;right:18px;width:calc(100% - 36px);}
+    .map-station-summary{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
 
   .logo3{display:block;}
@@ -929,18 +981,6 @@
     return mapLegendTiers[3];
   }
 
-  function hexPoints(centerLat, centerLng, radiusDeg){
-    const angles = [10, 70, 130, 190, 250, 310];
-    const radiusScale = [1, 0.88, 1.05, 0.92, 1.08, 0.95];
-    return angles.map(function(angle, i){
-      const rad = angle * Math.PI / 180;
-      const r = radiusDeg * radiusScale[i];
-      const lat = centerLat + r * Math.sin(rad);
-      const lng = centerLng + (r * Math.cos(rad)) / Math.cos(centerLat * Math.PI / 180);
-      return [lat, lng];
-    });
-  }
-
   let activeZoneId = ocanaZones.reduce(function(best, zone){
     return (!best || zone.support > best.support) ? zone : best;
   }, null).id;
@@ -952,6 +992,13 @@
         '<span class="pct">'+barrio.pct+'%</span></div>';
     }).join('');
     const chipsHtml = zone.barrios.map(function(barrio){ return '<span class="map-chip">'+escapeHtml(barrio)+'</span>'; }).join('');
+    const stationSummary = zoneStationSummary(zone.id);
+    const stationRows = stationsForZone(zone.id).map(function(station){
+      const registered = Math.min(stationNumber(station.registered), stationNumber(station.assigned));
+      return '<button type="button" class="map-station-row" data-demo-action="station" data-station-id="'+escapeHtml(station.id)+'" aria-label="Abrir '+escapeHtml(station.name)+'">'+
+        '<span class="map-station-dot '+stationStatusClass(station.status)+'"></span><span class="name">'+escapeHtml(station.name)+'</span>'+
+        '<span class="count">'+registered+'/'+stationNumber(station.assigned)+'</span></button>';
+    }).join('');
     return '<div><div class="zone-code">'+escapeHtml(zone.code)+'</div><div class="zone-name">'+escapeHtml(zone.name)+'</div></div>'+
       '<div class="map-side-stats">'+
         '<div class="map-side-stat"><div class="v">'+zone.support+'%</div><div class="l">Apoyo estimado</div></div>'+
@@ -959,6 +1006,13 @@
         '<div class="map-side-stat"><div class="v">'+zone.captains+'</div><div class="l">Capitanes</div></div>'+
       '</div>'+
       '<div style="font-size:9.5px;color:var(--green);font-weight:700;">'+escapeHtml(zone.trend)+'</div>'+
+      '<div><h4>Estaciones de votación</h4><div class="map-station-summary">'+
+        '<div class="map-station-stat"><div class="v">'+stationSummary.stationGoal+'</div><div class="l">Meta puestos</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+stationSummary.covered+'</div><div class="l">Puestos cubiertos</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+stationSummary.assigned+'</div><div class="l">Asignadas</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+stationSummary.registered+'</div><div class="l">Registradas</div></div>'+
+      '</div></div>'+
+      '<div class="map-station-list">'+(stationRows || '<div class="empty-state">Sin puestos de votación registrados.</div>')+'</div>'+
       '<div><h4>Barrios con mayor popularidad</h4><div class="map-top-barrios">'+topBarriosHtml+'</div></div>'+
       '<div><h4>Todos los barrios de la comuna</h4><div class="map-chips">'+chipsHtml+'</div></div>';
   }
@@ -973,8 +1027,11 @@
     const activeZone = ocanaZones.find(function(zone){ return zone.id === activeZoneId; }) || ocanaZones[0];
     return '<div class="map-panel"><h3>Mapa de popularidad por comuna</h3>'+
       '<div class="ph">Nivel de apoyo estimado según barrio y comuna, sobre el mapa real de Ocaña.</div>'+
-      '<div class="map-zone-picker">'+picker+'</div>'+
+      '<div class="map-tools"><div class="map-zone-picker">'+picker+'</div>'+
+        '<div class="map-tools-side"><span class="map-note">Datos referenciales para demo.</span></div>'+
+        '</div>'+
       '<div class="map-leaflet" id="ocanaLeafletMap"></div>'+
+      '<div class="station-card" id="stationCard" aria-hidden="true"></div>'+
       '<div class="map-caption">Mapa aproximado · límites de comuna no oficiales, solo referenciales</div>'+
       '<div class="map-legend">'+legend+'</div>'+
       '</div>'+
@@ -982,11 +1039,16 @@
   }
 
   let ocanaLeafletMap = null;
-  const zonePolygons = {};
+  const zoneLayers = {};
+  const stationLayers = {};
 
   function initOcanaMap(){
     const mapEl = document.getElementById('ocanaLeafletMap');
-    if(!mapEl || typeof L === 'undefined') return;
+    if(!mapEl) return;
+    if(typeof L === 'undefined'){
+      mapEl.innerHTML = '<div class="map-fallback" role="status">El mapa interactivo no está disponible en este momento. La información territorial sigue disponible en el panel.</div>';
+      return;
+    }
 
     ocanaLeafletMap = L.map(mapEl, {
       center: [8.2481, -73.3553],
@@ -1001,37 +1063,119 @@
     ocanaZones.forEach(function(zone){
       const layout = zoneLayout[zone.id];
       const tier = mapTier(zone.support);
-      const polygon = L.polygon(hexPoints(layout.center[0], layout.center[1], layout.radius), {
+      const halo = L.circle(layout.center, {
+        radius: layout.radius * 110000,
         color: tier.stroke,
-        weight: 2,
+        weight: 1,
         fillColor: tier.fill,
-        fillOpacity: 0.55
+        fillOpacity: 0.16,
+        opacity: 0.45
       }).addTo(ocanaLeafletMap);
-      polygon.bindTooltip(zone.code+' · '+zone.shortName+' — '+zone.support+'% de apoyo', {sticky:true});
-      polygon.on('click', function(){ selectZone(zone.id); });
-      zonePolygons[zone.id] = polygon;
+      const outline = L.circle(layout.center, {
+        radius: layout.radius * 72000,
+        color: tier.stroke,
+        weight: 1.5,
+        fillColor: tier.fill,
+        fillOpacity: 0.03,
+        opacity: 0.65
+      }).addTo(ocanaLeafletMap);
+      const tooltip = zone.code+' · '+zone.shortName+' — '+zone.support+'% de apoyo';
+      halo.bindTooltip(tooltip, {sticky:true});
+      outline.bindTooltip(tooltip, {sticky:true});
+      halo.on('click', function(){ selectZone(zone.id); });
+      outline.on('click', function(){ selectZone(zone.id); });
+      zoneLayers[zone.id] = {halo:halo, outline:outline};
     });
 
-    const bounds = L.featureGroup(Object.values(zonePolygons)).getBounds();
+    const bounds = L.featureGroup(ocanaZones.map(function(zone){ return zoneLayers[zone.id].halo; })).getBounds();
     ocanaLeafletMap.fitBounds(bounds, {padding:[26, 26]});
-
+    renderPollingStations();
     applyZoneSelectionStyles();
   }
 
   function applyZoneSelectionStyles(){
-    Object.keys(zonePolygons).forEach(function(id){
+    Object.keys(zoneLayers).forEach(function(id){
       const zone = ocanaZones.find(function(z){ return z.id === id; });
       const tier = mapTier(zone.support);
       const isActive = id === activeZoneId;
-      zonePolygons[id].setStyle({
+      zoneLayers[id].halo.setStyle({
+        color: tier.stroke,
+        weight: isActive ? 1.5 : 1,
+        fillColor: tier.fill,
+        fillOpacity: isActive ? 0.27 : 0.13,
+        opacity: isActive ? 0.7 : 0.4
+      });
+      zoneLayers[id].outline.setStyle({
         color: isActive ? '#231F20' : tier.stroke,
-        weight: isActive ? 4 : 2,
-        fillOpacity: isActive ? 0.75 : 0.5
+        weight: isActive ? 2.5 : 1.25,
+        fillColor: tier.fill,
+        fillOpacity: isActive ? 0.08 : 0.02,
+        opacity: isActive ? 0.9 : 0.55
       });
     });
     document.querySelectorAll('.map-zone-btn').forEach(function(btn){
       btn.classList.toggle('active', btn.dataset.zone === activeZoneId);
     });
+  }
+
+  function stationIcon(station){
+    const registered = Math.min(stationNumber(station.registered), stationNumber(station.assigned));
+    const statusClass = stationStatusClass(station.status);
+    return L.divIcon({
+      className:'station-marker-wrap',
+      html:'<button type="button" class="station-pin '+statusClass+'" aria-label="'+escapeHtml(station.name)+' · '+registered+' registradas"><span class="station-count">'+registered+'</span></button>',
+      iconSize:[34,34],
+      iconAnchor:[17,24]
+    });
+  }
+
+  function renderPollingStations(){
+    pollingStations.forEach(function(station){
+      const marker = L.marker(station.position, {icon:stationIcon(station), keyboard:true, title:station.name}).addTo(ocanaLeafletMap);
+      marker.on('click', function(){ selectPollingStation(station.id, false, 'stationCard'); });
+      stationLayers[station.id] = marker;
+    });
+  }
+
+  function renderPollingStationCard(station, reference){
+    if(!station) return '';
+    const zone = ocanaZones.find(function(item){ return item.id === station.comunaId; });
+    const assigned = stationNumber(station.assigned);
+    const registered = Math.min(stationNumber(station.registered), assigned);
+    const progress = stationProgress(station);
+    const referenceLabel = reference ? '<div class="station-reference">Dato referencial · pertenece a otra red</div>' : '';
+    return '<div class="station-card-head"><div class="station-card-title" id="stationCardTitle">'+escapeHtml(station.name)+'</div>'+
+      '<button type="button" class="station-card-close" data-demo-action="close-station-card" aria-label="Cerrar ficha de estación">'+
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>'+
+      '</button></div>'+
+      '<div class="station-card-meta">'+escapeHtml(station.barrio)+' · '+escapeHtml(zone ? zone.code : station.comunaId)+'</div>'+referenceLabel+
+      '<div class="station-metrics"><div class="station-metric"><span class="v">'+escapeHtml(station.meta)+'</span><span class="l">Meta</span></div>'+
+        '<div class="station-metric"><span class="v">'+assigned+'</span><span class="l">Asignadas</span></div>'+
+        '<div class="station-metric"><span class="v">'+registered+'</span><span class="l">Registradas</span></div></div>'+
+      '<div class="station-progress" aria-label="'+progress+'% de registro"><i style="width:'+progress+'%;"></i></div>'+
+      '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+registered+' de '+assigned+'</span></div>';
+  }
+
+  function selectPollingStation(stationId, reference, cardId){
+    const station = pollingStations.find(function(item){ return item.id === stationId; });
+    const card = document.getElementById(cardId || 'stationCard');
+    if(!station || !card) return;
+    const isReference = reference === true;
+    card.innerHTML = renderPollingStationCard(station, isReference);
+    card.classList.toggle('show', true);
+    card.classList.toggle('reference', isReference);
+    card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-modal', 'false');
+    card.setAttribute('aria-labelledby', 'stationCardTitle');
+    card.setAttribute('aria-hidden', 'false');
+  }
+
+  function closePollingStationCard(){
+    const card = document.getElementById('stationCard');
+    if(!card) return;
+    card.classList.remove('show', 'reference');
+    card.setAttribute('aria-hidden', 'true');
+    card.innerHTML = '';
   }
 
   function selectZone(zoneId){
@@ -1041,8 +1185,8 @@
     applyZoneSelectionStyles();
     const sideEl = document.getElementById('mapSide');
     if(sideEl) sideEl.innerHTML = renderZoneSide(zone);
-    const polygon = zonePolygons[zoneId];
-    if(polygon && ocanaLeafletMap) ocanaLeafletMap.fitBounds(polygon.getBounds(), {padding:[70, 70], maxZoom:16});
+    const layer = zoneLayers[zoneId];
+    if(layer && ocanaLeafletMap) ocanaLeafletMap.fitBounds(layer.halo.getBounds(), {padding:[70, 70], maxZoom:16});
   }
 
 
@@ -1200,6 +1344,14 @@
     if(!action) return;
     const kind = action.dataset.demoAction;
 
+    if(kind === 'station'){
+      selectPollingStation(action.dataset.stationId, false, 'stationCard');
+      return;
+    }
+    if(kind === 'close-station-card'){
+      closePollingStationCard();
+      return;
+    }
     if(kind === 'captain'){
       activeCaptainIndex = Number(action.dataset.captain);
       activeCaptainFilter = 'all';
@@ -1249,8 +1401,8 @@
     if(showingDesktop && ocanaLeafletMap){
       setTimeout(function(){
         ocanaLeafletMap.invalidateSize();
-        const activePolygon = zonePolygons[activeZoneId];
-        if(activePolygon) ocanaLeafletMap.fitBounds(activePolygon.getBounds(), {padding:[70, 70], maxZoom:16});
+        const activeLayer = zoneLayers[activeZoneId];
+        if(activeLayer) ocanaLeafletMap.fitBounds(activeLayer.halo.getBounds(), {padding:[70, 70], maxZoom:16});
       }, 60);
     }
   }
