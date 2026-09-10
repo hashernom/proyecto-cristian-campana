@@ -238,6 +238,15 @@
   .filter-chip:hover{border-color:#C7CEE0;}
   .filter-chip.active{background:var(--ink);border-color:var(--ink);color:#fff;}
   .filter-chip:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
+  .captain-goal{gap:10px;}
+  .captain-goal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .captain-goal-head h3{font-size:13px;font-weight:700;margin:0 0 3px;}
+  .captain-goal-head .ph{margin:0;}
+  .captain-goal-track{height:14px;border-radius:99px;background:#EEF0F6;overflow:hidden;}
+  .captain-goal-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .3s ease;}
+  .captain-goal-track i.done{background:var(--green);}
+  .captain-goal-meta{display:flex;justify-content:space-between;gap:10px;font-size:9.5px;color:#6b7280;font-weight:600;}
+  .captain-goal-meta .goal-done{color:var(--green);}
 
   /* ---------- Ocaña zones map ---------- */
   .map-layout{display:grid;grid-template-columns:1.3fr .9fr;gap:16px;min-width:0;}
@@ -803,7 +812,7 @@
 
   const campaignMockData = {
     capitanes: [
-      { id:'juan-pablo', initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, progress:82, status:'ok',
+      { id:'juan-pablo', initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, goal:900, status:'ok',
         team:[
           { initials:'CR', name:'Camila Restrepo', neighborhood:'Cristo Rey', phone:'300 512 4471', date:'08 sep 2026', status:'ok' },
           { initials:'AP', name:'Andrés Peñaranda', neighborhood:'El Dorado', phone:'301 663 2290', date:'07 sep 2026', status:'ok' },
@@ -815,7 +824,7 @@
           { initials:'MS', name:'Marcela Sánchez', neighborhood:'Cañaveral', phone:'317 902 7734', date:'02 sep 2026', status:'ok' }
         ]
       },
-      { id:'carmen', initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, progress:64, status:'ok',
+      { id:'carmen', initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, goal:500, status:'ok',
         team:[
           { initials:'TV', name:'Tatiana Vergel', neighborhood:'Buenos Aires', phone:'300 224 8871', date:'08 sep 2026', status:'ok' },
           { initials:'OL', name:'Óscar Lobo', neighborhood:'La Primavera', phone:'301 556 4423', date:'07 sep 2026', status:'ok' },
@@ -826,7 +835,7 @@
           { initials:'LR', name:'Lorena Ropero', neighborhood:'El Llano', phone:'316 883 5540', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { id:'hernan', initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, progress:48, status:'follow',
+      { id:'hernan', initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, goal:700, status:'follow',
         team:[
           { initials:'EV', name:'Édgar Villamizar', neighborhood:'La Piñuela', phone:'300 665 2214', date:'07 sep 2026', status:'ok' },
           { initials:'SC', name:'Silvia Carvajalino', neighborhood:'Camino Real', phone:'301 887 9032', date:'07 sep 2026', status:'pending' },
@@ -836,7 +845,7 @@
           { initials:'NP', name:'Nataly Pabón', neighborhood:'El Carretero', phone:'315 990 1123', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { id:'susana', initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, progress:35, status:'follow',
+      { id:'susana', initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, goal:600, status:'follow',
         team:[
           { initials:'YB', name:'Yeison Blanco', neighborhood:'Villa Nueva', phone:'300 887 4412', date:'07 sep 2026', status:'pending' },
           { initials:'MA', name:'Milena Ascanio', neighborhood:'La Costa', phone:'301 445 6690', date:'06 sep 2026', status:'ok' },
@@ -846,7 +855,7 @@
           { initials:'ZN', name:'Zulay Navarro', neighborhood:'La Esperanza', phone:'315 556 3347', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { id:'david', initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, progress:29, status:'follow',
+      { id:'david', initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, goal:550, status:'follow',
         team:[
           { initials:'RS', name:'Robinson Solano', neighborhood:'Cristo Rey', phone:'300 224 6675', date:'07 sep 2026', status:'pending' },
           { initials:'KD', name:'Katerine Duarte', neighborhood:'El Peñón', phone:'301 667 3392', date:'06 sep 2026', status:'ok' },
@@ -856,7 +865,7 @@
           { initials:'MP', name:'Marisol Peña', neighborhood:'Comuneros', phone:'315 990 4456', date:'02 sep 2026', status:'ok' }
         ]
       },
-      { id:'andrea', initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, progress:25, status:'follow',
+      { id:'andrea', initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, goal:1000, status:'follow',
         team:[
           { initials:'BA', name:'Brenda Amaya', neighborhood:'Los Alpes', phone:'300 445 2298', date:'07 sep 2026', status:'pending' },
           { initials:'WT', name:'Wilson Toloza', neighborhood:'El Carmen', phone:'301 667 8834', date:'06 sep 2026', status:'ok' },
@@ -1024,8 +1033,9 @@
 
   function renderCapitanes(){
     const rows = campaignMockData.capitanes.map(function(captain, index){
+      const goalProgress = captainGoalProgress(captain);
       return '<tr><td><div class="person"><div class="av2">'+escapeHtml(captain.initials)+'</div>'+escapeHtml(captain.name)+'</div></td>'+
-        '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.added+'</td><td><div class="bar2"><i style="width:'+captain.progress+'%;"></i></div></td>'+
+        '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.added+'</td><td><div class="bar2"><i style="width:'+Math.min(goalProgress, 100)+'%;"></i></div><div class="muted">'+goalProgress+'% de meta</div></td>'+
         '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
     }).join('');
     return '<div class="view-heading"><div><h3>Capitanes de la red</h3><p>Quiénes están sumando más personas confirmadas a la campaña.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
@@ -1355,6 +1365,16 @@
     }, {covered:0, assigned:0, registered:0});
   }
 
+  function captainConfirmed(captain){
+    return captainStationSummary(captain).registered;
+  }
+
+  function captainGoalProgress(captain){
+    const goal = stationNumber(captain.goal);
+    if(!goal) return 0;
+    return Math.round((captainConfirmed(captain) / goal) * 100);
+  }
+
   function captainNetworkCounts(team){
     return team.reduce(function(acc, member){
       acc[member.status] = (acc[member.status]||0) + 1;
@@ -1416,12 +1436,25 @@
     const chips = filters.map(function(filter){
       return '<button class="filter-chip'+(activeCaptainFilter===filter.key?' active':'')+'" type="button" data-demo-action="team-filter" data-team-filter="'+filter.key+'">'+filter.label+'</button>';
     }).join('');
+    const confirmed = captainConfirmed(captain);
+    const goal = stationNumber(captain.goal);
+    const goalProgress = captainGoalProgress(captain);
+    const goalReached = goal > 0 && confirmed >= goal;
+    const remaining = Math.max(0, goal - confirmed);
+    const goalMessage = goalReached
+      ? 'Meta cumplida · incentivo desbloqueado'
+      : 'Faltan '+formatNumber(remaining)+' confirmados para la meta';
     return '<button class="back-link" type="button" data-demo-action="back-to-capitanes"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 19l-7-7 7-7"/></svg>Volver a capitanes</button>'+
       '<div class="view-heading"><div><h3>Red de '+escapeHtml(captain.name)+'</h3><p>'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</p></div><div class="view-note">'+captain.team.length+' personas en la red</div></div>'+
+      '<div class="view-panel captain-goal">'+
+        '<div class="captain-goal-head"><div><h3>Meta de voluntarios confirmados</h3><div class="ph">Progreso del capitán en su red territorial.</div></div><div class="view-note">'+formatNumber(confirmed)+' / '+formatNumber(goal)+'</div></div>'+
+        '<div class="captain-goal-track"><i class="'+(goalReached ? 'done' : '')+'" style="width:'+Math.min(goalProgress, 100)+'%;"></i></div>'+
+        '<div class="captain-goal-meta"><span>'+goalProgress+'% de la meta</span><span class="'+(goalReached ? 'goal-done' : '')+'">'+goalMessage+'</span></div>'+
+      '</div>'+
       '<div class="view-stats">'+dashboardMetrics([
-        {value:String(counts.ok||0), label:'Confirmados', delta:captain.team.length+' en total'},
-        {value:String(counts.pending||0), label:'Pendientes', delta:'Por confirmar'},
-        {value:String(counts.rejected||0), label:'Rechazados', delta:'Requieren revisión', tone:'warn'}
+        {value:String(counts.ok||0), label:'Equipo confirmado', delta:captain.team.length+' en total'},
+        {value:String(counts.pending||0), label:'Equipo pendiente', delta:'Por confirmar'},
+        {value:String(counts.rejected||0), label:'Equipo rechazado', delta:'Requieren revisión', tone:'warn'}
       ])+'</div>'+
       renderCaptainNetworkMap(captain)+
       '<div class="view-panel"><h3>Voluntarios de la red</h3><div class="ph">Filtra por estado de confirmación.</div><div class="filter-chips">'+chips+'</div>'+captainNetworkRows(captain.team, activeCaptainFilter)+'</div>';
