@@ -29,5 +29,7 @@ assert.match(html, /function buildVolunteerRegistry\(/);
 assert.match(html, /const volunteerRegistry =/);
 assert.match(html, /function volunteerRegistryCounts\(/);
 assert.match(html, /Confirmadas/);
+assert.match(html, /function renderPriorizacion\(/);
+assert.match(html, /data-view="priorizacion"/);
 
 console.log('Panel de campaña: navegación y vistas mock presentes.');

@@ -610,6 +610,7 @@
           <div class="tx">Panel de Campaña<small>Cristiam 2026</small></div>
         </div>
         <button class="nitem active" type="button" data-view="resumen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Resumen</button>
+        <button class="nitem" type="button" data-view="priorizacion"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 21V4"/><path d="M5 5h13l-2 4 2 4H5"/></svg>Priorización</button>
         <button class="nitem" type="button" data-view="capitanes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Capitanes</button>
         <button class="nitem" type="button" data-view="voluntarios"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Voluntarios</button>
         <button class="nitem" type="button" data-view="grupos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Grupos WhatsApp</button>
@@ -664,6 +665,7 @@
           <section id="view-capitanes" class="dashboard-view" aria-label="Capitanes"></section>
           <section id="view-voluntarios" class="dashboard-view" aria-label="Voluntarios"></section>
           <section id="view-grupos" class="dashboard-view" aria-label="Grupos de WhatsApp"></section>
+          <section id="view-priorizacion" class="dashboard-view" aria-label="Priorización"></section>
           <section id="view-propuestas" class="dashboard-view" aria-label="Propuestas"></section>
           <section id="view-capitan-red" class="dashboard-view" aria-label="Red del capitán"></section>
         </div>
@@ -778,14 +780,14 @@
   /* targetAssigned y targetRegistered definen cuántos voluntarios mock se generan
      por puesto. assigned y registered se calculan desde volunteerRegistry. */
   const pollingStations = [
-    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:640, targetAssigned:624, targetRegistered:512, captainIds:['juan-pablo'], status:'active' },
-    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:720, targetAssigned:585, targetRegistered:480, captainIds:['juan-pablo','david'], status:'active' },
-    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:820, targetAssigned:500, targetRegistered:410, captainIds:['andrea','juan-pablo'], status:'pending' },
-    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:700, targetAssigned:512, targetRegistered:420, captainIds:['hernan'], status:'active' },
-    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:760, targetAssigned:438, targetRegistered:360, captainIds:['susana'], status:'pending' },
-    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:780, targetAssigned:426, targetRegistered:350, captainIds:[], status:'pending' },
-    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:740, targetAssigned:680, targetRegistered:560, captainIds:['carmen'], status:'active' },
-    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:840, targetAssigned:474, targetRegistered:390, captainIds:['andrea'], status:'pending' }
+    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:640, targetAssigned:590, targetRegistered:512, captainIds:['juan-pablo'], status:'active' },
+    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:720, targetAssigned:600, targetRegistered:480, captainIds:['juan-pablo','david'], status:'active' },
+    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:820, targetAssigned:620, targetRegistered:410, captainIds:['andrea','juan-pablo'], status:'pending' },
+    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:700, targetAssigned:560, targetRegistered:420, captainIds:['hernan'], status:'active' },
+    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:760, targetAssigned:760, targetRegistered:360, captainIds:['susana'], status:'pending' },
+    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:780, targetAssigned:720, targetRegistered:350, captainIds:[], status:'pending' },
+    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:740, targetAssigned:640, targetRegistered:560, captainIds:['carmen'], status:'active' },
+    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:840, targetAssigned:800, targetRegistered:390, captainIds:['andrea'], status:'pending' }
   ];
 
   const campaignMockData = {
@@ -966,6 +968,7 @@
 
   const dashboardViewMeta = {
     resumen: { title:'Resumen de campaña', subtitle:'Datos consolidados de toda la red de voluntarios' },
+    priorizacion: { title:'Priorización', subtitle:'Puestos que requieren atención según su avance' },
     capitanes: { title:'Capitanes', subtitle:'Seguimiento a los líderes que hacen crecer la red' },
     voluntarios: { title:'Voluntarios', subtitle:'Personas registradas y estado de confirmación' },
     grupos: { title:'Grupos de WhatsApp', subtitle:'Comunidades activas y crecimiento de la conversación' },
@@ -1464,7 +1467,52 @@
     if(bounds.isValid()) captainNetworkMap.fitBounds(bounds, {padding:[30, 30]});
   }
 
-  const dashboardRenderers = {capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
+  function stationAlerts(station){
+    const alerts = [];
+    if(!station.captainIds.length) alerts.push({label:'Sin capitán', tone:'no'});
+    if(stationNumber(station.assigned) === 0){
+      alerts.push({label:'Sin cobertura', tone:'no'});
+    } else if(stationProgress(station) < 50){
+      alerts.push({label:'Bajo 50%', tone:'pend'});
+    }
+    return alerts;
+  }
+
+  function renderPriorizacion(){
+    const items = pollingStations.map(function(station){
+      const zone = ocanaZones.find(function(item){ return item.id === station.comunaId; });
+      const captains = station.captainIds.map(function(captainId){
+        const captain = campaignMockData.capitanes.find(function(item){ return item.id === captainId; });
+        return captain ? captain.name : captainId;
+      });
+      return {station:station, zone:zone, captains:captains, progress:stationProgress(station), alerts:stationAlerts(station)};
+    }).sort(function(a, b){ return a.progress - b.progress; });
+    const rows = items.map(function(item){
+      const alerts = item.alerts.length
+        ? item.alerts.map(function(alert){ return '<span class="badge '+alert.tone+'">'+alert.label+'</span>'; }).join(' ')
+        : '<span class="badge ok">Al día</span>';
+      return '<tr><td><div class="person">'+escapeHtml(item.station.name)+'</div><div class="muted">'+escapeHtml(item.station.barrio)+'</div></td>'+
+        '<td>'+escapeHtml(item.zone ? item.zone.code : item.station.comunaId)+'</td>'+
+        '<td>'+escapeHtml(item.captains.length ? item.captains.join(', ') : 'Sin asignar')+'</td>'+
+        '<td>'+formatNumber(item.station.registered)+' / '+formatNumber(item.station.assigned)+'</td>'+
+        '<td><div class="bar2"><i style="width:'+Math.min(item.progress, 100)+'%;"></i></div><div class="muted">'+item.progress+'% confirmadas</div></td>'+
+        '<td>'+alerts+'</td>'+
+        '<td><button class="view-action" type="button" data-demo-action="prioritize-station" data-station-id="'+item.station.id+'">Ver en mapa</button></td></tr>';
+    }).join('');
+    const critical = items.filter(function(item){ return item.alerts.length > 0; }).length;
+    const low = items.filter(function(item){ return item.progress < 50; }).length;
+    const noCaptain = items.filter(function(item){ return !item.station.captainIds.length; }).length;
+    const average = items.length ? Math.round(items.reduce(function(sum, item){ return sum + item.progress; }, 0) / items.length) : 0;
+    return '<div class="view-heading"><div><h3>Puestos por prioridad</h3><p>Ordenados del menor al mayor avance de confirmación para dirigir el esfuerzo territorial.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:String(critical),label:'Puestos críticos',delta:'Con al menos una alerta'},
+        {value:String(low),label:'Bajo 50%',delta:'Avance de confirmación'},
+        {value:average+'%',label:'Avance promedio',delta:noCaptain+' sin capitán asignado'}
+      ])+'</div>'+
+      '<div class="view-panel"><h3>Tablero de priorización</h3><div class="ph">Peores primero: revisa cobertura, capitán y confirmaciones antes de la próxima jornada.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Puesto</th><th>Comuna</th><th>Capitán</th><th>Confirmadas / Asignadas</th><th>Avance</th><th>Alertas</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  }
+
+  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
 
   function renderDashboardView(viewId){
     if(dashboardRenderers[viewId]) document.getElementById('view-'+viewId).innerHTML = dashboardRenderers[viewId]();
@@ -1577,6 +1625,15 @@
     }
     if(kind === 'close-station-card'){
       closePollingStationCard();
+      return;
+    }
+    if(kind === 'prioritize-station'){
+      const station = pollingStations.find(function(item){ return item.id === action.dataset.stationId; });
+      if(station){
+        selectDashboardView('resumen');
+        selectZone(station.comunaId);
+        selectPollingStation(station.id, false, 'stationCard');
+      }
       return;
     }
     if(kind === 'captain'){
