@@ -27,5 +27,6 @@ assert.match(html, /stationGoal/);
 assert.match(html, /\.map-leaflet\{[^}]*z-index:0[^}]*\}/);
 assert.match(html, /function buildVolunteerRegistry\(/);
 assert.match(html, /const volunteerRegistry =/);
+assert.match(html, /function volunteerRegistryCounts\(/);
 
 console.log('Panel de campaña: navegación y vistas mock presentes.');

@@ -778,14 +778,14 @@
   /* targetAssigned y targetRegistered definen cuántos voluntarios mock se generan
      por puesto. assigned y registered se calculan desde volunteerRegistry. */
   const pollingStations = [
-    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:42, targetAssigned:31, targetRegistered:24, captainIds:['juan-pablo'], status:'active' },
-    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:48, targetAssigned:36, targetRegistered:29, captainIds:['juan-pablo','david'], status:'active' },
-    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:36, targetAssigned:18, targetRegistered:11, captainIds:['andrea','juan-pablo'], status:'pending' },
-    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:44, targetAssigned:29, targetRegistered:21, captainIds:['hernan'], status:'active' },
-    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:40, targetAssigned:22, targetRegistered:14, captainIds:['susana'], status:'pending' },
-    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:32, targetAssigned:13, targetRegistered:8, captainIds:[], status:'pending' },
-    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:46, targetAssigned:28, targetRegistered:20, captainIds:['carmen'], status:'active' },
-    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:34, targetAssigned:16, targetRegistered:9, captainIds:['andrea'], status:'pending' }
+    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:640, targetAssigned:624, targetRegistered:512, captainIds:['juan-pablo'], status:'active' },
+    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:720, targetAssigned:585, targetRegistered:480, captainIds:['juan-pablo','david'], status:'active' },
+    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:820, targetAssigned:500, targetRegistered:410, captainIds:['andrea','juan-pablo'], status:'pending' },
+    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:700, targetAssigned:512, targetRegistered:420, captainIds:['hernan'], status:'active' },
+    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:760, targetAssigned:438, targetRegistered:360, captainIds:['susana'], status:'pending' },
+    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:780, targetAssigned:426, targetRegistered:350, captainIds:[], status:'pending' },
+    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:740, targetAssigned:680, targetRegistered:560, captainIds:['carmen'], status:'active' },
+    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:840, targetAssigned:474, targetRegistered:390, captainIds:['andrea'], status:'pending' }
   ];
 
   const campaignMockData = {
@@ -896,6 +896,32 @@
     };
   }
 
+  function makeVolunteer(station, zone, captain, status, random){
+    const first = volunteerNamePool.first[Math.floor(random() * volunteerNamePool.first.length)];
+    const last = volunteerNamePool.last[Math.floor(random() * volunteerNamePool.last.length)];
+    const emailName = (first + '.' + last).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return {
+      initials:(first.charAt(0) + last.charAt(0)).toUpperCase(),
+      name:first + ' ' + last,
+      firstName:first,
+      lastName:last,
+      document:'1 ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)),
+      phone:'3' + (10 + Math.floor(random() * 89)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (1000 + Math.floor(random() * 8999)),
+      email:emailName + '@correo.com',
+      instagram:'—',
+      gender:random() > 0.5 ? 'Femenino' : 'Masculino',
+      birthDate:String(1 + Math.floor(random() * 28)).padStart(2,'0') + '/' + String(1 + Math.floor(random() * 12)).padStart(2,'0') + '/' + (1960 + Math.floor(random() * 40)),
+      neighborhood:station.barrio,
+      comuna:zone ? zone.name : station.comunaId,
+      pollingStationId:station.id,
+      pollingStation:station.name,
+      captain:captain ? captain.name : 'Red territorial',
+      date:'0' + (1 + Math.floor(random() * 8)) + ' sep 2026',
+      status:status,
+      notes:''
+    };
+  }
+
   function buildVolunteerRegistry(){
     const random = seededRandom(20260909);
     const registry = campaignMockData.voluntarios.slice();
@@ -908,32 +934,14 @@
       const confirmed = linked.filter(function(person){ return person.status === 'ok'; }).length;
       const extra = Math.max(0, stationNumber(station.targetAssigned) - linked.length);
       const extraConfirmed = Math.max(0, Math.min(extra, stationNumber(station.targetRegistered) - confirmed));
+      const rejected = Math.round(stationNumber(station.targetAssigned) * 0.04);
       const zone = zonesById[station.comunaId];
       const captain = campaignMockData.capitanes.find(function(item){ return station.captainIds.indexOf(item.id) !== -1; });
       for(let i = 0; i < extra; i++){
-        const first = volunteerNamePool.first[Math.floor(random() * volunteerNamePool.first.length)];
-        const last = volunteerNamePool.last[Math.floor(random() * volunteerNamePool.last.length)];
-        const emailName = (first + '.' + last).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        registry.push({
-          initials:(first.charAt(0) + last.charAt(0)).toUpperCase(),
-          name:first + ' ' + last,
-          firstName:first,
-          lastName:last,
-          document:'1 ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)),
-          phone:'3' + (10 + Math.floor(random() * 89)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (1000 + Math.floor(random() * 8999)),
-          email:emailName + '@correo.com',
-          instagram:'—',
-          gender:random() > 0.5 ? 'Femenino' : 'Masculino',
-          birthDate:String(1 + Math.floor(random() * 28)).padStart(2,'0') + '/' + String(1 + Math.floor(random() * 12)).padStart(2,'0') + '/' + (1960 + Math.floor(random() * 40)),
-          neighborhood:station.barrio,
-          comuna:zone ? zone.name : station.comunaId,
-          pollingStationId:station.id,
-          pollingStation:station.name,
-          captain:captain ? captain.name : 'Red territorial',
-          date:'0' + (1 + Math.floor(random() * 8)) + ' sep 2026',
-          status:i < extraConfirmed ? 'ok' : 'pending',
-          notes:''
-        });
+        registry.push(makeVolunteer(station, zone, captain, i < extraConfirmed ? 'ok' : 'pending', random));
+      }
+      for(let i = 0; i < rejected; i++){
+        registry.push(makeVolunteer(station, zone, captain, 'rejected', random));
       }
     });
     return registry;
@@ -948,6 +956,13 @@
     station.assigned = linked.length;
     station.registered = linked.filter(function(person){ return person.status === 'ok'; }).length;
   });
+
+  function volunteerRegistryCounts(){
+    return volunteerRegistry.reduce(function(acc, person){
+      acc[person.status] = (acc[person.status] || 0) + 1;
+      return acc;
+    }, {ok:0, pending:0, rejected:0});
+  }
 
   const dashboardViewMeta = {
     resumen: { title:'Resumen de campaña', subtitle:'Datos consolidados de toda la red de voluntarios' },
@@ -966,6 +981,7 @@
 
   function stationStatusClass(status){ return status === 'active' ? 'ok' : 'pend'; }
   function stationNumber(value){ return Number.isFinite(value) && value >= 0 ? value : 0; }
+  function formatNumber(value){ return String(stationNumber(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
   function stationsForZone(comunaId){ return pollingStations.filter(function(station){ return station.comunaId === comunaId; }); }
   function stationsForCaptain(captainId){ return pollingStations.filter(function(station){ return station.captainIds.indexOf(captainId) !== -1; }); }
   function stationProgress(station){ const assigned = stationNumber(station.assigned); const registered = Math.min(stationNumber(station.registered), assigned); return assigned ? Math.round((registered / assigned) * 100) : 0; }
@@ -1013,12 +1029,16 @@
       return '<tr><td><div class="person"><div class="av2">'+escapeHtml(volunteer.initials)+'</div>'+escapeHtml(volunteer.name)+'</div></td>'+
         '<td>'+escapeHtml(volunteer.neighborhood)+'</td><td>'+escapeHtml(volunteer.captain)+'</td><td class="muted">'+escapeHtml(volunteer.date)+'</td><td>'+dashboardBadge(volunteer.status)+'</td><td><button class="view-action" type="button" data-demo-action="volunteer" data-person="'+index+'">Abrir</button></td></tr>';
     }).join('');
-    return '<div class="view-heading"><div><h3>Voluntarios registrados</h3><p>La red completa de personas que participan en la campaña.</p></div><div class="view-note">3 482 confirmados</div></div>'+
+    const registry = volunteerRegistryCounts();
+    const total = registry.ok + registry.pending + registry.rejected;
+    const pendingPct = total ? Math.round((registry.pending / total) * 100) : 0;
+    const rejectedPct = total ? Math.round((registry.rejected / total) * 100) : 0;
+    return '<div class="view-heading"><div><h3>Voluntarios registrados</h3><p>La red completa de personas que participan en la campaña.</p></div><div class="view-note">'+formatNumber(registry.ok)+' confirmados</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
-        {value:'3 482',label:'Confirmados',delta:'+186 esta semana'},
-        {value:'246',label:'Pendientes',delta:'6,6% del total'},
+        {value:formatNumber(registry.ok),label:'Confirmados',delta:'+186 esta semana'},
+        {value:formatNumber(registry.pending),label:'Pendientes',delta:pendingPct+'% del total'},
         {value:'82',label:'Nuevos hoy',delta:'+12 vs. ayer'},
-        {value:'128',label:'Rechazados',delta:'3,4% del total',tone:'warn'}
+        {value:formatNumber(registry.rejected),label:'Rechazados',delta:rejectedPct+'% del total',tone:'warn'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Nuevos ingresos</h3><div class="ph">Últimas personas registradas por la red de capitanes.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Capitán</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
@@ -1101,8 +1121,8 @@
       '<div><h4>Estaciones de votación</h4><div class="map-station-summary">'+
         '<div class="map-station-stat"><div class="v">'+stationSummary.stationGoal+'</div><div class="l">Meta puestos</div></div>'+
         '<div class="map-station-stat"><div class="v">'+stationSummary.covered+'</div><div class="l">Puestos cubiertos</div></div>'+
-        '<div class="map-station-stat"><div class="v">'+stationSummary.assigned+'</div><div class="l">Asignadas</div></div>'+
-        '<div class="map-station-stat"><div class="v">'+stationSummary.registered+'</div><div class="l">Registradas</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.assigned)+'</div><div class="l">Asignadas</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.registered)+'</div><div class="l">Registradas</div></div>'+
       '</div></div>'+
       '<div class="map-station-list">'+(stationRows || '<div class="empty-state">Sin puestos de votación registrados.</div>')+'</div>'+
       '<div><h4>Barrios con mayor popularidad</h4><div class="map-top-barrios">'+topBarriosHtml+'</div></div>'+
@@ -1241,11 +1261,11 @@
         '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>'+
       '</button></div>'+
       '<div class="station-card-meta">'+escapeHtml(station.barrio)+' · '+escapeHtml(zone ? zone.code : station.comunaId)+'</div>'+referenceLabel+
-      '<div class="station-metrics"><div class="station-metric"><span class="v">'+escapeHtml(station.meta)+'</span><span class="l">Meta</span></div>'+
-        '<div class="station-metric"><span class="v">'+assigned+'</span><span class="l">Asignadas</span></div>'+
-        '<div class="station-metric"><span class="v">'+registered+'</span><span class="l">Registradas</span></div></div>'+
+      '<div class="station-metrics"><div class="station-metric"><span class="v">'+formatNumber(station.meta)+'</span><span class="l">Meta</span></div>'+
+        '<div class="station-metric"><span class="v">'+formatNumber(assigned)+'</span><span class="l">Asignadas</span></div>'+
+        '<div class="station-metric"><span class="v">'+formatNumber(registered)+'</span><span class="l">Registradas</span></div></div>'+
       '<div class="station-progress" aria-label="'+progress+'% de registro"><i style="width:'+progress+'%;"></i></div>'+
-      '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+registered+' de '+assigned+'</span></div>';
+      '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+formatNumber(registered)+' de '+formatNumber(assigned)+'</span></div>';
   }
 
   function selectPollingStation(stationId, reference, cardId){
@@ -1345,11 +1365,11 @@
         '<div class="meta">'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</div>'+
         '<div class="station-metrics">'+
           '<div class="station-metric"><span class="v">'+summary.covered+'</span><span class="l">Puestos</span></div>'+
-          '<div class="station-metric"><span class="v">'+summary.assigned+'</span><span class="l">Asignadas</span></div>'+
-          '<div class="station-metric"><span class="v">'+summary.registered+'</span><span class="l">Registradas</span></div>'+
+          '<div class="station-metric"><span class="v">'+formatNumber(summary.assigned)+'</span><span class="l">Asignadas</span></div>'+
+          '<div class="station-metric"><span class="v">'+formatNumber(summary.registered)+'</span><span class="l">Registradas</span></div>'+
         '</div>'+
         '<div class="station-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'" aria-label="'+progress+'% de registro"><i style="width:'+progress+'%;"></i></div>'+
-        '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+summary.registered+' de '+summary.assigned+'</span></div>'+
+        '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+formatNumber(summary.registered)+' de '+formatNumber(summary.assigned)+'</span></div>'+
       '</div>'+
       '<div class="station-card captain-station-detail" id="captainStationCard" aria-hidden="true"></div>'+
       '<div class="captain-map-caption">Mapa aproximado · puestos atenuados pertenecen a otras redes</div>'+
