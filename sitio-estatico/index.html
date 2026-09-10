@@ -388,6 +388,7 @@
     .captain-map-shell{min-height:470px;}
     .captain-map-shell .map-leaflet{height:470px;}
     .captain-map-card{top:auto;left:18px;right:18px;bottom:18px;width:auto;}
+    .captain-map-shell.detail-open .captain-map-card{display:none;}
     .captain-station-detail{left:18px;right:18px;bottom:18px;width:auto;}
     .captain-map-caption{top:56px;bottom:auto;}
   }
@@ -1062,7 +1063,6 @@
 
   let ocanaLeafletMap = null;
   const zoneLayers = {};
-  const stationLayers = {};
 
   function initOcanaMap(){
     const mapEl = document.getElementById('ocanaLeafletMap');
@@ -1156,18 +1156,18 @@
     pollingStations.forEach(function(station){
       const marker = L.marker(station.position, {icon:stationIcon(station), keyboard:true, title:station.name}).addTo(ocanaLeafletMap);
       marker.on('click', function(){ selectPollingStation(station.id, false, 'stationCard'); });
-      stationLayers[station.id] = marker;
     });
   }
 
-  function renderPollingStationCard(station, reference){
+  function renderPollingStationCard(station, reference, titleId){
     if(!station) return '';
+    const titleElementId = titleId || 'stationCardTitle';
     const zone = ocanaZones.find(function(item){ return item.id === station.comunaId; });
     const assigned = stationNumber(station.assigned);
     const registered = Math.min(stationNumber(station.registered), assigned);
     const progress = stationProgress(station);
     const referenceLabel = reference ? '<div class="station-reference">Dato referencial · pertenece a otra red</div>' : '';
-    return '<div class="station-card-head"><div class="station-card-title" id="stationCardTitle">'+escapeHtml(station.name)+'</div>'+
+    return '<div class="station-card-head"><div class="station-card-title" id="'+titleElementId+'">'+escapeHtml(station.name)+'</div>'+
       '<button type="button" class="station-card-close" data-demo-action="close-station-card" aria-label="Cerrar ficha de estación">'+
         '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>'+
       '</button></div>'+
@@ -1184,13 +1184,16 @@
     const card = document.getElementById(cardId || 'stationCard');
     if(!station || !card) return;
     const isReference = reference === true;
-    card.innerHTML = renderPollingStationCard(station, isReference);
+    const titleElementId = (card.id || 'stationCard')+'Title';
+    card.innerHTML = renderPollingStationCard(station, isReference, titleElementId);
     card.classList.toggle('show', true);
     card.classList.toggle('reference', isReference);
     card.setAttribute('role', 'dialog');
     card.setAttribute('aria-modal', 'false');
-    card.setAttribute('aria-labelledby', 'stationCardTitle');
+    card.setAttribute('aria-labelledby', titleElementId);
     card.setAttribute('aria-hidden', 'false');
+    const shell = card.closest('.captain-map-shell');
+    if(shell) shell.classList.add('detail-open');
   }
 
   function closePollingStationCard(){
@@ -1198,9 +1201,13 @@
       const card = document.getElementById(cardId);
       if(!card) return;
       card.classList.remove('show', 'reference');
+      card.removeAttribute('role');
+      card.removeAttribute('aria-modal');
+      card.removeAttribute('aria-labelledby');
       card.setAttribute('aria-hidden', 'true');
       card.innerHTML = '';
     });
+    document.querySelectorAll('.captain-map-shell.detail-open').forEach(function(shell){ shell.classList.remove('detail-open'); });
   }
 
   function selectZone(zoneId){
@@ -1358,7 +1365,8 @@
       captainStationMarkers[station.id] = marker;
     });
 
-    const bounds = L.latLngBounds(pollingStations.map(function(station){ return station.position; }));
+    const visibleMarkers = Object.keys(captainStationMarkers).map(function(stationId){ return captainStationMarkers[stationId]; });
+    const bounds = L.featureGroup(visibleMarkers).getBounds();
     if(bounds.isValid()) captainNetworkMap.fitBounds(bounds, {padding:[30, 30]});
   }
 
@@ -1369,6 +1377,7 @@
   }
 
   function selectDashboardView(viewId){
+    if(viewId !== 'capitan-red' && captainNetworkMap) destroyCaptainNetworkMap();
     const meta = dashboardViewMeta[viewId] || dashboardViewMeta.resumen;
     const navKey = meta.nav || viewId;
     document.querySelectorAll('#desktopApp .dashboard-view').forEach(function(view){ view.classList.toggle('active', view.id === 'view-'+viewId); });
@@ -1442,6 +1451,7 @@
     if(event.key === 'Escape'){
       const overlay = document.getElementById('modalOverlay');
       if(overlay && overlay.classList.contains('show')) closePersonModal();
+      if(document.querySelector('.station-card.show')) closePollingStationCard();
     }
   });
 
