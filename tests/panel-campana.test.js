@@ -34,6 +34,7 @@ assert.match(html, /data-view="priorizacion"/);
 assert.match(html, /function captainGoalProgress\(/);
 assert.match(html, /captain-goal-track/);
 assert.match(html, /function buildCaptainTeams\(/);
+assert.doesNotMatch(html, /Lectura rápida/);
 assert.equal((html.match(/id:'puesto-\d+'/g) || []).length, 19);
 
 console.log('Panel de campaña: navegación y vistas mock presentes.');
