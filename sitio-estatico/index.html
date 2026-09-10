@@ -247,6 +247,7 @@
   .captain-goal-track i.done{background:var(--green);}
   .captain-goal-meta{display:flex;justify-content:space-between;gap:10px;font-size:9.5px;color:#6b7280;font-weight:600;}
   .captain-goal-meta .goal-done{color:var(--green);}
+  .team-table-wrap{max-height:430px;overflow-y:auto;}
 
   /* ---------- Ocaña zones map ---------- */
   .map-layout{display:grid;grid-template-columns:1.3fr .9fr;gap:16px;min-width:0;}
@@ -812,7 +813,7 @@
 
   const campaignMockData = {
     capitanes: [
-      { id:'juan-pablo', initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, goal:900, status:'ok',
+      { id:'juan-pablo', initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, goal:100, teamTarget:108, confirmedTarget:82, status:'ok',
         team:[
           { initials:'CR', name:'Camila Restrepo', neighborhood:'Cristo Rey', phone:'300 512 4471', date:'08 sep 2026', status:'ok' },
           { initials:'AP', name:'Andrés Peñaranda', neighborhood:'El Dorado', phone:'301 663 2290', date:'07 sep 2026', status:'ok' },
@@ -824,7 +825,7 @@
           { initials:'MS', name:'Marcela Sánchez', neighborhood:'Cañaveral', phone:'317 902 7734', date:'02 sep 2026', status:'ok' }
         ]
       },
-      { id:'carmen', initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, goal:500, status:'ok',
+      { id:'carmen', initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, goal:75, teamTarget:82, confirmedTarget:66, status:'ok',
         team:[
           { initials:'TV', name:'Tatiana Vergel', neighborhood:'Buenos Aires', phone:'300 224 8871', date:'08 sep 2026', status:'ok' },
           { initials:'OL', name:'Óscar Lobo', neighborhood:'La Primavera', phone:'301 556 4423', date:'07 sep 2026', status:'ok' },
@@ -835,7 +836,7 @@
           { initials:'LR', name:'Lorena Ropero', neighborhood:'El Llano', phone:'316 883 5540', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { id:'hernan', initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, goal:700, status:'follow',
+      { id:'hernan', initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, goal:85, teamTarget:88, confirmedTarget:55, status:'follow',
         team:[
           { initials:'EV', name:'Édgar Villamizar', neighborhood:'La Piñuela', phone:'300 665 2214', date:'07 sep 2026', status:'ok' },
           { initials:'SC', name:'Silvia Carvajalino', neighborhood:'Camino Real', phone:'301 887 9032', date:'07 sep 2026', status:'pending' },
@@ -845,7 +846,7 @@
           { initials:'NP', name:'Nataly Pabón', neighborhood:'El Carretero', phone:'315 990 1123', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { id:'susana', initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, goal:600, status:'follow',
+      { id:'susana', initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, goal:70, teamTarget:72, confirmedTarget:40, status:'follow',
         team:[
           { initials:'YB', name:'Yeison Blanco', neighborhood:'Villa Nueva', phone:'300 887 4412', date:'07 sep 2026', status:'pending' },
           { initials:'MA', name:'Milena Ascanio', neighborhood:'La Costa', phone:'301 445 6690', date:'06 sep 2026', status:'ok' },
@@ -855,7 +856,7 @@
           { initials:'ZN', name:'Zulay Navarro', neighborhood:'La Esperanza', phone:'315 556 3347', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { id:'david', initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, goal:550, status:'follow',
+      { id:'david', initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, goal:90, teamTarget:80, confirmedTarget:63, status:'follow',
         team:[
           { initials:'RS', name:'Robinson Solano', neighborhood:'Cristo Rey', phone:'300 224 6675', date:'07 sep 2026', status:'pending' },
           { initials:'KD', name:'Katerine Duarte', neighborhood:'El Peñón', phone:'301 667 3392', date:'06 sep 2026', status:'ok' },
@@ -865,7 +866,7 @@
           { initials:'MP', name:'Marisol Peña', neighborhood:'Comuneros', phone:'315 990 4456', date:'02 sep 2026', status:'ok' }
         ]
       },
-      { id:'andrea', initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, goal:1000, status:'follow',
+      { id:'andrea', initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, goal:80, teamTarget:70, confirmedTarget:44, status:'follow',
         team:[
           { initials:'BA', name:'Brenda Amaya', neighborhood:'Los Alpes', phone:'300 445 2298', date:'07 sep 2026', status:'pending' },
           { initials:'WT', name:'Wilson Toloza', neighborhood:'El Carmen', phone:'301 667 8834', date:'06 sep 2026', status:'ok' },
@@ -985,6 +986,59 @@
       return acc;
     }, {ok:0, pending:0, rejected:0});
   }
+
+  function makeTeamMember(captain, zone, station, status, random){
+    const first = volunteerNamePool.first[Math.floor(random() * volunteerNamePool.first.length)];
+    const last = volunteerNamePool.last[Math.floor(random() * volunteerNamePool.last.length)];
+    const emailName = (first + '.' + last).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const neighborhood = zone && zone.barrios.length
+      ? zone.barrios[Math.floor(random() * zone.barrios.length)]
+      : captain.neighborhood;
+    return {
+      initials:(first.charAt(0) + last.charAt(0)).toUpperCase(),
+      name:first + ' ' + last,
+      firstName:first,
+      lastName:last,
+      document:'1 ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (100 + Math.floor(random() * 899)),
+      phone:'3' + (10 + Math.floor(random() * 89)) + ' ' + (100 + Math.floor(random() * 899)) + ' ' + (1000 + Math.floor(random() * 8999)),
+      email:emailName + '@correo.com',
+      instagram:'—',
+      gender:random() > 0.5 ? 'Femenino' : 'Masculino',
+      birthDate:String(1 + Math.floor(random() * 28)).padStart(2,'0') + '/' + String(1 + Math.floor(random() * 12)).padStart(2,'0') + '/' + (1960 + Math.floor(random() * 40)),
+      neighborhood:neighborhood,
+      comuna:zone ? zone.name : captain.comuna,
+      pollingStationId:station ? station.id : '',
+      pollingStation:station ? station.name : '',
+      captain:captain.name,
+      date:'0' + (1 + Math.floor(random() * 8)) + ' sep 2026',
+      status:status,
+      notes:''
+    };
+  }
+
+  function buildCaptainTeams(){
+    const random = seededRandom(20260910);
+    campaignMockData.capitanes.forEach(function(captain){
+      const zoneCode = captain.comuna ? captain.comuna.split(' · ')[0] : '';
+      const zone = ocanaZones.find(function(item){ return item.code === zoneCode; });
+      const captainStations = stationsForCaptain(captain.id);
+      const existing = captain.team.length;
+      const confirmed = captain.team.filter(function(member){ return member.status === 'ok'; }).length;
+      const extra = Math.max(0, stationNumber(captain.teamTarget) - existing);
+      const extraConfirmed = Math.max(0, Math.min(extra, stationNumber(captain.confirmedTarget) - confirmed));
+      const rejected = Math.round(stationNumber(captain.teamTarget) * 0.04);
+      for(let i = 0; i < extra; i++){
+        const station = captainStations.length ? captainStations[i % captainStations.length] : null;
+        captain.team.push(makeTeamMember(captain, zone, station, i < extraConfirmed ? 'ok' : 'pending', random));
+      }
+      for(let i = 0; i < rejected; i++){
+        const station = captainStations.length ? captainStations[i % captainStations.length] : null;
+        captain.team.push(makeTeamMember(captain, zone, station, 'rejected', random));
+      }
+    });
+  }
+
+  buildCaptainTeams();
 
   const dashboardViewMeta = {
     resumen: { title:'Resumen de campaña', subtitle:'Datos consolidados de toda la red de voluntarios' },
@@ -1366,7 +1420,7 @@
   }
 
   function captainConfirmed(captain){
-    return captainStationSummary(captain).registered;
+    return captainNetworkCounts(captain.team).ok || 0;
   }
 
   function captainGoalProgress(captain){
@@ -1393,7 +1447,7 @@
         '<td>'+escapeHtml(member.neighborhood)+'</td><td class="muted">'+escapeHtml(member.phone)+'</td><td class="muted">'+escapeHtml(member.date)+'</td>'+
         '<td>'+dashboardBadge(member.status)+'</td><td><button class="view-action" type="button" data-demo-action="team-person" data-captain="'+activeCaptainIndex+'" data-team-member="'+memberIndex+'">Abrir</button></td></tr>';
     }).join('');
-    return '<div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Celular</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    return '<div class="view-table-wrap team-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Celular</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
   }
 
   function renderCaptainNetworkMap(captain){
