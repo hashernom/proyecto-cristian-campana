@@ -820,7 +820,7 @@
     });
   }
 
-  function stationStatusClass(status){ return status === 'active' ? 'ok' : 'pending'; }
+  function stationStatusClass(status){ return status === 'active' ? 'ok' : 'pend'; }
   function stationNumber(value){ return Number.isFinite(value) && value >= 0 ? value : 0; }
   function stationsForZone(comunaId){ return pollingStations.filter(function(station){ return station.comunaId === comunaId; }); }
   function stationsForCaptain(captainId){ return pollingStations.filter(function(station){ return station.captainIds.indexOf(captainId) !== -1; }); }
