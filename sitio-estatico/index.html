@@ -323,6 +323,23 @@
   .station-progress i{display:block;height:100%;border-radius:99px;background:var(--blue);}
   .station-progress-meta{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:8px;color:#9aa1b5;font-weight:600;}
 
+  /* ---------- captain network map ---------- */
+  .captain-map-shell{position:relative;min-height:390px;border-radius:14px;overflow:hidden;border:1px solid #ECEEF5;background:#F8F9FC;}
+  .captain-map-shell .map-leaflet{height:390px;border:0;border-radius:0;}
+  .captain-map-card{position:absolute;z-index:15;top:18px;right:18px;width:min(280px,calc(100% - 36px));
+    background:rgba(255,255,255,.98);border:1px solid #DCE5FF;border-radius:16px;padding:14px;
+    box-shadow:0 18px 38px rgba(20,40,120,.2);}
+  .captain-map-card .name{font-size:12px;font-weight:800;line-height:1.3;}
+  .captain-map-card .meta{font-size:9px;color:#9aa1b5;margin-top:3px;}
+  .reference-toggle{position:absolute;z-index:15;top:18px;left:18px;display:inline-flex;align-items:center;gap:7px;
+    background:rgba(255,255,255,.96);border:1px solid #DCE5FF;border-radius:999px;padding:8px 12px;
+    font-size:9.5px;font-weight:700;color:#4b5563;cursor:pointer;box-shadow:0 8px 18px rgba(20,40,120,.12);}
+  .reference-toggle input{width:14px;height:14px;margin:0;accent-color:var(--blue);cursor:pointer;}
+  .reference-toggle:focus-within{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;}
+  .captain-station-detail{top:auto;right:auto;left:18px;bottom:18px;width:min(300px,calc(100% - 36px));}
+  .captain-map-caption{position:absolute;z-index:14;left:18px;bottom:18px;font-size:8.5px;color:#6b7280;
+    background:rgba(255,255,255,.92);border-radius:999px;padding:5px 9px;font-style:italic;pointer-events:none;}
+
   /* ---------- person detail modal ---------- */
   .modal-overlay{position:fixed;inset:0;background:rgba(15,20,35,.44);display:flex;align-items:center;
     justify-content:center;padding:24px;z-index:300;opacity:0;pointer-events:none;transition:opacity .18s ease;}
@@ -368,6 +385,11 @@
     .map-tools-side{justify-content:space-between;}
     .station-card{top:154px;right:18px;width:calc(100% - 36px);}
     .map-station-summary{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .captain-map-shell{min-height:470px;}
+    .captain-map-shell .map-leaflet{height:470px;}
+    .captain-map-card{top:auto;left:18px;right:18px;bottom:18px;width:auto;}
+    .captain-station-detail{left:18px;right:18px;bottom:18px;width:auto;}
+    .captain-map-caption{top:56px;bottom:auto;}
   }
 
   .logo3{display:block;}
@@ -1118,12 +1140,13 @@
     });
   }
 
-  function stationIcon(station){
+  function stationIcon(station, dim){
     const registered = Math.min(stationNumber(station.registered), stationNumber(station.assigned));
     const statusClass = stationStatusClass(station.status);
+    const dimClass = dim ? ' dim' : '';
     return L.divIcon({
       className:'station-marker-wrap',
-      html:'<button type="button" class="station-pin '+statusClass+'" aria-label="'+escapeHtml(station.name)+' · '+registered+' registradas"><span class="station-count">'+registered+'</span></button>',
+      html:'<button type="button" class="station-pin '+statusClass+dimClass+'" aria-label="'+escapeHtml(station.name)+' · '+registered+' registradas"><span class="station-count">'+registered+'</span></button>',
       iconSize:[34,34],
       iconAnchor:[17,24]
     });
@@ -1171,11 +1194,13 @@
   }
 
   function closePollingStationCard(){
-    const card = document.getElementById('stationCard');
-    if(!card) return;
-    card.classList.remove('show', 'reference');
-    card.setAttribute('aria-hidden', 'true');
-    card.innerHTML = '';
+    ['stationCard', 'captainStationCard'].forEach(function(cardId){
+      const card = document.getElementById(cardId);
+      if(!card) return;
+      card.classList.remove('show', 'reference');
+      card.setAttribute('aria-hidden', 'true');
+      card.innerHTML = '';
+    });
   }
 
   function selectZone(zoneId){
@@ -1192,6 +1217,24 @@
 
   let activeCaptainIndex = null;
   let activeCaptainFilter = 'all';
+  let captainNetworkMap = null;
+  const captainStationMarkers = {};
+  let showReferenceStations = true;
+
+  function captainOwnsStation(captain, station){
+    return station.captainIds.indexOf(captain.id) !== -1;
+  }
+
+  function captainStationSummary(captain){
+    return stationsForCaptain(captain.id).reduce(function(summary, station){
+      const assigned = stationNumber(station.assigned);
+      const registered = Math.min(stationNumber(station.registered), assigned);
+      summary.covered += assigned > 0 ? 1 : 0;
+      summary.assigned += assigned;
+      summary.registered += registered;
+      return summary;
+    }, {covered:0, assigned:0, registered:0});
+  }
 
   function captainNetworkCounts(team){
     return team.reduce(function(acc, member){
@@ -1212,6 +1255,29 @@
         '<td>'+dashboardBadge(member.status)+'</td><td><button class="view-action" type="button" data-demo-action="team-person" data-captain="'+activeCaptainIndex+'" data-team-member="'+memberIndex+'">Abrir</button></td></tr>';
     }).join('');
     return '<div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Celular</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  }
+
+  function renderCaptainNetworkMap(captain){
+    const summary = captainStationSummary(captain);
+    const progress = summary.assigned ? Math.round((summary.registered / summary.assigned) * 100) : 0;
+    const toggleLabel = (showReferenceStations ? 'Ocultar' : 'Mostrar')+' puestos de referencia';
+    return '<div class="captain-map-shell">'+
+      '<div class="map-leaflet" id="captainLeafletMap"></div>'+
+      '<label class="reference-toggle"><input type="checkbox" data-demo-action="reference-toggle"'+(showReferenceStations ? ' checked' : '')+'> '+toggleLabel+'</label>'+
+      '<div class="captain-map-card">'+
+        '<div class="name">'+escapeHtml(captain.name)+'</div>'+
+        '<div class="meta">'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</div>'+
+        '<div class="station-metrics">'+
+          '<div class="station-metric"><span class="v">'+summary.covered+'</span><span class="l">Puestos</span></div>'+
+          '<div class="station-metric"><span class="v">'+summary.assigned+'</span><span class="l">Asignadas</span></div>'+
+          '<div class="station-metric"><span class="v">'+summary.registered+'</span><span class="l">Registradas</span></div>'+
+        '</div>'+
+        '<div class="station-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'" aria-label="'+progress+'% de registro"><i style="width:'+progress+'%;"></i></div>'+
+        '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+summary.registered+' de '+summary.assigned+'</span></div>'+
+      '</div>'+
+      '<div class="station-card captain-station-detail" id="captainStationCard" aria-hidden="true"></div>'+
+      '<div class="captain-map-caption">Mapa aproximado · puestos atenuados pertenecen a otras redes</div>'+
+      '</div>';
   }
 
   function renderCaptainNetwork(){
@@ -1236,7 +1302,64 @@
         {value:String(counts.pending||0), label:'Pendientes', delta:'Por confirmar'},
         {value:String(counts.rejected||0), label:'Rechazados', delta:'Requieren revisión', tone:'warn'}
       ])+'</div>'+
+      renderCaptainNetworkMap(captain)+
       '<div class="view-panel"><h3>Voluntarios de la red</h3><div class="ph">Filtra por estado de confirmación.</div><div class="filter-chips">'+chips+'</div>'+captainNetworkRows(captain.team, activeCaptainFilter)+'</div>';
+  }
+
+  function destroyCaptainNetworkMap(){
+    if(captainNetworkMap){
+      captainNetworkMap.remove();
+      captainNetworkMap = null;
+    }
+    Object.keys(captainStationMarkers).forEach(function(stationId){ delete captainStationMarkers[stationId]; });
+  }
+
+  function renderCaptainNetworkMapLayers(captain){
+    const mapEl = document.getElementById('captainLeafletMap');
+    if(!mapEl || !captain) return;
+    destroyCaptainNetworkMap();
+    if(typeof L === 'undefined'){
+      mapEl.innerHTML = '<div class="map-fallback" role="status">El mapa interactivo no está disponible en este momento. La red del capitán sigue disponible en el panel.</div>';
+      return;
+    }
+    captainNetworkMap = L.map(mapEl, {
+      center:[8.2481, -73.3553],
+      zoom:14,
+      scrollWheelZoom:false
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom:18,
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+    }).addTo(captainNetworkMap);
+
+    ocanaZones.forEach(function(zone){
+      const layout = zoneLayout[zone.id];
+      if(!layout) return;
+      L.circle(layout.center, {
+        radius:layout.radius * 110000,
+        color:'#7B93F5',
+        weight:1,
+        fillColor:'#3164FD',
+        fillOpacity:0.05,
+        opacity:0.25,
+        interactive:false
+      }).addTo(captainNetworkMap);
+    });
+
+    pollingStations.forEach(function(station){
+      const own = captainOwnsStation(captain, station);
+      if(!own && !showReferenceStations) return;
+      const marker = L.marker(station.position, {
+        icon:stationIcon(station, !own),
+        keyboard:true,
+        title:station.name
+      }).addTo(captainNetworkMap);
+      marker.on('click', function(){ selectPollingStation(station.id, !own, 'captainStationCard'); });
+      captainStationMarkers[station.id] = marker;
+    });
+
+    const bounds = L.latLngBounds(pollingStations.map(function(station){ return station.position; }));
+    if(bounds.isValid()) captainNetworkMap.fitBounds(bounds, {padding:[30, 30]});
   }
 
   const dashboardRenderers = {capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
@@ -1355,17 +1478,29 @@
     if(kind === 'captain'){
       activeCaptainIndex = Number(action.dataset.captain);
       activeCaptainFilter = 'all';
+      destroyCaptainNetworkMap();
       document.getElementById('view-capitan-red').innerHTML = renderCaptainNetwork();
       selectDashboardView('capitan-red');
+      setTimeout(function(){ renderCaptainNetworkMapLayers(campaignMockData.capitanes[activeCaptainIndex]); }, 0);
       return;
     }
     if(kind === 'back-to-capitanes'){
+      destroyCaptainNetworkMap();
       selectDashboardView('capitanes');
       return;
     }
     if(kind === 'team-filter'){
       activeCaptainFilter = action.dataset.teamFilter;
+      destroyCaptainNetworkMap();
       document.getElementById('view-capitan-red').innerHTML = renderCaptainNetwork();
+      setTimeout(function(){ renderCaptainNetworkMapLayers(campaignMockData.capitanes[activeCaptainIndex]); }, 0);
+      return;
+    }
+    if(kind === 'reference-toggle'){
+      showReferenceStations = action.checked;
+      destroyCaptainNetworkMap();
+      document.getElementById('view-capitan-red').innerHTML = renderCaptainNetwork();
+      setTimeout(function(){ renderCaptainNetworkMapLayers(campaignMockData.capitanes[activeCaptainIndex]); }, 0);
       return;
     }
     if(kind === 'volunteer'){
@@ -1404,6 +1539,9 @@
         const activeLayer = zoneLayers[activeZoneId];
         if(activeLayer) ocanaLeafletMap.fitBounds(activeLayer.halo.getBounds(), {padding:[70, 70], maxZoom:16});
       }, 60);
+    }
+    if(showingDesktop && captainNetworkMap){
+      setTimeout(function(){ captainNetworkMap.invalidateSize(); }, 60);
     }
   }
 </script>
