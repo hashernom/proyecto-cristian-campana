@@ -288,7 +288,7 @@
   .map-chips{display:flex;flex-wrap:wrap;gap:6px;}
   .map-chip{font-size:9.5px;font-weight:700;color:var(--blue);background:var(--blue-tint);border-radius:999px;
      padding:6px 10px;}
-  .map-station-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
+  .map-station-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;}
   .map-station-stat{background:#F8F9FC;border-radius:9px;padding:8px 5px;text-align:center;}
   .map-station-stat .v{font-size:12px;font-weight:800;line-height:1.1;}
   .map-station-stat .l{font-size:7.5px;color:#9aa1b5;font-weight:600;margin-top:3px;line-height:1.2;}
@@ -315,7 +315,7 @@
   .station-card-meta{font-size:9px;color:#9aa1b5;margin-top:3px;}
   .station-reference{display:inline-flex;margin-top:8px;padding:5px 8px;border-radius:999px;background:#FCF1DE;color:#9A6916;
     font-size:8px;font-weight:700;}
-  .station-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px;}
+  .station-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px;}
   .station-metric{background:#F8F9FC;border-radius:9px;padding:8px 6px;text-align:center;}
   .station-metric .v{display:block;font-size:13px;font-weight:800;line-height:1.1;}
   .station-metric .l{display:block;font-size:8px;color:#9aa1b5;font-weight:600;margin-top:3px;}
@@ -1122,7 +1122,8 @@
         '<div class="map-station-stat"><div class="v">'+stationSummary.stationGoal+'</div><div class="l">Meta puestos</div></div>'+
         '<div class="map-station-stat"><div class="v">'+stationSummary.covered+'</div><div class="l">Puestos cubiertos</div></div>'+
         '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.assigned)+'</div><div class="l">Asignadas</div></div>'+
-        '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.registered)+'</div><div class="l">Registradas</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.registered)+'</div><div class="l">Confirmadas</div></div>'+
+        '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.assigned - stationSummary.registered)+'</div><div class="l">Pendientes</div></div>'+
       '</div></div>'+
       '<div class="map-station-list">'+(stationRows || '<div class="empty-state">Sin puestos de votación registrados.</div>')+'</div>'+
       '<div><h4>Barrios con mayor popularidad</h4><div class="map-top-barrios">'+topBarriosHtml+'</div></div>'+
@@ -1254,6 +1255,7 @@
     const zone = ocanaZones.find(function(item){ return item.id === station.comunaId; });
     const assigned = stationNumber(station.assigned);
     const registered = Math.min(stationNumber(station.registered), assigned);
+    const pending = Math.max(0, assigned - registered);
     const progress = stationProgress(station);
     const referenceLabel = reference ? '<div class="station-reference">Dato referencial · pertenece a otra red</div>' : '';
     return '<div class="station-card-head"><div class="station-card-title" id="'+titleElementId+'">'+escapeHtml(station.name)+'</div>'+
@@ -1263,9 +1265,10 @@
       '<div class="station-card-meta">'+escapeHtml(station.barrio)+' · '+escapeHtml(zone ? zone.code : station.comunaId)+'</div>'+referenceLabel+
       '<div class="station-metrics"><div class="station-metric"><span class="v">'+formatNumber(station.meta)+'</span><span class="l">Meta</span></div>'+
         '<div class="station-metric"><span class="v">'+formatNumber(assigned)+'</span><span class="l">Asignadas</span></div>'+
-        '<div class="station-metric"><span class="v">'+formatNumber(registered)+'</span><span class="l">Registradas</span></div></div>'+
-      '<div class="station-progress" aria-label="'+progress+'% de registro"><i style="width:'+progress+'%;"></i></div>'+
-      '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+formatNumber(registered)+' de '+formatNumber(assigned)+'</span></div>';
+        '<div class="station-metric"><span class="v">'+formatNumber(registered)+'</span><span class="l">Confirmadas</span></div>'+
+        '<div class="station-metric"><span class="v">'+formatNumber(pending)+'</span><span class="l">Pendientes</span></div></div>'+
+      '<div class="station-progress" aria-label="'+progress+'% de confirmación"><i style="width:'+progress+'%;"></i></div>'+
+      '<div class="station-progress-meta"><span>'+progress+'% de confirmación</span><span>'+formatNumber(registered)+' de '+formatNumber(assigned)+'</span></div>';
   }
 
   function selectPollingStation(stationId, reference, cardId){
@@ -1356,6 +1359,7 @@
   function renderCaptainNetworkMap(captain){
     const summary = captainStationSummary(captain);
     const progress = summary.assigned ? Math.round((summary.registered / summary.assigned) * 100) : 0;
+    const pending = Math.max(0, summary.assigned - summary.registered);
     const toggleLabel = (showReferenceStations ? 'Ocultar' : 'Mostrar')+' puestos de referencia';
     return '<div class="captain-map-shell">'+
       '<div class="map-leaflet" id="captainLeafletMap"></div>'+
@@ -1366,10 +1370,11 @@
         '<div class="station-metrics">'+
           '<div class="station-metric"><span class="v">'+summary.covered+'</span><span class="l">Puestos</span></div>'+
           '<div class="station-metric"><span class="v">'+formatNumber(summary.assigned)+'</span><span class="l">Asignadas</span></div>'+
-          '<div class="station-metric"><span class="v">'+formatNumber(summary.registered)+'</span><span class="l">Registradas</span></div>'+
+          '<div class="station-metric"><span class="v">'+formatNumber(summary.registered)+'</span><span class="l">Confirmadas</span></div>'+
+          '<div class="station-metric"><span class="v">'+formatNumber(pending)+'</span><span class="l">Pendientes</span></div>'+
         '</div>'+
-        '<div class="station-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'" aria-label="'+progress+'% de registro"><i style="width:'+progress+'%;"></i></div>'+
-        '<div class="station-progress-meta"><span>'+progress+'% de registro</span><span>'+formatNumber(summary.registered)+' de '+formatNumber(summary.assigned)+'</span></div>'+
+        '<div class="station-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'" aria-label="'+progress+'% de confirmación"><i style="width:'+progress+'%;"></i></div>'+
+        '<div class="station-progress-meta"><span>'+progress+'% de confirmación</span><span>'+formatNumber(summary.registered)+' de '+formatNumber(summary.assigned)+'</span></div>'+
       '</div>'+
       '<div class="station-card captain-station-detail" id="captainStationCard" aria-hidden="true"></div>'+
       '<div class="captain-map-caption">Mapa aproximado · puestos atenuados pertenecen a otras redes</div>'+
