@@ -664,45 +664,56 @@
   const ocanaZones = [
     {
       id:'comuna-1', code:'Comuna 1', name:'Central · José Eusebio Caro', shortName:'Central',
-      support:52, volunteers:512, captains:22, trend:'+3% esta semana',
+      support:52, volunteers:512, captains:22, stationGoal:2, trend:'+3% esta semana',
       barrios:['Las Llanadas','20 de Julio','El Llano Echávez','Las Cajas','Barrios Unidos','Santa Ana','San José','Hacaritama','Tacaloa','San Agustín','La Modelo','Caracolí','El Playón'],
       topBarrios:[{name:'Hacaritama',pct:59},{name:'La Modelo',pct:55},{name:'20 de Julio',pct:48}]
     },
     {
       id:'comuna-2', code:'Comuna 2', name:'Nororiental · Cristo Rey', shortName:'Cristo Rey',
-      support:74, volunteers:890, captains:38, trend:'+9% esta semana',
+      support:74, volunteers:890, captains:38, stationGoal:3, trend:'+9% esta semana',
       barrios:['Cristo Rey','El Dorado','Nuevo Horizonte','Cañaveral','El Carmen','Simón Bolívar','Sesquicentenario','Fundadores','Comuneros','Urb. Los Alpes','El Retiro','El Peñón','Urb. Bruselas','Betania','Nueve de Octubre','Palomar'],
       topBarrios:[{name:'Cristo Rey',pct:81},{name:'El Dorado',pct:76},{name:'Simón Bolívar',pct:70}]
     },
     {
       id:'comuna-3', code:'Comuna 3', name:'Suroriental · Olaya Herrera', shortName:'Olaya Herrera',
-      support:63, volunteers:780, captains:33, trend:'+6% esta semana',
+      support:63, volunteers:780, captains:33, stationGoal:3, trend:'+6% esta semana',
       barrios:['Olaya Herrera','La Piñuela-San Antonio','El Carretero','Villa Nueva','Camino Real','Santa Lucía','Gustavo Alayón','La Palmita','Las Mercedes','La Costa','La Favorita','La Quinta','San Fermín','El Llanito','La Esperanza','Doce de Octubre','El Bosque','Los Almendros','Jorge Eliécer Gaitán','Belén','La Paz'],
       topBarrios:[{name:'La Piñuela',pct:68},{name:'Villa Nueva',pct:64},{name:'El Carretero',pct:58}]
     },
     {
       id:'comuna-4', code:'Comuna 4', name:'Suroccidental · Adolfo Milanés', shortName:'Adolfo Milanés',
-      support:39, volunteers:350, captains:15, trend:'+1% esta semana',
+      support:39, volunteers:350, captains:15, stationGoal:2, trend:'+1% esta semana',
       barrios:['Marabel','Marabelito','La Torcoroma','Juan XXIII','Santa Cruz','El Tejarito','Junín','La Libertad','El Landia','La Esmeralda','Nueva España','IV Centenario','Camilo Torres','San Rafael','Primero de Mayo'],
       topBarrios:[{name:'Marabel',pct:44},{name:'La Torcoroma',pct:40},{name:'Juan XXIII',pct:36}]
     },
     {
       id:'comuna-5', code:'Comuna 5', name:'Francisco Fernández de Contreras', shortName:'Fdez. de Contreras',
-      support:58, volunteers:560, captains:24, trend:'+5% esta semana',
+      support:58, volunteers:560, captains:24, stationGoal:2, trend:'+5% esta semana',
       barrios:['Buenos Aires','La Primavera','Las Palmeras','Ciudad Jardín','El Lago','Las Ferias','El Llano','Las Llanadas','Punta del Llano','Tutumalito','El Uvito','Villas de Antón'],
       topBarrios:[{name:'Buenos Aires',pct:66},{name:'La Primavera',pct:60},{name:'Ciudad Jardín',pct:53}]
     },
     {
       id:'comuna-6', code:'Comuna 6', name:'Ciudadela Norte', shortName:'Ciudadela Norte',
-      support:46, volunteers:390, captains:17, trend:'+2% esta semana',
+      support:46, volunteers:390, captains:17, stationGoal:2, trend:'+2% esta semana',
       barrios:['José Antonio Galán','Santa Clara','Bermejal','Colinas de la Florida','El Líbano','La Ondina','La Gloria','2 de Octubre','Villa Paraíso','Los Cristales','La Perla','Los Sauces','Villamar','La Riviera','Altos del Norte'],
       topBarrios:[{name:'José Antonio Galán',pct:51},{name:'Santa Clara',pct:47},{name:'Bermejal',pct:42}]
     }
   ];
 
+  const pollingStations = [
+    { id:'puesto-1', name:'Colegio Nacional José Eusebio Caro', comunaId:'comuna-1', barrio:'Centro', position:[8.2468,-73.3550], meta:42, assigned:31, registered:24, captainIds:['juan-pablo'], status:'active' },
+    { id:'puesto-2', name:'Institución Educativa La Salle', comunaId:'comuna-2', barrio:'Cristo Rey', position:[8.2528,-73.3488], meta:48, assigned:36, registered:29, captainIds:['juan-pablo','david'], status:'active' },
+    { id:'puesto-3', name:'Colegio José Eusebio Caro - sede norte', comunaId:'comuna-2', barrio:'El Dorado', position:[8.2547,-73.3469], meta:36, assigned:18, registered:11, captainIds:['andrea'], status:'pending' },
+    { id:'puesto-4', name:'Puesto Comuna 3 · Olaya Herrera', comunaId:'comuna-3', barrio:'La Piñuela', position:[8.2408,-73.3480], meta:44, assigned:29, registered:21, captainIds:['hernan'], status:'active' },
+    { id:'puesto-5', name:'Institución Educativa Francisco Fernández de Contreras', comunaId:'comuna-3', barrio:'Villa Nueva', position:[8.2389,-73.3470], meta:40, assigned:22, registered:14, captainIds:['susana'], status:'pending' },
+    { id:'puesto-6', name:'Puesto Comuna 4 · Adolfo Milanés', comunaId:'comuna-4', barrio:'Marabel', position:[8.2403,-73.3620], meta:32, assigned:13, registered:8, captainIds:[], status:'pending' },
+    { id:'puesto-7', name:'Puesto Comuna 5 · Fernández de Contreras', comunaId:'comuna-5', barrio:'Buenos Aires', position:[8.2515,-73.3610], meta:46, assigned:28, registered:20, captainIds:['carmen'], status:'active' },
+    { id:'puesto-8', name:'Puesto Comuna 6 · Ciudadela Norte', comunaId:'comuna-6', barrio:'Santa Clara', position:[8.2584,-73.3551], meta:34, assigned:16, registered:9, captainIds:['andrea'], status:'pending' }
+  ];
+
   const campaignMockData = {
     capitanes: [
-      { initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, progress:82, status:'ok',
+      { id:'juan-pablo', initials:'JZ', name:'Juan Pablo Zuluaga', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:30, progress:82, status:'ok',
         team:[
           { initials:'CR', name:'Camila Restrepo', neighborhood:'Cristo Rey', phone:'300 512 4471', date:'08 sep 2026', status:'ok' },
           { initials:'AP', name:'Andrés Peñaranda', neighborhood:'El Dorado', phone:'301 663 2290', date:'07 sep 2026', status:'ok' },
@@ -714,7 +725,7 @@
           { initials:'MS', name:'Marcela Sánchez', neighborhood:'Cañaveral', phone:'317 902 7734', date:'02 sep 2026', status:'ok' }
         ]
       },
-      { initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, progress:64, status:'ok',
+      { id:'carmen', initials:'CV', name:'Carmen Villalobos', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', added:20, progress:64, status:'ok',
         team:[
           { initials:'TV', name:'Tatiana Vergel', neighborhood:'Buenos Aires', phone:'300 224 8871', date:'08 sep 2026', status:'ok' },
           { initials:'OL', name:'Óscar Lobo', neighborhood:'La Primavera', phone:'301 556 4423', date:'07 sep 2026', status:'ok' },
@@ -725,7 +736,7 @@
           { initials:'LR', name:'Lorena Ropero', neighborhood:'El Llano', phone:'316 883 5540', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, progress:48, status:'follow',
+      { id:'hernan', initials:'HP', name:'Hernán Pérez', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:15, progress:48, status:'follow',
         team:[
           { initials:'EV', name:'Édgar Villamizar', neighborhood:'La Piñuela', phone:'300 665 2214', date:'07 sep 2026', status:'ok' },
           { initials:'SC', name:'Silvia Carvajalino', neighborhood:'Camino Real', phone:'301 887 9032', date:'07 sep 2026', status:'pending' },
@@ -735,7 +746,7 @@
           { initials:'NP', name:'Nataly Pabón', neighborhood:'El Carretero', phone:'315 990 1123', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, progress:35, status:'follow',
+      { id:'susana', initials:'SR', name:'Susana Ramírez', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', added:11, progress:35, status:'follow',
         team:[
           { initials:'YB', name:'Yeison Blanco', neighborhood:'Villa Nueva', phone:'300 887 4412', date:'07 sep 2026', status:'pending' },
           { initials:'MA', name:'Milena Ascanio', neighborhood:'La Costa', phone:'301 445 6690', date:'06 sep 2026', status:'ok' },
@@ -745,7 +756,7 @@
           { initials:'ZN', name:'Zulay Navarro', neighborhood:'La Esperanza', phone:'315 556 3347', date:'03 sep 2026', status:'ok' }
         ]
       },
-      { initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, progress:29, status:'follow',
+      { id:'david', initials:'DL', name:'David Londoño', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:9, progress:29, status:'follow',
         team:[
           { initials:'RS', name:'Robinson Solano', neighborhood:'Cristo Rey', phone:'300 224 6675', date:'07 sep 2026', status:'pending' },
           { initials:'KD', name:'Katerine Duarte', neighborhood:'El Peñón', phone:'301 667 3392', date:'06 sep 2026', status:'ok' },
@@ -755,7 +766,7 @@
           { initials:'MP', name:'Marisol Peña', neighborhood:'Comuneros', phone:'315 990 4456', date:'02 sep 2026', status:'ok' }
         ]
       },
-      { initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, progress:25, status:'follow',
+      { id:'andrea', initials:'AM', name:'Andrea Márquez', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', added:8, progress:25, status:'follow',
         team:[
           { initials:'BA', name:'Brenda Amaya', neighborhood:'Los Alpes', phone:'300 445 2298', date:'07 sep 2026', status:'pending' },
           { initials:'WT', name:'Wilson Toloza', neighborhood:'El Carmen', phone:'301 667 8834', date:'06 sep 2026', status:'ok' },
@@ -808,6 +819,11 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character];
     });
   }
+
+  function stationsForZone(comunaId){ return pollingStations.filter(function(station){ return station.comunaId === comunaId; }); }
+  function stationsForCaptain(captainId){ return pollingStations.filter(function(station){ return station.captainIds.indexOf(captainId) !== -1; }); }
+  function stationProgress(station){ return station.assigned ? Math.round((station.registered / station.assigned) * 100) : 0; }
+  function zoneStationSummary(comunaId){ const stations = stationsForZone(comunaId); const zone = ocanaZones.find(function(item){ return item.id === comunaId; }); const stationGoal = zone && zone.stationGoal ? zone.stationGoal : Math.max(stations.length, 2); return stations.reduce(function(summary, station){ summary.assigned += station.assigned; summary.registered += station.registered; summary.covered += station.assigned > 0 ? 1 : 0; return summary; }, {goal:stationGoal, covered:0, assigned:0, registered:0, total:stations.length}); }
 
   function dashboardBadge(status){
     const labels = {
