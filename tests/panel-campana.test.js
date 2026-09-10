@@ -24,5 +24,6 @@ assert.match(html, /function selectPollingStation\(/);
 assert.match(html, /data-demo-action="reference-toggle"/);
 assert.match(html, /showReferenceStations/);
 assert.match(html, /stationGoal/);
+assert.match(html, /\.map-leaflet\{[^}]*z-index:0[^}]*\}/);
 
 console.log('Panel de campaña: navegación y vistas mock presentes.');
