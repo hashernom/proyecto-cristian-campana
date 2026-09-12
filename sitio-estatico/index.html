@@ -1778,7 +1778,20 @@
       '</div>';
   }
 
-  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, callcenter:renderCallCenter, grupos:renderGrupos, propuestas:renderPropuestas};
+  function renderAuditoria(){
+    const rows = auditLog.map(function(entry){
+      return '<tr><td class="muted">'+escapeHtml(entry.timestamp)+'</td><td>'+escapeHtml(entry.user)+'</td><td>'+escapeHtml(entry.action)+'</td><td>'+escapeHtml(entry.target)+'</td><td class="muted">'+escapeHtml(entry.detail)+'</td></tr>';
+    }).join('');
+    return '<div class="view-heading"><div><h3>Auditoría</h3><p>Trazabilidad de consultas y cambios sobre datos sensibles.</p></div><div class="view-note">'+auditLog.length+' eventos</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:String(auditLog.filter(function(entry){ return entry.action === 'Cambio de estado'; }).length),label:'Cambios de estado',delta:'Sesión actual'},
+        {value:String(auditLog.filter(function(entry){ return entry.action === 'Consulta de ficha'; }).length),label:'Consultas de ficha',delta:'Sesión actual'},
+        {value:String(auditLog.filter(function(entry){ return entry.action === 'Observación'; }).length),label:'Observaciones',delta:'Sesión actual'}
+      ])+'</div>'+
+      '<div class="view-panel"><h3>Eventos registrados</h3><div class="ph">Cada consulta o cambio sobre datos del call center queda firmado con usuario y fecha.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Registro</th><th>Detalle</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  }
+
+  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, callcenter:renderCallCenter, grupos:renderGrupos, propuestas:renderPropuestas, auditoria:renderAuditoria};
 
   function renderDashboardView(viewId){
     if(dashboardRenderers[viewId]) document.getElementById('view-'+viewId).innerHTML = dashboardRenderers[viewId]();
