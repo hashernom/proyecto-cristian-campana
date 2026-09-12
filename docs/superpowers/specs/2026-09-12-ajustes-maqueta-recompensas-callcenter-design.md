@@ -47,13 +47,13 @@ Aplicar sobre la demo estática un conjunto de ajustes de producto: reemplazar l
 
 ### 3. Call center y auditoría
 
-**3.1 Sección Call center (desktop).** Nuevo ítem "Call center" en la navegación lateral.
+**3.1 Sección Call center (independiente).** El call center no vive en el panel del candidato: es una sección propia que se abre con una burbuja flotante "Call center" ubicada encima de "Ver panel del candidato" (y que cambia a "Volver a la app"). El panel tiene pestañas "Llamadas" y "Auditoría" en la barra superior y cierra con la misma burbuja.
 - Barra de búsqueda (nombre, cédula o barrio) y chips de filtro por estado (Todos, Confirmado, Pendiente, Rechazo, No contestó).
 - Tabla con Nombre, Número, Barrio, Cédula enmascarada, Puesto y Estado. Se muestran máximo 60 filas filtradas con nota de cuántas hay en total.
 - Panel de detalle del registro seleccionado con botones de estado (Confirmado, Pendiente, Rechazo en rojo, No contestó) y observaciones con fecha: lista de observaciones y campo para agregar una nueva con la fecha del día.
 - Cada consulta o cambio genera un evento de auditoría; al cambiar el estado se recalculan los totales de puestos (asignadas/confirmadas) en memoria y se refresca la vista.
 
-**3.2 Sección Auditoría (desktop).** Nuevo ítem "Auditoría" con tabla de eventos (fecha y hora, usuario, acción, registro afectado y detalle). Se precargan eventos mock y se agregan en vivo desde el Call center. El usuario mock es "Laura Méndez · Call center".
+**3.2 Pestaña Auditoría.** Dentro de la misma sección independiente, tabla de eventos (fecha y hora, usuario, acción, registro afectado y detalle). Se precargan eventos mock y se agregan en vivo desde la pestaña "Llamadas". El usuario mock es "Laura Méndez · Call center".
 
 **3.3 Estados.** Se agrega el estado `noanswer` ("No contestó") al mapa de badges reutilizando el tono ámbar. `rejected` conserva el tono rojo.
 
