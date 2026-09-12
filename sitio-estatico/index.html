@@ -954,10 +954,10 @@
       { initials:'LS', name:'Luis Eduardo Soto', firstName:'Luis Eduardo', lastName:'Soto Delgado', document:'1 102 334 890', phone:'301 778 4432', email:'luis.soto@correo.com', instagram:'@luiseduardosoto', gender:'Masculino', birthDate:'02/11/1990', neighborhood:'Buenos Aires', comuna:'Comuna 5 · Francisco Fernández de Contreras', pollingStationId:'puesto-7', pollingStation:'Puesto Comuna 5 · Fernández de Contreras', captain:'Carmen Villalobos', date:'08 sep 2026', status:'ok', notes:'Disponible los fines de semana para brigadas puerta a puerta.' },
       { initials:'AR', name:'Alejandra Ríos', firstName:'Alejandra', lastName:'Ríos Angarita', document:'1 095 220 673', phone:'302 445 9981', email:'alejandra.rios@correo.com', instagram:'@ale.rios', gender:'Femenino', birthDate:'27/06/1995', neighborhood:'La Piñuela', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', pollingStationId:'puesto-4', pollingStation:'Puesto Comuna 3 · Olaya Herrera', captain:'Hernán Pérez', date:'07 sep 2026', status:'pending', notes:'Pendiente por confirmar número de cédula.' },
       { initials:'GM', name:'Gabriel Méndez', firstName:'Gabriel', lastName:'Méndez Contreras', document:'1 088 765 234', phone:'304 221 6650', email:'gabriel.mendez@correo.com', instagram:'—', gender:'Masculino', birthDate:'19/09/1987', neighborhood:'Villa Nueva', comuna:'Comuna 3 · Suroriental (Olaya Herrera)', pollingStationId:'puesto-5', pollingStation:'Institución Educativa Francisco Fernández de Contreras', captain:'Susana Ramírez', date:'07 sep 2026', status:'ok', notes:'Referido por su capitana en la jornada del barrio.' },
-      { initials:'VC', name:'Valentina Castro', firstName:'Valentina', lastName:'Castro Bayona', document:'1 099 543 210', phone:'315 887 3302', email:'valentina.castro@correo.com', instagram:'@valecastro', gender:'Femenino', birthDate:'05/01/2001', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStationId:'puesto-3', pollingStation:'Colegio José Eusebio Caro - sede norte', captain:'Andrea Márquez', date:'06 sep 2026', status:'pending', notes:'Solicitó información sobre el grupo de Voluntariado Jóvenes.' },
+      { initials:'VC', name:'Valentina Castro', firstName:'Valentina', lastName:'Castro Bayona', document:'1 099 543 210', phone:'315 887 3302', email:'valentina.castro@correo.com', instagram:'@valecastro', gender:'Femenino', birthDate:'05/01/2001', neighborhood:'Los Alpes', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStationId:'puesto-3', pollingStation:'Colegio José Eusebio Caro - sede norte', captain:'Andrea Márquez', date:'06 sep 2026', status:'noanswer', notes:'Solicitó información pero no contestó las llamadas de confirmación.' },
       { initials:'NP', name:'Nicolás Pardo', firstName:'Nicolás', lastName:'Pardo Estévez', document:'1 101 456 789', phone:'316 903 1187', email:'nicolas.pardo@correo.com', instagram:'@nicopardo', gender:'Masculino', birthDate:'23/04/1993', neighborhood:'Cristo Rey', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStationId:'puesto-2', pollingStation:'Institución Educativa La Salle', captain:'Juan Pablo Zuluaga', date:'05 sep 2026', status:'rejected', notes:'No confirmó datos de contacto tras dos intentos.' },
       { initials:'DP', name:'Diego Pabón', firstName:'Diego', lastName:'Pabón Ortega', document:'1 093 778 445', phone:'313 220 5567', email:'diego.pabon@correo.com', instagram:'—', gender:'Masculino', birthDate:'11/12/1989', neighborhood:'El Dorado', comuna:'Comuna 2 · Nororiental (Cristo Rey)', pollingStationId:'puesto-3', pollingStation:'Colegio José Eusebio Caro - sede norte', captain:'Juan Pablo Zuluaga', date:'04 sep 2026', status:'rejected', notes:'Documento reportado como duplicado en el censo.' },
-      { initials:'KL', name:'Karen Luna', firstName:'Karen', lastName:'Luna Quintero', document:'1 096 334 221', phone:'317 665 9043', email:'karen.luna@correo.com', instagram:'@karenluna', gender:'Femenino', birthDate:'30/07/1999', neighborhood:'La Primavera', comuna:'Comuna 5 · Francisco Fernández de Contreras', pollingStationId:'puesto-7', pollingStation:'Puesto Comuna 5 · Fernández de Contreras', captain:'Carmen Villalobos', date:'04 sep 2026', status:'pending', notes:'Registrada en la jornada de la Ciudad Jardín.' }
+      { initials:'KL', name:'Karen Luna', firstName:'Karen', lastName:'Luna Quintero', document:'1 096 334 221', phone:'317 665 9043', email:'karen.luna@correo.com', instagram:'@karenluna', gender:'Femenino', birthDate:'30/07/1999', neighborhood:'La Primavera', comuna:'Comuna 5 · Francisco Fernández de Contreras', pollingStationId:'puesto-7', pollingStation:'Puesto Comuna 5 · Fernández de Contreras', captain:'Carmen Villalobos', date:'04 sep 2026', status:'noanswer', notes:'Se registró en la jornada de Ciudad Jardín; no contestó la llamada.' }
     ],
     grupos: [
       { name:'Voluntarios del Barrio', zone:'Comunidades urbanas', members:312, growth:'+28 esta semana', status:'ok' },
@@ -1033,7 +1033,8 @@
       const zone = zonesById[station.comunaId];
       const captain = campaignMockData.capitanes.find(function(item){ return station.captainIds.indexOf(item.id) !== -1; });
       for(let i = 0; i < extra; i++){
-        registry.push(makeVolunteer(station, zone, captain, i < extraConfirmed ? 'ok' : 'pending', random));
+        const status = i < extraConfirmed ? 'ok' : (i % 9 === 0 ? 'noanswer' : 'pending');
+        registry.push(makeVolunteer(station, zone, captain, status, random));
       }
       for(let i = 0; i < rejected; i++){
         registry.push(makeVolunteer(station, zone, captain, 'rejected', random));
@@ -1184,13 +1185,16 @@
         '<td>'+escapeHtml(volunteer.neighborhood)+'</td><td>'+escapeHtml(volunteer.captain)+'</td><td class="muted">'+escapeHtml(volunteer.date)+'</td><td>'+dashboardBadge(volunteer.status)+'</td><td><button class="view-action" type="button" data-demo-action="volunteer" data-person="'+index+'">Abrir</button></td></tr>';
     }).join('');
     const registry = volunteerRegistryCounts();
-    const total = registry.ok + registry.pending + registry.rejected;
+    const noanswer = registry.noanswer || 0;
+    const total = registry.ok + registry.pending + registry.rejected + noanswer;
     const pendingPct = total ? Math.round((registry.pending / total) * 100) : 0;
+    const noanswerPct = total ? Math.round((noanswer / total) * 100) : 0;
     const rejectedPct = total ? Math.round((registry.rejected / total) * 100) : 0;
     return '<div class="view-heading"><div><h3>Voluntarios registrados</h3><p>La red completa de personas que participan en la campaña.</p></div><div class="view-note">'+formatNumber(registry.ok)+' confirmados</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
         {value:formatNumber(registry.ok),label:'Confirmados',delta:'+186 esta semana'},
         {value:formatNumber(registry.pending),label:'Pendientes',delta:pendingPct+'% del total'},
+        {value:formatNumber(noanswer),label:'No contestaron',delta:noanswerPct+'% del total'},
         {value:'82',label:'Nuevos hoy',delta:'+12 vs. ayer'},
         {value:formatNumber(registry.rejected),label:'Rechazados',delta:rejectedPct+'% del total',tone:'warn'}
       ])+'</div>'+
@@ -1604,9 +1608,9 @@
       '</div>'+
       '<div class="view-stats">'+dashboardMetrics([
         {value:String(stationsForCaptain(captain.id).length), label:'Puestos de votación', delta:captainStationSummary(captain).covered+' con cobertura'},
-        {value:String(counts.ok||0), label:'Equipo confirmado', delta:captain.team.length+' en total'},
-        {value:String(counts.pending||0), label:'Equipo pendiente', delta:'Por confirmar'},
-        {value:String(counts.rejected||0), label:'Equipo rechazado', delta:'Requieren revisión', tone:'warn'}
+        {value:String(counts.ok||0), label:'Personas confirmadas', delta:captain.team.length+' en total'},
+        {value:String(counts.pending||0), label:'Personas pendientes', delta:'Por confirmar'},
+        {value:String(counts.rejected||0), label:'Personas rechazadas', delta:'Requieren revisión', tone:'warn'}
       ])+'</div>'+
       renderCaptainNetworkMap(captain)+
       '<div class="view-panel"><h3>Voluntarios de la red</h3><div class="ph">Filtra por estado de confirmación.</div><div class="filter-chips">'+chips+'</div>'+captainNetworkRows(captain.team, activeCaptainFilter)+'</div>';
