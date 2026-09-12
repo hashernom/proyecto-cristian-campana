@@ -132,10 +132,15 @@
     gap:8px;box-shadow:0 12px 26px rgba(0,0,0,.28);}
   .switcher svg{width:14px;height:14px;}
   .callcenter-switcher{bottom:74px;background:var(--blue);}
+  .security-switcher{bottom:132px;background:var(--green);}
   #callCenterApp{display:none;min-height:100dvh;padding:32px;align-items:flex-start;justify-content:center;}
   #callCenterApp.active{display:flex;}
+  #securityApp{display:none;min-height:100dvh;padding:32px;align-items:flex-start;justify-content:center;}
+  #securityApp.active{display:flex;}
   .cc-app-desktop{flex-direction:column;}
   .cc-topbar-side{display:flex;align-items:center;gap:14px;}
+  .security-rules{display:flex;flex-direction:column;gap:8px;}
+  .security-rule{background:#F8F9FC;border-radius:10px;padding:10px 12px;font-size:10.5px;font-weight:600;color:#4b5563;}
 
   /* ---------- desktop dashboard app ---------- */
   #desktopApp{display:none;min-height:100dvh;padding:32px;align-items:flex-start;justify-content:center;}
@@ -433,6 +438,7 @@
     .view-heading .view-note{align-self:flex-start;}
     #desktopApp{padding:0;}
     #callCenterApp{padding:0;}
+    #securityApp{padding:0;}
     .map-layout{grid-template-columns:1fr;}
     .cc-layout{grid-template-columns:1fr;}
     .modal-card{padding:22px 18px 18px;}
@@ -732,10 +738,6 @@
       <div class="dtop">
         <div><h2>Call center</h2><div class="sub">Confirmación telefónica y observaciones de la jornada</div></div>
         <div class="cc-topbar-side">
-          <div class="filter-chips" style="margin:0;">
-            <button class="filter-chip active" type="button" data-cc-tab="llamadas" onclick="selectCallCenterTab('llamadas')">Llamadas</button>
-            <button class="filter-chip" type="button" data-cc-tab="auditoria" onclick="selectCallCenterTab('auditoria')">Auditoría</button>
-          </div>
           <div class="who"><div class="avatar2">LM</div><div style="font-size:11px;font-weight:700;">Laura Méndez</div></div>
         </div>
       </div>
@@ -743,6 +745,31 @@
     </div>
   </div>
 </div>
+
+<!-- ============ SEGURIDAD (SECCIÓN INDEPENDIENTE) ============ -->
+<div id="securityApp">
+  <div class="desktop-shell">
+    <div class="browserbar"><i></i><i></i><i></i></div>
+    <div class="app-desktop cc-app-desktop">
+      <div class="dtop">
+        <div><h2>Seguridad</h2><div class="sub">Auditoría de accesos y protección de datos de la campaña</div></div>
+        <div class="cc-topbar-side">
+          <div class="filter-chips" style="margin:0;">
+            <button class="filter-chip active" type="button" data-security-tab="auditoria" onclick="selectSecurityTab('auditoria')">Auditoría</button>
+            <button class="filter-chip" type="button" data-security-tab="permisos" onclick="selectSecurityTab('permisos')">Permisos</button>
+          </div>
+          <div class="who"><div class="avatar2">SE</div><div style="font-size:11px;font-weight:700;">Seguridad de datos</div></div>
+        </div>
+      </div>
+      <div class="dcontent" id="securityContent"></div>
+    </div>
+  </div>
+</div>
+
+<button class="switcher security-switcher" id="securityBtn" onclick="toggleSecurity()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6Z"/><path d="M9 12l2 2 4-4"/></svg>
+  Seguridad
+</button>
 
 <button class="switcher callcenter-switcher" id="callcenterBtn" onclick="toggleCallCenter()">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg>
@@ -1694,12 +1721,15 @@
   let activeCallCenterQuery = '';
 
   const auditLog = [
+    { timestamp:'12 sep 2026 · 07:55', user:'Sistema', action:'Control de acceso', target:'Base de voluntarios', detail:'Exportación masiva bloqueada · requiere permiso de seguridad' },
+    { timestamp:'12 sep 2026 · 08:05', user:'Andrés Camargo · Coordinación', action:'Consulta de módulo', target:'Voluntarios', detail:'Acceso de solo lectura' },
     { timestamp:'12 sep 2026 · 08:12', user:CALL_CENTER_USER, action:'Inicio de jornada', target:'Sistema', detail:'Carga de lote de llamadas (60 registros)' },
     { timestamp:'12 sep 2026 · 08:31', user:CALL_CENTER_USER, action:'Consulta de ficha', target:'Luis Eduardo Soto', detail:'Verificación de puesto y barrio' },
     { timestamp:'12 sep 2026 · 08:47', user:CALL_CENTER_USER, action:'Cambio de estado', target:'Luis Eduardo Soto', detail:'Pendiente → Confirmado' },
     { timestamp:'12 sep 2026 · 09:05', user:CALL_CENTER_USER, action:'Observación', target:'Karen Luna', detail:'Se dejó mensaje en buzón de voz' },
     { timestamp:'12 sep 2026 · 09:22', user:CALL_CENTER_USER, action:'Cambio de estado', target:'Nicolás Pardo', detail:'Pendiente → Rechazo' },
-    { timestamp:'12 sep 2026 · 09:40', user:CALL_CENTER_USER, action:'Cierre parcial', target:'Sistema', detail:'18 llamadas registradas' }
+    { timestamp:'12 sep 2026 · 09:40', user:CALL_CENTER_USER, action:'Cierre parcial', target:'Sistema', detail:'18 llamadas registradas' },
+    { timestamp:'12 sep 2026 · 09:48', user:'Sistema', action:'Control de acceso', target:'Cédulas', detail:'Copia de cédula completa bloqueada para rol Call center' }
   ];
 
   const callCenterStatusLabels = {ok:'Confirmado', pending:'Pendiente', rejected:'Rechazo', noanswer:'No contestó'};
@@ -1826,7 +1856,8 @@
       '<div class="view-stats">'+dashboardMetrics([
         {value:String(auditLog.filter(function(entry){ return entry.action === 'Cambio de estado'; }).length),label:'Cambios de estado',delta:'Sesión actual'},
         {value:String(auditLog.filter(function(entry){ return entry.action === 'Consulta de ficha'; }).length),label:'Consultas de ficha',delta:'Sesión actual'},
-        {value:String(auditLog.filter(function(entry){ return entry.action === 'Observación'; }).length),label:'Observaciones',delta:'Sesión actual'}
+        {value:String(auditLog.filter(function(entry){ return entry.action === 'Observación'; }).length),label:'Observaciones',delta:'Sesión actual'},
+        {value:String(auditLog.filter(function(entry){ return entry.action === 'Control de acceso'; }).length),label:'Controles de acceso',delta:'Bloqueos y reglas',tone:'warn'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Eventos registrados</h3><div class="ph">Cada consulta o cambio sobre datos del call center queda firmado con usuario y fecha.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Registro</th><th>Detalle</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
@@ -2068,44 +2099,109 @@
     }
   });
 
-  let activeCallCenterTab = 'llamadas';
+  const callcenterBubbleIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg>';
+  const securityBubbleIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6Z"/><path d="M9 12l2 2 4-4"/></svg>';
+  const backBubbleIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>';
+
+  function setBubble(id, label, icon){
+    const btn = document.getElementById(id);
+    if(btn) btn.innerHTML = icon + ' ' + label;
+  }
+
+  let activeSecurityTab = 'auditoria';
+
+  const securityMatrix = [
+    { role:'Voluntario / Capitán', scope:'App móvil', values:['si','no','no','no','no','no'] },
+    { role:'Call center', scope:'Agenda asignada', values:['parcial','no','no','si','no','no'] },
+    { role:'Panel de campaña', scope:'Operación', values:['si','si','parcial','si','parcial','no'] },
+    { role:'Seguridad de datos', scope:'Cumplimiento', values:['si','si','si','si','si','si'] }
+  ];
+
+  const securityRules = [
+    'Cédula enmascarada para el call center: solo ve 1 097 *** ***.',
+    'Sin exportación masiva de bases desde la app móvil ni el call center.',
+    'Cada consulta o cambio queda firmado con usuario, fecha y detalle.',
+    'Acceso mínimo: cada rol ve solo los datos que su función requiere.',
+    'Datos tratados bajo la Ley 1581 de 2012 con retención definida.'
+  ];
+
+  function renderPermisos(){
+    const columns = ['Ver su red','Ver base completa','Cédula completa','Cambiar estado','Exportar base','Ver auditoría'];
+    const valueLabels = {si:'<span class="badge ok">Sí</span>', no:'<span class="badge no">No</span>', parcial:'<span class="badge pend">Limitado</span>'};
+    const head = '<tr><th>Rol</th>'+columns.map(function(column){ return '<th>'+column+'</th>'; }).join('')+'</tr>';
+    const rows = securityMatrix.map(function(item){
+      return '<tr><td><div class="person">'+escapeHtml(item.role)+'</div><div class="muted">'+escapeHtml(item.scope)+'</div></td>'+
+        item.values.map(function(value){ return '<td>'+valueLabels[value]+'</td>'; }).join('')+'</tr>';
+    }).join('');
+    const rules = securityRules.map(function(rule){ return '<div class="security-rule">'+escapeHtml(rule)+'</div>'; }).join('');
+    return '<div class="view-heading"><div><h3>Permisos y protección de datos</h3><p>Acceso mínimo por rol y reglas para cuidar la base de datos de la campaña.</p></div><div class="view-note">Ley 1581 de 2012</div></div>'+
+      '<div class="view-panel"><h3>Matriz de permisos</h3><div class="ph">Quién puede ver, cambiar y exportar cada tipo de dato.</div><div class="view-table-wrap"><table class="view-table">'+head+rows+'</table></div></div>'+
+      '<div class="view-panel"><h3>Reglas de seguridad activas</h3><div class="ph">Controles aplicados sobre los datos sensibles de la campaña.</div><div class="security-rules">'+rules+'</div></div>';
+  }
 
   function renderCallCenterPanel(){
     const content = document.getElementById('callCenterContent');
     if(!content) return;
-    content.innerHTML = activeCallCenterTab === 'auditoria' ? renderAuditoria() : renderCallCenter();
-    document.querySelectorAll('[data-cc-tab]').forEach(function(btn){
-      btn.classList.toggle('active', btn.dataset.ccTab === activeCallCenterTab);
+    content.innerHTML = renderCallCenter();
+  }
+
+  function renderSecurityPanel(){
+    const content = document.getElementById('securityContent');
+    if(!content) return;
+    content.innerHTML = activeSecurityTab === 'permisos' ? renderPermisos() : renderAuditoria();
+    document.querySelectorAll('[data-security-tab]').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.securityTab === activeSecurityTab);
     });
   }
 
-  function selectCallCenterTab(tab){
-    activeCallCenterTab = tab;
-    renderCallCenterPanel();
+  function selectSecurityTab(tab){
+    activeSecurityTab = tab;
+    renderSecurityPanel();
   }
 
   function showCallCenter(show){
     const app = document.getElementById('callCenterApp');
     if(!app) return;
-    app.classList.toggle('active', show);
     if(show){
+      document.getElementById('securityApp').classList.remove('active');
+      setBubble('securityBtn', 'Seguridad', securityBubbleIcon);
       document.getElementById('desktopApp').classList.remove('active');
       document.getElementById('mobileApp').style.display = 'none';
       renderCallCenterPanel();
     } else {
       document.getElementById('mobileApp').style.display = 'flex';
     }
-    document.getElementById('callcenterBtn').innerHTML = show
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg> Volver a la app'
-      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg> Call center';
+    app.classList.toggle('active', show);
+    setBubble('callcenterBtn', show ? 'Volver a la app' : 'Call center', show ? backBubbleIcon : callcenterBubbleIcon);
   }
 
   function toggleCallCenter(){
     showCallCenter(!document.getElementById('callCenterApp').classList.contains('active'));
   }
 
+  function showSecurity(show){
+    const app = document.getElementById('securityApp');
+    if(!app) return;
+    if(show){
+      document.getElementById('callCenterApp').classList.remove('active');
+      setBubble('callcenterBtn', 'Call center', callcenterBubbleIcon);
+      document.getElementById('desktopApp').classList.remove('active');
+      document.getElementById('mobileApp').style.display = 'none';
+      renderSecurityPanel();
+    } else {
+      document.getElementById('mobileApp').style.display = 'flex';
+    }
+    app.classList.toggle('active', show);
+    setBubble('securityBtn', show ? 'Volver a la app' : 'Seguridad', show ? backBubbleIcon : securityBubbleIcon);
+  }
+
+  function toggleSecurity(){
+    showSecurity(!document.getElementById('securityApp').classList.contains('active'));
+  }
+
   function toggleApp(){
     if(document.getElementById('callCenterApp').classList.contains('active')) showCallCenter(false);
+    if(document.getElementById('securityApp').classList.contains('active')) showSecurity(false);
     var mobile = document.getElementById('mobileApp');
     var desktop = document.getElementById('desktopApp');
     var btn = document.getElementById('switcherBtn');
