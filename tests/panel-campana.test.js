@@ -7,11 +7,11 @@ const html = fs.readFileSync(
   'utf8'
 );
 
-for (const view of ['resumen', 'priorizacion', 'capitanes', 'voluntarios', 'callcenter', 'auditoria', 'grupos', 'propuestas']) {
+for (const view of ['resumen', 'priorizacion', 'capitanes', 'voluntarios', 'grupos', 'propuestas']) {
   assert.match(html, new RegExp(`data-view="${view}"`));
 }
 
-for (const section of ['capitanes', 'voluntarios', 'callcenter', 'auditoria', 'grupos', 'propuestas']) {
+for (const section of ['capitanes', 'voluntarios', 'grupos', 'propuestas']) {
   assert.match(html, new RegExp(`id="view-${section}"`));
 }
 
@@ -36,6 +36,10 @@ assert.match(html, /captain-goal-track/);
 assert.match(html, /function buildCaptainTeams\(/);
 assert.match(html, /function refreshStationTotals\(/);
 assert.match(html, /function renderCallCenter\(/);
+assert.match(html, /function renderCallCenterPanel\(/);
+assert.match(html, /function selectCallCenterTab\(/);
+assert.match(html, /id="callCenterApp"/);
+assert.match(html, /id="callcenterBtn"/);
 assert.match(html, /function renderAuditoria\(/);
 assert.match(html, /function maskDocument\(/);
 assert.match(html, /data-demo-action="cc-status"/);

@@ -131,6 +131,11 @@
     font-size:11.5px;font-weight:600;padding:11px 16px;border-radius:999px;display:flex;align-items:center;
     gap:8px;box-shadow:0 12px 26px rgba(0,0,0,.28);}
   .switcher svg{width:14px;height:14px;}
+  .callcenter-switcher{bottom:74px;background:var(--blue);}
+  #callCenterApp{display:none;min-height:100dvh;padding:32px;align-items:flex-start;justify-content:center;}
+  #callCenterApp.active{display:flex;}
+  .cc-app-desktop{flex-direction:column;}
+  .cc-topbar-side{display:flex;align-items:center;gap:14px;}
 
   /* ---------- desktop dashboard app ---------- */
   #desktopApp{display:none;min-height:100dvh;padding:32px;align-items:flex-start;justify-content:center;}
@@ -427,6 +432,7 @@
     .view-heading{align-items:stretch;flex-direction:column;gap:8px;}
     .view-heading .view-note{align-self:flex-start;}
     #desktopApp{padding:0;}
+    #callCenterApp{padding:0;}
     .map-layout{grid-template-columns:1fr;}
     .cc-layout{grid-template-columns:1fr;}
     .modal-card{padding:22px 18px 18px;}
@@ -657,10 +663,8 @@
         <button class="nitem" type="button" data-view="priorizacion"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 21V4"/><path d="M5 5h13l-2 4 2 4H5"/></svg>Priorización</button>
         <button class="nitem" type="button" data-view="capitanes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Capitanes</button>
         <button class="nitem" type="button" data-view="voluntarios"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Voluntarios</button>
-        <button class="nitem" type="button" data-view="callcenter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg>Call center</button>
         <button class="nitem" type="button" data-view="grupos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Grupos WhatsApp</button>
         <button class="nitem" type="button" data-view="propuestas"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Propuestas</button>
-        <button class="nitem" type="button" data-view="auditoria"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6Z"/><path d="M9 12l2 2 4-4"/></svg>Auditoría</button>
       </div>
       <div class="dmain">
         <div class="dtop">
@@ -710,17 +714,40 @@
           </section>
           <section id="view-capitanes" class="dashboard-view" aria-label="Capitanes"></section>
           <section id="view-voluntarios" class="dashboard-view" aria-label="Voluntarios"></section>
-          <section id="view-callcenter" class="dashboard-view" aria-label="Call center"></section>
           <section id="view-grupos" class="dashboard-view" aria-label="Grupos de WhatsApp"></section>
           <section id="view-priorizacion" class="dashboard-view" aria-label="Priorización"></section>
           <section id="view-propuestas" class="dashboard-view" aria-label="Propuestas"></section>
-          <section id="view-auditoria" class="dashboard-view" aria-label="Auditoría"></section>
           <section id="view-capitan-red" class="dashboard-view" aria-label="Red del capitán"></section>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ============ CALL CENTER (SECCIÓN INDEPENDIENTE) ============ -->
+<div id="callCenterApp">
+  <div class="desktop-shell">
+    <div class="browserbar"><i></i><i></i><i></i></div>
+    <div class="app-desktop cc-app-desktop">
+      <div class="dtop">
+        <div><h2>Call center</h2><div class="sub">Confirmación telefónica y observaciones de la jornada</div></div>
+        <div class="cc-topbar-side">
+          <div class="filter-chips" style="margin:0;">
+            <button class="filter-chip active" type="button" data-cc-tab="llamadas" onclick="selectCallCenterTab('llamadas')">Llamadas</button>
+            <button class="filter-chip" type="button" data-cc-tab="auditoria" onclick="selectCallCenterTab('auditoria')">Auditoría</button>
+          </div>
+          <div class="who"><div class="avatar2">LM</div><div style="font-size:11px;font-weight:700;">Laura Méndez</div></div>
+        </div>
+      </div>
+      <div class="dcontent" id="callCenterContent"></div>
+    </div>
+  </div>
+</div>
+
+<button class="switcher callcenter-switcher" id="callcenterBtn" onclick="toggleCallCenter()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg>
+  Call center
+</button>
 
 <button class="switcher" id="switcherBtn" onclick="toggleApp()">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
@@ -1067,8 +1094,6 @@
     priorizacion: { title:'Priorización', subtitle:'Puestos que requieren atención según su avance' },
     capitanes: { title:'Capitanes', subtitle:'Seguimiento a los líderes que hacen crecer la red' },
     voluntarios: { title:'Voluntarios', subtitle:'Personas registradas y estado de confirmación' },
-    callcenter: { title:'Call center', subtitle:'Confirmación telefónica y observaciones de la jornada' },
-    auditoria: { title:'Auditoría', subtitle:'Trazabilidad de consultas y cambios sobre datos sensibles' },
     grupos: { title:'Grupos de WhatsApp', subtitle:'Comunidades activas y crecimiento de la conversación' },
     propuestas: { title:'Propuestas', subtitle:'Ideas ciudadanas recibidas desde los barrios' },
     'capitan-red': { title:'Red del capitán', subtitle:'Voluntarios vinculados a este capitán', nav:'capitanes' }
@@ -1806,7 +1831,7 @@
       '<div class="view-panel"><h3>Eventos registrados</h3><div class="ph">Cada consulta o cambio sobre datos del call center queda firmado con usuario y fecha.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Registro</th><th>Detalle</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
 
-  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, callcenter:renderCallCenter, grupos:renderGrupos, propuestas:renderPropuestas, auditoria:renderAuditoria};
+  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
 
   function renderDashboardView(viewId){
     if(dashboardRenderers[viewId]) document.getElementById('view-'+viewId).innerHTML = dashboardRenderers[viewId]();
@@ -1966,44 +1991,6 @@
       setTimeout(function(){ renderCaptainNetworkMapLayers(campaignMockData.capitanes[activeCaptainIndex]); }, 0);
       return;
     }
-    if(kind === 'cc-select'){
-      activeCallCenterIndex = Number(action.dataset.cc);
-      logAudit('Consulta de ficha', volunteerRegistry[activeCallCenterIndex], 'Apertura de ficha para llamada');
-      renderDashboardView('callcenter');
-      return;
-    }
-    if(kind === 'cc-filter'){
-      activeCallCenterFilter = action.dataset.ccFilter;
-      renderDashboardView('callcenter');
-      return;
-    }
-    if(kind === 'cc-status'){
-      const person = volunteerRegistry[activeCallCenterIndex];
-      if(person){
-        const next = action.dataset.status;
-        const previousLabel = callCenterStatusLabels[person.status] || person.status;
-        person.status = next;
-        refreshStationTotals();
-        refreshStationMarkerIcons();
-        logAudit('Cambio de estado', person, previousLabel+' → '+callCenterStatusLabels[next]);
-        renderDashboardView('callcenter');
-        toast('Estado actualizado: '+callCenterStatusLabels[next]);
-      }
-      return;
-    }
-    if(kind === 'cc-add-observation'){
-      const person = volunteerRegistry[activeCallCenterIndex];
-      const input = document.querySelector('.cc-obs-input');
-      const text = input ? input.value.trim() : '';
-      if(person && text){
-        if(!person.observations) person.observations = person.notes ? [{date:person.date, text:person.notes}] : [];
-        person.observations.unshift({date:auditTimestamp().split(' · ')[0], text:text});
-        logAudit('Observación', person, text);
-        renderDashboardView('callcenter');
-        toast('Observación agregada');
-      }
-      return;
-    }
     if(kind === 'volunteer'){
       openPersonModal('voluntario', Number(action.dataset.person));
       return;
@@ -2025,16 +2012,100 @@
     }
   });
 
-  document.getElementById('desktopApp').addEventListener('input', function(event){
+  function handleCallCenterAction(action){
+    const kind = action.dataset.demoAction;
+    if(kind === 'cc-select'){
+      activeCallCenterIndex = Number(action.dataset.cc);
+      logAudit('Consulta de ficha', volunteerRegistry[activeCallCenterIndex], 'Apertura de ficha para llamada');
+      renderCallCenterPanel();
+      return;
+    }
+    if(kind === 'cc-filter'){
+      activeCallCenterFilter = action.dataset.ccFilter;
+      renderCallCenterPanel();
+      return;
+    }
+    if(kind === 'cc-status'){
+      const person = volunteerRegistry[activeCallCenterIndex];
+      if(person){
+        const next = action.dataset.status;
+        const previousLabel = callCenterStatusLabels[person.status] || person.status;
+        person.status = next;
+        refreshStationTotals();
+        refreshStationMarkerIcons();
+        logAudit('Cambio de estado', person, previousLabel+' → '+callCenterStatusLabels[next]);
+        renderCallCenterPanel();
+        toast('Estado actualizado: '+callCenterStatusLabels[next]);
+      }
+      return;
+    }
+    if(kind === 'cc-add-observation'){
+      const person = volunteerRegistry[activeCallCenterIndex];
+      const input = document.querySelector('.cc-obs-input');
+      const text = input ? input.value.trim() : '';
+      if(person && text){
+        if(!person.observations) person.observations = person.notes ? [{date:person.date, text:person.notes}] : [];
+        person.observations.unshift({date:auditTimestamp().split(' · ')[0], text:text});
+        logAudit('Observación', person, text);
+        renderCallCenterPanel();
+        toast('Observación agregada');
+      }
+      return;
+    }
+  }
+
+  document.getElementById('callCenterApp').addEventListener('click', function(event){
+    const action = event.target.closest('[data-demo-action]');
+    if(action) handleCallCenterAction(action);
+  });
+
+  document.getElementById('callCenterApp').addEventListener('input', function(event){
     if(event.target && event.target.matches('[data-cc-search]')){
       activeCallCenterQuery = event.target.value;
-      renderDashboardView('callcenter');
+      renderCallCenterPanel();
       const input = document.querySelector('[data-cc-search]');
       if(input){ input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
     }
   });
 
+  let activeCallCenterTab = 'llamadas';
+
+  function renderCallCenterPanel(){
+    const content = document.getElementById('callCenterContent');
+    if(!content) return;
+    content.innerHTML = activeCallCenterTab === 'auditoria' ? renderAuditoria() : renderCallCenter();
+    document.querySelectorAll('[data-cc-tab]').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.ccTab === activeCallCenterTab);
+    });
+  }
+
+  function selectCallCenterTab(tab){
+    activeCallCenterTab = tab;
+    renderCallCenterPanel();
+  }
+
+  function showCallCenter(show){
+    const app = document.getElementById('callCenterApp');
+    if(!app) return;
+    app.classList.toggle('active', show);
+    if(show){
+      document.getElementById('desktopApp').classList.remove('active');
+      document.getElementById('mobileApp').style.display = 'none';
+      renderCallCenterPanel();
+    } else {
+      document.getElementById('mobileApp').style.display = 'flex';
+    }
+    document.getElementById('callcenterBtn').innerHTML = show
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg> Volver a la app'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg> Call center';
+  }
+
+  function toggleCallCenter(){
+    showCallCenter(!document.getElementById('callCenterApp').classList.contains('active'));
+  }
+
   function toggleApp(){
+    if(document.getElementById('callCenterApp').classList.contains('active')) showCallCenter(false);
     var mobile = document.getElementById('mobileApp');
     var desktop = document.getElementById('desktopApp');
     var btn = document.getElementById('switcherBtn');
