@@ -41,7 +41,7 @@ Aplicar sobre la demo estática un conjunto de ajustes de producto: reemplazar l
 **2.4 Red del capitán.**
 - Se elimina la tarjeta flotante sobre el mapa (`.captain-map-card`) con el nombre del capitán y las métricas globales.
 - La fila de stats añade "Puestos de votación" con el total de puestos de su red (`stationsForCaptain`) y el detalle de cuántos tienen cobertura.
-- Los pines propios abren una ficha con las métricas del capitán en ese puesto: personas de su equipo asignadas (ok + pendientes, sin rechazados), confirmadas y pendientes, con avance sobre asignadas. No se muestran las cifras globales del puesto.
+- Los pines propios abren una ficha con las métricas del capitán en ese puesto: personas de su equipo asignadas (ok + pendientes + sin respuesta, sin rechazados), confirmadas, pendientes y sin respuesta, con avance sobre asignadas, de modo que confirmadas + pendientes + sin respuesta = asignadas y la suma de los pines cuadra con los stats de la red. No se muestran las cifras globales del puesto.
 - Los pines de otras redes muestran solo nombre, barrio y el aviso "Dato referencial · pertenece a otra red", sin métricas.
 - Se mantienen el toggle "Mostrar puestos de referencia" y el mapa Leaflet.
 
@@ -57,7 +57,7 @@ Aplicar sobre la demo estática un conjunto de ajustes de producto: reemplazar l
 - **Auditoría:** tabla de eventos (fecha y hora, usuario, acción, registro afectado y detalle) de todos los módulos, con eventos mock de controles de acceso y crecimiento en vivo desde el call center.
 - **Permisos:** matriz de roles (Voluntario/Capitán, Call center, Panel de campaña, Seguridad) contra permisos (ver su red, ver base completa, cédula completa, cambiar estado, exportar base, ver auditoría) y reglas de protección de datos (sin exportación masiva, cédula enmascarada, trazabilidad, Ley 1581).
 
-**3.3 Estados.** Se agrega el estado `noanswer` ("No contestó") al mapa de badges reutilizando el tono ámbar. `rejected` conserva el tono rojo. La vista Voluntarios agrega la métrica "No contestaron" con ejemplos en la tabla y en la base mock, y la red de capitanes usa "Personas confirmadas / pendientes / rechazadas" en lugar de "Equipo".
+**3.3 Estados.** Se agrega el estado `noanswer` ("No contestó") al mapa de badges reutilizando el tono ámbar. `rejected` conserva el tono rojo. La vista Voluntarios agrega la métrica "No contestaron" con ejemplos en la tabla y en la base mock; la red de capitanes usa "Personas confirmadas / pendientes / sin respuesta / rechazadas" (con filtro propio) y los stats de pendientes, sin respuesta y rechazados se pintan en ámbar, gris y rojo para lectura rápida.
 
 ### 4. Datos y utilidades
 
