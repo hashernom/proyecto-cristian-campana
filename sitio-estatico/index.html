@@ -696,9 +696,9 @@
                 <tr><th>Capitán</th><th>Barrio</th><th>Agreg.</th><th>Avance</th><th>Estado</th></tr>
                 <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>112</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
                 <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>85</td><td><div class="bar2"><i style="width:88%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>92</td><td><div class="bar2"><i style="width:65%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>75</td><td><div class="bar2"><i style="width:57%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>83</td><td><div class="bar2"><i style="width:70%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>92</td><td><div class="bar2"><i style="width:65%;"></i></div></td><td><span class="badge pend">Por acompañar</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>75</td><td><div class="bar2"><i style="width:57%;"></i></div></td><td><span class="badge pend">Por acompañar</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>83</td><td><div class="bar2"><i style="width:70%;"></i></div></td><td><span class="badge pend">Por acompañar</span></td></tr>
               </table></div>
             </div>
             <div class="panel">
@@ -1129,7 +1129,7 @@
   const dashboardViewMeta = {
     resumen: { title:'Resumen de campaña', subtitle:'Datos consolidados de toda la red de voluntarios' },
     priorizacion: { title:'Priorización', subtitle:'Puestos que requieren atención según su avance' },
-    capitanes: { title:'Capitanes', subtitle:'Seguimiento a los líderes que hacen crecer la red' },
+    capitanes: { title:'Capitanes', subtitle:'Acompañamiento a los líderes que hacen crecer la red' },
     voluntarios: { title:'Voluntarios', subtitle:'Personas registradas y estado de confirmación' },
     grupos: { title:'Grupos de WhatsApp', subtitle:'Comunidades activas y crecimiento de la conversación' },
     propuestas: { title:'Propuestas', subtitle:'Ideas ciudadanas recibidas desde los barrios' },
@@ -1153,7 +1153,7 @@
   function dashboardBadge(status){
     const labels = {
       ok:{className:'ok', label:'Al día'},
-      follow:{className:'pend', label:'Seguimiento'},
+      follow:{className:'pend', label:'Por acompañar'},
       pending:{className:'pend', label:'Pendiente'},
       rejected:{className:'no', label:'Rechazado'},
       noanswer:{className:'pend', label:'No contestó'},
@@ -1180,10 +1180,12 @@
         '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.team.length+'</td><td><div class="bar2"><i style="width:'+Math.min(goalProgress, 100)+'%;"></i></div><div class="muted">'+goalProgress+'% de meta</div></td>'+
         '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
     }).join('');
+    const totalCaptains = campaignMockData.capitanes.length;
+    const companions = campaignMockData.capitanes.filter(function(captain){ return captain.status === 'follow'; }).length;
     return '<div class="view-heading"><div><h3>Capitanes de la red</h3><p>Quiénes están sumando más personas confirmadas a la campaña.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
-        {value:'124',label:'Capitanes activos',delta:'+9 esta semana'},
-        {value:'18',label:'En seguimiento',delta:'14% del total'},
+        {value:String(totalCaptains),label:'Capitanes activos',delta:'Red de la campaña'},
+        {value:String(companions),label:'Por acompañar',delta:(totalCaptains ? Math.round((companions / totalCaptains) * 100) : 0)+'% del total',valueTone:'pend'},
         {value:(campaignMockData.capitanes.reduce(function(sum, captain){ return sum + captain.team.length; }, 0) / campaignMockData.capitanes.length).toFixed(1).replace('.', ','),label:'Promedio por capitán',delta:'Personas por red'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Ranking de capitanes</h3><div class="ph">Avance de cada líder frente a su meta de confirmados.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
@@ -1817,6 +1819,7 @@
     const entries = callCenterVisibleEntries();
     const shown = entries.slice(0, 60);
     const counts = volunteerRegistryCounts();
+    const rejectedPct = volunteerRegistry.length ? Math.round((counts.rejected / volunteerRegistry.length) * 100) : 0;
     const filters = [
       {key:'all', label:'Todos'},
       {key:'ok', label:'Confirmado'},
@@ -1845,7 +1848,8 @@
         {value:formatNumber(volunteerRegistry.length),label:'Registros',delta:'Base total de la red'},
         {value:formatNumber(counts.ok),label:'Confirmados',delta:'Listos para votar'},
         {value:formatNumber(counts.pending),label:'Pendientes',delta:'Por confirmar',valueTone:'pend'},
-        {value:formatNumber(counts.noanswer || 0),label:'No contestó',delta:'Reintentar mañana',tone:'warn',valueTone:'info'}
+        {value:formatNumber(counts.noanswer || 0),label:'No contestó',delta:'Reintentar mañana',tone:'warn',valueTone:'info'},
+        {value:formatNumber(counts.rejected),label:'Rechazados',delta:rejectedPct+'% del total',tone:'warn',valueTone:'warn'}
       ])+'</div>'+
       '<div class="cc-layout">'+
         '<div class="view-panel cc-table-panel"><h3>Llamadas asignadas</h3><div class="ph">Busca por nombre, cédula o barrio. Solo el call center puede cambiar el estado.</div>'+
