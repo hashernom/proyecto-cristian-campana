@@ -636,7 +636,7 @@
             <div class="stat"><div class="v">3 482</div><div class="l">Voluntarios confirmados</div><div class="d">+186 esta semana</div></div>
             <div class="stat"><div class="v">124</div><div class="l">Capitanes activos</div><div class="d">+9 esta semana</div></div>
             <div class="stat"><div class="v">58%</div><div class="l">Meta general de campaña</div><div class="d">Objetivo: 6 000</div></div>
-            <div class="stat"><div class="v">17</div><div class="l">Grupos activos</div><div class="d">+2 este mes</div></div>
+            <div class="stat"><div class="v">17</div><div class="l">Grupos de WhatsApp activos</div><div class="d">+2 este mes</div></div>
           </div>
           <div class="map-layout" id="ocanaMap"></div>
           <div class="row2">
@@ -645,11 +645,11 @@
               <div class="ph">Quiénes están sumando más personas confirmadas</div>
               <div class="tbl-wrap"><table>
                 <tr><th>Capitán</th><th>Barrio</th><th>Agreg.</th><th>Avance</th><th>Estado</th></tr>
-                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>30</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>20</td><td><div class="bar2"><i style="width:64%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>15</td><td><div class="bar2"><i style="width:48%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>11</td><td><div class="bar2"><i style="width:35%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>9</td><td><div class="bar2"><i style="width:29%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>108</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>82</td><td><div class="bar2"><i style="width:88%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>88</td><td><div class="bar2"><i style="width:65%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>72</td><td><div class="bar2"><i style="width:57%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>80</td><td><div class="bar2"><i style="width:70%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
               </table></div>
             </div>
             <div class="panel">
@@ -1068,14 +1068,14 @@
     const rows = campaignMockData.capitanes.map(function(captain, index){
       const goalProgress = captainGoalProgress(captain);
       return '<tr><td><div class="person"><div class="av2">'+escapeHtml(captain.initials)+'</div>'+escapeHtml(captain.name)+'</div></td>'+
-        '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.added+'</td><td><div class="bar2"><i style="width:'+Math.min(goalProgress, 100)+'%;"></i></div><div class="muted">'+goalProgress+'% de meta</div></td>'+
+        '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.team.length+'</td><td><div class="bar2"><i style="width:'+Math.min(goalProgress, 100)+'%;"></i></div><div class="muted">'+goalProgress+'% de meta</div></td>'+
         '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
     }).join('');
     return '<div class="view-heading"><div><h3>Capitanes de la red</h3><p>Quiénes están sumando más personas confirmadas a la campaña.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
         {value:'124',label:'Capitanes activos',delta:'+9 esta semana'},
         {value:'18',label:'En seguimiento',delta:'14% del total'},
-        {value:'16,8',label:'Promedio por capitán',delta:'+1,2 vs. agosto'}
+        {value:'83,3',label:'Promedio por capitán',delta:'Personas por red'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Ranking de capitanes</h3><div class="ph">Avance de cada líder frente a su meta de confirmados.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
@@ -1103,9 +1103,9 @@
     const cards = campaignMockData.grupos.map(function(group){
       return '<div class="group-card"><div class="ic2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg></div><div><div class="title">'+escapeHtml(group.name)+'</div><div class="meta">'+escapeHtml(group.zone)+' · '+group.members+' integrantes</div><div class="growth">'+escapeHtml(group.growth)+'</div></div><button class="view-action" type="button" data-demo-action="group">Ver</button></div>';
     }).join('');
-    return '<div class="view-heading"><div><h3>Comunidades de WhatsApp</h3><p>Grupos activos para coordinar voluntariado por territorio y afinidad.</p></div><div class="view-note">17 grupos activos</div></div>'+
+    return '<div class="view-heading"><div><h3>Comunidades de WhatsApp</h3><p>Grupos activos para coordinar voluntariado por territorio y afinidad.</p></div><div class="view-note">17 grupos de WhatsApp activos</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
-        {value:'17',label:'Grupos activos',delta:'+2 este mes'},
+        {value:'17',label:'Grupos de WhatsApp activos',delta:'+2 este mes'},
         {value:'1 248',label:'Integrantes totales',delta:'+81 esta semana'},
         {value:'73',label:'Mensajes coordinados',delta:'Últimas 24 horas'}
       ])+'</div>'+
