@@ -114,6 +114,11 @@
     padding-left:12px;font-size:10.5px;font-weight:700;}
   .barend{position:absolute;right:14px;font-size:10.5px;font-weight:700;}
 
+  .invite-link{display:flex;align-items:center;gap:8px;background:var(--blue-tint);border-radius:999px;padding:7px 8px 7px 14px;margin-bottom:10px;}
+  .invite-link .url{flex:1;min-width:0;font-size:10px;font-weight:700;color:var(--blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .invite-link .copy{flex-shrink:0;background:var(--ink);color:#fff;font:700 9.5px Poppins,sans-serif;border-radius:999px;padding:8px 11px;}
+  .invite-note{background:#FCF1DE;color:#9A6916;border-radius:14px;padding:11px 13px;font-size:9.5px;line-height:1.5;font-weight:600;margin-bottom:14px;}
+
   /* ---------- toast ---------- */
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,12px);background:var(--ink);color:#fff;
     font-size:12.5px;font-weight:600;padding:12px 20px;border-radius:999px;z-index:200;opacity:0;
@@ -478,10 +483,10 @@
       <!-- 5. PANEL (HUB) -->
       <div class="screen blue" id="s5">
         <button class="exit" onclick="go('s1')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button>
-        <div style="margin-top:14px;font-size:23px;font-weight:800;">¡Hola, María!</div>
-        <div style="font-size:11px;font-weight:600;opacity:.85;">Meta de voluntarios confirmados</div>
+        <div style="margin-top:14px;font-size:23px;font-weight:800;">¡Hola, Cristian!</div>
+        <div style="font-size:11px;font-weight:600;opacity:.85;">Plan de recompensas</div>
         <div class="bartrack"><div class="barfill">34%</div><div class="barend">100%</div></div>
-        <div style="font-size:10.5px;font-weight:400;opacity:.75;margin:0 0 14px;font-style:italic;">Cada persona que confirmas te acerca a tu meta y a nuevos beneficios.</div>
+        <div style="font-size:10.5px;font-weight:400;opacity:.75;margin:0 0 14px;font-style:italic;">Cada persona que confirmas te acerca a nuevos beneficios.</div>
         <div class="grid2">
           <button class="tile" onclick="go('s6')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3164FD" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Quiero ser Capitán</button>
           <button class="tile" onclick="go('s9')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Unirme al grupo de WhatsApp</button>
@@ -500,33 +505,29 @@
         </div>
         <div class="searchbar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9aa1b5" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Buscar en tu red...</div>
         <div style="overflow-y:auto;flex:1;">
-          <div class="row"><div class="avatar">JZ</div><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">300 456 7890 · Cristo Rey</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
-          <div class="row"><div class="avatar">CV</div><div><div class="rname">Carmen Villalobos</div><div class="rmeta">301 234 5678 · Buenos Aires</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
-          <div class="row"><div class="avatar">HP</div><div><div class="rname">Hernán Pérez</div><div class="rmeta">302 987 6543 · La Piñuela</div></div><button class="badge pend" onclick="cycleBadge(this)">Pendiente</button></div>
-          <div class="row"><div class="avatar">SR</div><div><div class="rname">Susana Ramírez</div><div class="rmeta">304 555 1122 · Villa Nueva</div></div><button class="badge no" onclick="cycleBadge(this)">No confirma</button></div>
-          <div class="row"><div class="avatar">DL</div><div><div class="rname">David Londoño</div><div class="rmeta">315 222 3344 · Cristo Rey</div></div><button class="badge ok" onclick="cycleBadge(this)">Confirmado</button></div>
+          <div class="row"><div class="avatar">JZ</div><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">300 456 7890 · Cristo Rey</div></div><span class="badge ok">Confirmado</span></div>
+          <div class="row"><div class="avatar">CV</div><div><div class="rname">Carmen Villalobos</div><div class="rmeta">301 234 5678 · Buenos Aires</div></div><span class="badge ok">Confirmado</span></div>
+          <div class="row"><div class="avatar">HP</div><div><div class="rname">Hernán Pérez</div><div class="rmeta">302 987 6543 · La Piñuela</div></div><span class="badge pend">Pendiente</span></div>
+          <div class="row"><div class="avatar">SR</div><div><div class="rname">Susana Ramírez</div><div class="rmeta">304 555 1122 · Villa Nueva</div></div><span class="badge no">No confirma</span></div>
+          <div class="row"><div class="avatar">DL</div><div><div class="rname">David Londoño</div><div class="rmeta">315 222 3344 · Cristo Rey</div></div><span class="badge ok">Confirmado</span></div>
         </div>
         <button class="fab" onclick="go('s7')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
 
-      <!-- 7. AGREGAR -->
+      <!-- 7. INVITAR / AUTORREGISTRO -->
       <div class="screen white" id="s7">
         <button class="back" onclick="go('s6')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 19l-7-7 7-7"/></svg></button>
-        <div style="margin-top:26px;font-size:20px;font-weight:800;">Nueva persona</div>
-        <div style="font-size:10px;color:#8892b0;margin-bottom:14px;">Regístrala en tu red y define su compromiso de voto.</div>
+        <div style="margin-top:26px;font-size:20px;font-weight:800;">Invita a tus voluntarios</div>
+        <div style="font-size:10px;color:#8892b0;margin-bottom:14px;">Comparte tu link; cada persona autoriza sus datos y se registra por su cuenta.</div>
+        <div class="invite-link"><div class="url">campana-cristiam.co/invita/TU-CODIGO</div><button class="copy" onclick="toast('Link copiado')">Copiar link</button></div>
+        <button class="pill dark" style="background:var(--green);" onclick="toast('Link enviado por WhatsApp')">Enviar por WhatsApp</button>
+        <div class="invite-note" style="margin-top:12px;">Ley 1581 de 2012 · Protección de datos: no puedes registrar personas ajenas. Envía el link para que cada persona complete y autorice su propio registro.</div>
+        <div style="font-size:12px;font-weight:800;margin:14px 0 8px;">Así completa el registro tu invitado</div>
         <div class="field"><label>Nombre completo</label><div class="box">Andrea Salazar</div></div>
         <div class="fh"><div class="field"><label>Cédula</label><div class="box">1 098 234 552</div></div><div class="field"><label>Celular</label><div class="box">311 445 6677</div></div></div>
         <div class="field"><label>Barrio</label><div class="box" style="justify-content:space-between;">La Piñuela <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
         <div class="field"><label>Puesto de votación</label><div class="box" style="justify-content:space-between;">Puesto Comuna 3 · Olaya Herrera <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></div></div>
-        <div class="field"><label>Estado de compromiso</label>
-          <div class="segs">
-            <button class="seg ok" onclick="selectSeg(this)">Confirmado</button>
-            <button class="seg" onclick="selectSeg(this)">Pendiente</button>
-            <button class="seg" onclick="selectSeg(this)">No confirma</button>
-          </div>
-        </div>
-        <div class="field"><label>Notas</label><div class="box area">Reunión el sábado en su casa</div></div>
-        <button class="pill dark" style="margin-top:6px;" onclick="toast('Persona guardada en tu red');go('s6')">Guardar persona</button>
+        <button class="pill dark" style="margin-top:6px;" onclick="toast('Autorregistro guardado');go('s6')">Guardar autorregistro</button>
       </div>
 
       <!-- 8. RANKING -->
@@ -535,30 +536,30 @@
         <div style="margin-top:26px;text-align:center;font-size:21px;font-weight:800;">Ranking</div>
         <div style="text-align:center;font-size:10px;opacity:.8;margin-top:-2px;">de los que más agregan personas</div>
         <div class="podium">
-          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">CV</div><div class="pname">Carmen<br>Villalobos</div><div class="pmeta">20 voluntarios</div></div>
-          <div class="pcol"><svg width="24" height="16" viewBox="0 0 24 16" fill="#FCEE21" style="margin-bottom:-3px;"><path d="M2 14l-2-9 5 3 5-7 5 7 5-3-2 9z"/></svg><div class="pav" style="width:58px;height:58px;font-size:17px;">JZ</div><div class="pname">Juan Pablo<br>Zuluaga</div><div class="pmeta">30 voluntarios</div></div>
-          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">HP</div><div class="pname">Hernán<br>Pérez</div><div class="pmeta">15 voluntarios</div></div>
+          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">HP</div><div class="pname">Hernán<br>Pérez</div><div class="pmeta">88 personas</div></div>
+          <div class="pcol"><svg width="24" height="16" viewBox="0 0 24 16" fill="#FCEE21" style="margin-bottom:-3px;"><path d="M2 14l-2-9 5 3 5-7 5 7 5-3-2 9z"/></svg><div class="pav" style="width:58px;height:58px;font-size:17px;">JZ</div><div class="pname">Juan Pablo<br>Zuluaga</div><div class="pmeta">108 personas</div></div>
+          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">CV</div><div class="pname">Carmen<br>Villalobos</div><div class="pmeta">82 personas</div></div>
         </div>
         <div class="listwrap">
-          <div class="row"><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
-            <button class="ic sel" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
-            <button class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
-            <button class="ic" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <div class="row"><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">108 personas en su red</div></div><div class="icons">
+            <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
+            <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
-          <div class="row"><div><div class="rname">Carmen Villalobos</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
-            <button class="ic sel" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
-            <button class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
-            <button class="ic" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <div class="row"><div><div class="rname">Hernán Pérez</div><div class="rmeta">88 personas en su red</div></div><div class="icons">
+            <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
+            <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
-          <div class="row"><div><div class="rname">Hernán Pérez</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
-            <button class="ic" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
-            <button class="ic sel" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
-            <button class="ic" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <div class="row"><div><div class="rname">Carmen Villalobos</div><div class="rmeta">82 personas en su red</div></div><div class="icons">
+            <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
+            <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
-          <div class="row"><div><div class="rname">Susana Ramírez</div><div class="rmeta">Teléfono · Dirección</div></div><div class="icons">
-            <button class="ic" style="background:#E3F7EB;" onclick="selectIcon(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
-            <button class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;" onclick="selectIcon(this)">−</button>
-            <button class="ic sel" style="background:#FCE7E7;" onclick="selectIcon(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <div class="row"><div><div class="rname">Susana Ramírez</div><div class="rmeta">72 personas en su red</div></div><div class="icons">
+            <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
+            <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
         </div>
       </div>
@@ -719,26 +720,6 @@
     t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 1800);
-  }
-
-  function cycleBadge(el){
-    var states = ['ok','pend','no'];
-    var labels = {ok:'Confirmado', pend:'Pendiente', no:'No confirma'};
-    var cur = states.filter(function(s){ return el.classList.contains(s); })[0] || 'pend';
-    var next = states[(states.indexOf(cur)+1) % states.length];
-    states.forEach(function(s){ el.classList.remove(s); });
-    el.classList.add(next);
-    el.textContent = labels[next];
-  }
-
-  function selectSeg(el){
-    Array.prototype.forEach.call(el.parentElement.children, function(s){ s.classList.remove('ok'); });
-    el.classList.add('ok');
-  }
-
-  function selectIcon(el){
-    Array.prototype.forEach.call(el.parentElement.children, function(s){ s.classList.remove('sel'); });
-    el.classList.add('sel');
   }
 
   function toggleJoin(el){
@@ -1493,12 +1474,12 @@
     const goalReached = goal > 0 && confirmed >= goal;
     const remaining = Math.max(0, goal - confirmed);
     const goalMessage = goalReached
-      ? 'Meta cumplida · incentivo desbloqueado'
-      : 'Faltan '+formatNumber(remaining)+' confirmados para la meta';
+      ? 'Meta cumplida · beneficio desbloqueado'
+      : 'Faltan '+formatNumber(remaining)+' confirmados para el siguiente beneficio';
     return '<button class="back-link" type="button" data-demo-action="back-to-capitanes"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 19l-7-7 7-7"/></svg>Volver a capitanes</button>'+
       '<div class="view-heading"><div><h3>Red de '+escapeHtml(captain.name)+'</h3><p>'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</p></div><div class="view-note">'+captain.team.length+' personas en la red</div></div>'+
       '<div class="view-panel captain-goal">'+
-        '<div class="captain-goal-head"><div><h3>Meta de voluntarios confirmados</h3><div class="ph">Progreso del capitán en su red territorial.</div></div><div class="view-note">'+formatNumber(confirmed)+' / '+formatNumber(goal)+'</div></div>'+
+        '<div class="captain-goal-head"><div><h3>Plan de recompensas</h3><div class="ph">Progreso del capitán en su red territorial.</div></div><div class="view-note">'+formatNumber(confirmed)+' / '+formatNumber(goal)+'</div></div>'+
         '<div class="captain-goal-track"><i class="'+(goalReached ? 'done' : '')+'" style="width:'+Math.min(goalProgress, 100)+'%;"></i></div>'+
         '<div class="captain-goal-meta"><span>'+goalProgress+'% de la meta</span><span class="'+(goalReached ? 'goal-done' : '')+'">'+goalMessage+'</span></div>'+
       '</div>'+
