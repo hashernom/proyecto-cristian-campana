@@ -53,6 +53,7 @@ assert.match(html, /noanswer/);
 assert.match(html, /Personas confirmadas/);
 assert.match(html, /Personas en la red/);
 assert.match(html, /Por acompañar/);
+assert.match(html, /Satisfactorio/);
 assert.doesNotMatch(html, /Seguimiento/);
 assert.match(html, /Personas sin respuesta/);
 assert.match(html, /Sin respuesta/);

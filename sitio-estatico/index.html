@@ -694,8 +694,8 @@
               <div class="ph">Quiénes están sumando más personas confirmadas</div>
               <div class="tbl-wrap"><table>
                 <tr><th>Capitán</th><th>Barrio</th><th>Agreg.</th><th>Avance</th><th>Estado</th></tr>
-                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>112</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>85</td><td><div class="bar2"><i style="width:88%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>112</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Satisfactorio</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>85</td><td><div class="bar2"><i style="width:88%;"></i></div></td><td><span class="badge ok">Satisfactorio</span></td></tr>
                 <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>92</td><td><div class="bar2"><i style="width:65%;"></i></div></td><td><span class="badge pend">Por acompañar</span></td></tr>
                 <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>75</td><td><div class="bar2"><i style="width:57%;"></i></div></td><td><span class="badge pend">Por acompañar</span></td></tr>
                 <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>83</td><td><div class="bar2"><i style="width:70%;"></i></div></td><td><span class="badge pend">Por acompañar</span></td></tr>
@@ -1165,6 +1165,15 @@
     return '<span class="badge '+item.className+'">'+item.label+'</span>';
   }
 
+  function captainStatusBadge(status){
+    const labels = {
+      ok:{className:'ok', label:'Satisfactorio'},
+      follow:{className:'pend', label:'Por acompañar'}
+    };
+    const item = labels[status] || labels.follow;
+    return '<span class="badge '+item.className+'">'+item.label+'</span>';
+  }
+
   function dashboardMetrics(items){
     return items.map(function(item){
       const toneClass = item.tone ? ' '+item.tone : '';
@@ -1178,7 +1187,7 @@
       const goalProgress = captainGoalProgress(captain);
       return '<tr><td><div class="person"><div class="av2">'+escapeHtml(captain.initials)+'</div>'+escapeHtml(captain.name)+'</div></td>'+
         '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.team.length+'</td><td><div class="bar2"><i style="width:'+Math.min(goalProgress, 100)+'%;"></i></div><div class="muted">'+goalProgress+'% de meta</div></td>'+
-        '<td>'+dashboardBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
+        '<td>'+captainStatusBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
     }).join('');
     const totalCaptains = campaignMockData.capitanes.length;
     const companions = campaignMockData.capitanes.filter(function(captain){ return captain.status === 'follow'; }).length;
