@@ -231,6 +231,35 @@
   .proposal-card .footer{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9px;color:#9aa1b5;}
   .empty-state{background:#fff;border:1px dashed #D8DDEA;border-radius:14px;padding:32px;text-align:center;color:#9aa1b5;font-size:11px;}
 
+  /* ---------- call center ---------- */
+  .cc-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;min-width:0;}
+  .cc-search{width:100%;border:1.5px solid #E4E7F2;border-radius:999px;padding:10px 14px;font:600 11px Poppins,sans-serif;color:var(--ink);margin-bottom:10px;}
+  .cc-search:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;border-color:#C7D2FA;}
+  .cc-table-note{font-size:9.5px;color:#9aa1b5;margin-top:10px;font-weight:600;}
+  .view-table tr.cc-row-active td{background:var(--blue-tint);}
+  .cc-detail{display:flex;flex-direction:column;gap:12px;align-self:start;}
+  .cc-detail-head{display:flex;align-items:center;gap:10px;}
+  .cc-detail-name{font-size:12.5px;font-weight:800;}
+  .cc-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;}
+  .cc-detail-grid .label,.cc-status-block .label,.cc-observations .label{display:block;font-size:9px;color:#9aa1b5;font-weight:700;text-transform:uppercase;letter-spacing:.35px;margin-bottom:3px;}
+  .cc-detail-grid .value{font-size:11px;font-weight:600;word-break:break-word;}
+  .cc-status-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .cc-status-btn{border:1.5px solid #E4E7F2;border-radius:999px;background:#fff;color:#6b7280;font:700 10px Poppins,sans-serif;padding:8px 6px;}
+  .cc-status-btn.active.ok{background:#E3F7EB;border-color:transparent;color:var(--green);}
+  .cc-status-btn.active.pending{background:#FCF1DE;border-color:transparent;color:var(--amber);}
+  .cc-status-btn.active.rejected{background:#FCE7E7;border-color:transparent;color:var(--red);}
+  .cc-status-btn.active.noanswer{background:#EEF1FA;border-color:transparent;color:#4b5563;}
+  .cc-observations{display:flex;flex-direction:column;gap:8px;}
+  .cc-observation{background:#F8F9FC;border-radius:10px;padding:9px 11px;}
+  .cc-observation .date{font-size:8.5px;color:#9aa1b5;font-weight:700;}
+  .cc-observation .text{font-size:10.5px;margin-top:2px;line-height:1.45;}
+  .cc-obs-empty{font-size:10px;color:#9aa1b5;}
+  .cc-obs-form{display:flex;flex-direction:column;gap:8px;}
+  .cc-obs-form .view-action{align-self:flex-start;}
+  .cc-obs-input{width:100%;border:1.5px solid #E4E7F2;border-radius:12px;padding:9px 11px;font:500 10.5px Poppins,sans-serif;resize:vertical;color:var(--ink);}
+  .cc-obs-input:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;border-color:#C7D2FA;}
+  .cc-detail-empty{font-size:10.5px;color:#9aa1b5;line-height:1.55;}
+
   /* ---------- captain network detail ---------- */
   .back-link{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--blue);
     font:700 11px Poppins,sans-serif;cursor:pointer;padding:4px 0;align-self:flex-start;}
@@ -388,6 +417,7 @@
     .view-heading .view-note{align-self:flex-start;}
     #desktopApp{padding:0;}
     .map-layout{grid-template-columns:1fr;}
+    .cc-layout{grid-template-columns:1fr;}
     .modal-card{padding:22px 18px 18px;}
     .modal-grid{grid-template-columns:1fr;}
     .map-tools{align-items:stretch;}
@@ -616,8 +646,10 @@
         <button class="nitem" type="button" data-view="priorizacion"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 21V4"/><path d="M5 5h13l-2 4 2 4H5"/></svg>Priorización</button>
         <button class="nitem" type="button" data-view="capitanes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Capitanes</button>
         <button class="nitem" type="button" data-view="voluntarios"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Voluntarios</button>
+        <button class="nitem" type="button" data-view="callcenter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v2c0 1-1 2-2 2A16 16 0 0 1 4 5Z"/></svg>Call center</button>
         <button class="nitem" type="button" data-view="grupos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21l1.4-4.2A8 8 0 1 1 9 19.5L4 21Z"/></svg>Grupos WhatsApp</button>
         <button class="nitem" type="button" data-view="propuestas"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Propuestas</button>
+        <button class="nitem" type="button" data-view="auditoria"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6Z"/><path d="M9 12l2 2 4-4"/></svg>Auditoría</button>
       </div>
       <div class="dmain">
         <div class="dtop">
@@ -667,9 +699,11 @@
           </section>
           <section id="view-capitanes" class="dashboard-view" aria-label="Capitanes"></section>
           <section id="view-voluntarios" class="dashboard-view" aria-label="Voluntarios"></section>
+          <section id="view-callcenter" class="dashboard-view" aria-label="Call center"></section>
           <section id="view-grupos" class="dashboard-view" aria-label="Grupos de WhatsApp"></section>
           <section id="view-priorizacion" class="dashboard-view" aria-label="Priorización"></section>
           <section id="view-propuestas" class="dashboard-view" aria-label="Propuestas"></section>
+          <section id="view-auditoria" class="dashboard-view" aria-label="Auditoría"></section>
           <section id="view-capitan-red" class="dashboard-view" aria-label="Red del capitán"></section>
         </div>
       </div>
@@ -945,13 +979,17 @@
 
   const volunteerRegistry = buildVolunteerRegistry();
 
-  pollingStations.forEach(function(station){
-    const linked = volunteerRegistry.filter(function(person){
-      return person.pollingStationId === station.id && person.status !== 'rejected';
+  function refreshStationTotals(){
+    pollingStations.forEach(function(station){
+      const linked = volunteerRegistry.filter(function(person){
+        return person.pollingStationId === station.id && person.status !== 'rejected';
+      });
+      station.assigned = linked.length;
+      station.registered = linked.filter(function(person){ return person.status === 'ok'; }).length;
     });
-    station.assigned = linked.length;
-    station.registered = linked.filter(function(person){ return person.status === 'ok'; }).length;
-  });
+  }
+
+  refreshStationTotals();
 
   function volunteerRegistryCounts(){
     return volunteerRegistry.reduce(function(acc, person){
@@ -1018,6 +1056,8 @@
     priorizacion: { title:'Priorización', subtitle:'Puestos que requieren atención según su avance' },
     capitanes: { title:'Capitanes', subtitle:'Seguimiento a los líderes que hacen crecer la red' },
     voluntarios: { title:'Voluntarios', subtitle:'Personas registradas y estado de confirmación' },
+    callcenter: { title:'Call center', subtitle:'Confirmación telefónica y observaciones de la jornada' },
+    auditoria: { title:'Auditoría', subtitle:'Trazabilidad de consultas y cambios sobre datos sensibles' },
     grupos: { title:'Grupos de WhatsApp', subtitle:'Comunidades activas y crecimiento de la conversación' },
     propuestas: { title:'Propuestas', subtitle:'Ideas ciudadanas recibidas desde los barrios' },
     'capitan-red': { title:'Red del capitán', subtitle:'Voluntarios vinculados a este capitán', nav:'capitanes' }
@@ -1043,6 +1083,7 @@
       follow:{className:'pend', label:'Seguimiento'},
       pending:{className:'pend', label:'Pendiente'},
       rejected:{className:'no', label:'Rechazado'},
+      noanswer:{className:'pend', label:'No contestó'},
       new:{className:'ok', label:'Nuevo'},
       review:{className:'pend', label:'En revisión'},
       approved:{className:'ok', label:'Aprobada'}
@@ -1297,11 +1338,30 @@
     });
   }
 
+  const ocanaStationMarkers = {};
+
   function renderPollingStations(){
     pollingStations.forEach(function(station){
       const marker = L.marker(station.position, {icon:stationIcon(station), keyboard:true, title:station.name}).addTo(ocanaLeafletMap);
       marker.on('click', function(){ selectPollingStation(station.id, false, 'stationCard'); });
+      ocanaStationMarkers[station.id] = marker;
     });
+  }
+
+  function refreshStationMarkerIcons(){
+    pollingStations.forEach(function(station){
+      if(ocanaStationMarkers[station.id]) ocanaStationMarkers[station.id].setIcon(stationIcon(station));
+      if(captainStationMarkers[station.id]){
+        const captain = campaignMockData.capitanes[activeCaptainIndex];
+        const dim = captain ? !captainOwnsStation(captain, station) : false;
+        captainStationMarkers[station.id].setIcon(stationIcon(station, dim));
+      }
+    });
+    const sideEl = document.getElementById('mapSide');
+    if(sideEl){
+      const zone = ocanaZones.find(function(item){ return item.id === activeZoneId; });
+      if(zone) sideEl.innerHTML = renderZoneSide(zone);
+    }
   }
 
   function captainStationTotals(captain, station){
@@ -1592,7 +1652,133 @@
       '<div class="view-panel"><h3>Tablero de priorización</h3><div class="ph">Peores primero: revisa meta, cobertura, capitán y confirmaciones antes de la próxima jornada.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Puesto</th><th>Comuna</th><th>Capitán</th><th>Meta</th><th>Confirmadas / Asignadas</th><th>Avance</th><th>Alertas</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
 
-  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, grupos:renderGrupos, propuestas:renderPropuestas};
+  const CALL_CENTER_USER = 'Laura Méndez · Call center';
+  let activeCallCenterIndex = null;
+  let activeCallCenterFilter = 'all';
+  let activeCallCenterQuery = '';
+
+  const auditLog = [
+    { timestamp:'12 sep 2026 · 08:12', user:CALL_CENTER_USER, action:'Inicio de jornada', target:'Sistema', detail:'Carga de lote de llamadas (60 registros)' },
+    { timestamp:'12 sep 2026 · 08:31', user:CALL_CENTER_USER, action:'Consulta de ficha', target:'Luis Eduardo Soto', detail:'Verificación de puesto y barrio' },
+    { timestamp:'12 sep 2026 · 08:47', user:CALL_CENTER_USER, action:'Cambio de estado', target:'Luis Eduardo Soto', detail:'Pendiente → Confirmado' },
+    { timestamp:'12 sep 2026 · 09:05', user:CALL_CENTER_USER, action:'Observación', target:'Karen Luna', detail:'Se dejó mensaje en buzón de voz' },
+    { timestamp:'12 sep 2026 · 09:22', user:CALL_CENTER_USER, action:'Cambio de estado', target:'Nicolás Pardo', detail:'Pendiente → Rechazo' },
+    { timestamp:'12 sep 2026 · 09:40', user:CALL_CENTER_USER, action:'Cierre parcial', target:'Sistema', detail:'18 llamadas registradas' }
+  ];
+
+  const callCenterStatusLabels = {ok:'Confirmado', pending:'Pendiente', rejected:'Rechazo', noanswer:'No contestó'};
+
+  function auditTimestamp(){
+    const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const now = new Date();
+    return now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear()+' · '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  }
+
+  function maskDocument(value){
+    const text = String(value || '—');
+    const parts = text.split(' ');
+    if(parts.length >= 3){
+      return parts.map(function(part, index){ return index < 2 ? part : '***'; }).join(' ');
+    }
+    return text.length > 4 ? text.slice(0, 4) + ' ***' : text;
+  }
+
+  function logAudit(action, person, detail){
+    auditLog.unshift({
+      timestamp:auditTimestamp(),
+      user:CALL_CENTER_USER,
+      action:action,
+      target:person ? person.name : 'Sistema',
+      detail:detail || ''
+    });
+  }
+
+  function callCenterVisibleEntries(){
+    const query = activeCallCenterQuery.trim().toLowerCase();
+    return volunteerRegistry.filter(function(person){
+      if(activeCallCenterFilter !== 'all' && person.status !== activeCallCenterFilter) return false;
+      if(!query) return true;
+      return person.name.toLowerCase().indexOf(query) !== -1
+        || person.document.indexOf(query) !== -1
+        || person.neighborhood.toLowerCase().indexOf(query) !== -1;
+    });
+  }
+
+  function renderCallCenterDetail(){
+    const person = volunteerRegistry[activeCallCenterIndex];
+    if(!person){
+      return '<div class="cc-detail-empty">Selecciona un registro para ver su ficha, cambiar el estado y registrar observaciones con fecha.</div>';
+    }
+    const statusButtons = ['ok','pending','rejected','noanswer'].map(function(status){
+      const active = person.status === status ? ' active' : '';
+      return '<button type="button" class="cc-status-btn '+status+active+'" data-demo-action="cc-status" data-status="'+status+'">'+callCenterStatusLabels[status]+'</button>';
+    }).join('');
+    const observations = person.observations && person.observations.length
+      ? person.observations
+      : (person.notes ? [{date:person.date, text:person.notes}] : []);
+    const observationsHtml = observations.length
+      ? observations.map(function(observation){
+          return '<div class="cc-observation"><div class="date">'+escapeHtml(observation.date)+'</div><div class="text">'+escapeHtml(observation.text)+'</div></div>';
+        }).join('')
+      : '<div class="cc-obs-empty">Sin observaciones registradas.</div>';
+    return '<div class="cc-detail-head"><div class="av2">'+escapeHtml(person.initials)+'</div><div><div class="cc-detail-name">'+escapeHtml(person.name)+'</div><div class="muted">'+escapeHtml(maskDocument(person.document))+'</div></div></div>'+
+      '<div class="cc-detail-grid">'+
+        '<div><span class="label">Número</span><span class="value">'+escapeHtml(person.phone)+'</span></div>'+
+        '<div><span class="label">Barrio</span><span class="value">'+escapeHtml(person.neighborhood)+'</span></div>'+
+        '<div><span class="label">Puesto</span><span class="value">'+escapeHtml(person.pollingStation || 'Sin puesto')+'</span></div>'+
+      '</div>'+
+      '<div class="cc-status-block"><span class="label">Estado de confirmación</span><div class="cc-status-btns">'+statusButtons+'</div></div>'+
+      '<div class="cc-observations"><span class="label">Observaciones</span>'+observationsHtml+'</div>'+
+      '<div class="cc-obs-form"><textarea class="cc-obs-input" rows="2" placeholder="Nueva observación con fecha..."></textarea><button type="button" class="view-action" data-demo-action="cc-add-observation">Agregar observación</button></div>';
+  }
+
+  function renderCallCenter(){
+    const entries = callCenterVisibleEntries();
+    const shown = entries.slice(0, 60);
+    const counts = volunteerRegistryCounts();
+    const filters = [
+      {key:'all', label:'Todos'},
+      {key:'ok', label:'Confirmado'},
+      {key:'pending', label:'Pendiente'},
+      {key:'rejected', label:'Rechazo'},
+      {key:'noanswer', label:'No contestó'}
+    ];
+    const chips = filters.map(function(filter){
+      return '<button class="filter-chip'+(activeCallCenterFilter===filter.key?' active':'')+'" type="button" data-demo-action="cc-filter" data-cc-filter="'+filter.key+'">'+filter.label+'</button>';
+    }).join('');
+    const rows = shown.map(function(person){
+      const index = volunteerRegistry.indexOf(person);
+      const active = index === activeCallCenterIndex ? ' class="cc-row-active"' : '';
+      return '<tr'+active+'><td><div class="person"><div class="av2">'+escapeHtml(person.initials)+'</div>'+escapeHtml(person.name)+'</div></td>'+
+        '<td class="muted">'+escapeHtml(person.phone)+'</td>'+
+        '<td class="muted">'+escapeHtml(person.neighborhood)+'</td>'+
+        '<td class="muted">'+escapeHtml(maskDocument(person.document))+'</td>'+
+        '<td class="muted">'+escapeHtml(person.pollingStation || '—')+'</td>'+
+        '<td>'+dashboardBadge(person.status)+'</td>'+
+        '<td><button class="view-action" type="button" data-demo-action="cc-select" data-cc="'+index+'">Abrir</button></td></tr>';
+    }).join('');
+    const tableNote = entries.length > shown.length
+      ? 'Mostrando '+shown.length+' de '+formatNumber(entries.length)+' registros · usa la búsqueda para filtrar.'
+      : formatNumber(entries.length)+' registros';
+    return '<div class="view-heading"><div><h3>Call center</h3><p>Confirmación telefónica y observaciones de la jornada.</p></div><div class="view-note">Usuario: '+escapeHtml(CALL_CENTER_USER)+'</div></div>'+
+      '<div class="view-stats">'+dashboardMetrics([
+        {value:formatNumber(volunteerRegistry.length),label:'Registros',delta:'Base total de la red'},
+        {value:formatNumber(counts.ok),label:'Confirmados',delta:'Listos para votar'},
+        {value:formatNumber(counts.pending),label:'Pendientes',delta:'Por confirmar'},
+        {value:formatNumber(counts.noanswer || 0),label:'No contestó',delta:'Reintentar mañana',tone:'warn'}
+      ])+'</div>'+
+      '<div class="cc-layout">'+
+        '<div class="view-panel cc-table-panel"><h3>Llamadas asignadas</h3><div class="ph">Busca por nombre, cédula o barrio. Solo el call center puede cambiar el estado.</div>'+
+          '<input class="cc-search" type="search" placeholder="Buscar por nombre, cédula o barrio..." value="'+escapeHtml(activeCallCenterQuery)+'" data-cc-search>'+
+          '<div class="filter-chips">'+chips+'</div>'+
+          '<div class="view-table-wrap"><table class="view-table"><thead><tr><th>Nombre</th><th>Número</th><th>Barrio</th><th>Cédula</th><th>Puesto</th><th>Estado</th><th></th></tr></thead><tbody>'+(rows || '<tr><td colspan="7" class="muted">Sin registros para este filtro.</td></tr>')+'</tbody></table></div>'+
+          '<div class="cc-table-note">'+tableNote+'</div>'+
+        '</div>'+
+        '<aside class="view-panel cc-detail">'+renderCallCenterDetail()+'</aside>'+
+      '</div>';
+  }
+
+  const dashboardRenderers = {priorizacion:renderPriorizacion, capitanes:renderCapitanes, voluntarios:renderVoluntarios, callcenter:renderCallCenter, grupos:renderGrupos, propuestas:renderPropuestas};
 
   function renderDashboardView(viewId){
     if(dashboardRenderers[viewId]) document.getElementById('view-'+viewId).innerHTML = dashboardRenderers[viewId]();
@@ -1751,6 +1937,44 @@
       setTimeout(function(){ renderCaptainNetworkMapLayers(campaignMockData.capitanes[activeCaptainIndex]); }, 0);
       return;
     }
+    if(kind === 'cc-select'){
+      activeCallCenterIndex = Number(action.dataset.cc);
+      logAudit('Consulta de ficha', volunteerRegistry[activeCallCenterIndex], 'Apertura de ficha para llamada');
+      renderDashboardView('callcenter');
+      return;
+    }
+    if(kind === 'cc-filter'){
+      activeCallCenterFilter = action.dataset.ccFilter;
+      renderDashboardView('callcenter');
+      return;
+    }
+    if(kind === 'cc-status'){
+      const person = volunteerRegistry[activeCallCenterIndex];
+      if(person){
+        const next = action.dataset.status;
+        const previousLabel = callCenterStatusLabels[person.status] || person.status;
+        person.status = next;
+        refreshStationTotals();
+        refreshStationMarkerIcons();
+        logAudit('Cambio de estado', person, previousLabel+' → '+callCenterStatusLabels[next]);
+        renderDashboardView('callcenter');
+        toast('Estado actualizado: '+callCenterStatusLabels[next]);
+      }
+      return;
+    }
+    if(kind === 'cc-add-observation'){
+      const person = volunteerRegistry[activeCallCenterIndex];
+      const input = document.querySelector('.cc-obs-input');
+      const text = input ? input.value.trim() : '';
+      if(person && text){
+        if(!person.observations) person.observations = person.notes ? [{date:person.date, text:person.notes}] : [];
+        person.observations.unshift({date:auditTimestamp().split(' · ')[0], text:text});
+        logAudit('Observación', person, text);
+        renderDashboardView('callcenter');
+        toast('Observación agregada');
+      }
+      return;
+    }
     if(kind === 'volunteer'){
       openPersonModal('voluntario', Number(action.dataset.person));
       return;
@@ -1769,6 +1993,15 @@
     if(kind === 'group'){
       toast('Detalle del grupo abierto');
       return;
+    }
+  });
+
+  document.getElementById('desktopApp').addEventListener('input', function(event){
+    if(event.target && event.target.matches('[data-cc-search]')){
+      activeCallCenterQuery = event.target.value;
+      renderDashboardView('callcenter');
+      const input = document.querySelector('[data-cc-search]');
+      if(input){ input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
     }
   });
 
