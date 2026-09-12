@@ -45,15 +45,17 @@ Aplicar sobre la demo estática un conjunto de ajustes de producto: reemplazar l
 - Los pines de otras redes muestran solo nombre, barrio y el aviso "Dato referencial · pertenece a otra red", sin métricas.
 - Se mantienen el toggle "Mostrar puestos de referencia" y el mapa Leaflet.
 
-### 3. Call center y auditoría
+### 3. Call center y seguridad
 
-**3.1 Sección Call center (independiente).** El call center no vive en el panel del candidato: es una sección propia que se abre con una burbuja flotante "Call center" ubicada encima de "Ver panel del candidato" (y que cambia a "Volver a la app"). El panel tiene pestañas "Llamadas" y "Auditoría" en la barra superior y cierra con la misma burbuja.
+**3.1 Sección Call center (independiente).** El call center no vive en el panel del candidato: es una sección propia que se abre con una burbuja flotante "Call center" ubicada encima de "Ver panel del candidato" (y que cambia a "Volver a la app"). Cierra con la misma burbuja.
 - Barra de búsqueda (nombre, cédula o barrio) y chips de filtro por estado (Todos, Confirmado, Pendiente, Rechazo, No contestó).
 - Tabla con Nombre, Número, Barrio, Cédula enmascarada, Puesto y Estado. Se muestran máximo 60 filas filtradas con nota de cuántas hay en total.
 - Panel de detalle del registro seleccionado con botones de estado (Confirmado, Pendiente, Rechazo en rojo, No contestó) y observaciones con fecha: lista de observaciones y campo para agregar una nueva con la fecha del día.
 - Cada consulta o cambio genera un evento de auditoría; al cambiar el estado se recalculan los totales de puestos (asignadas/confirmadas) en memoria y se refresca la vista.
 
-**3.2 Pestaña Auditoría.** Dentro de la misma sección independiente, tabla de eventos (fecha y hora, usuario, acción, registro afectado y detalle). Se precargan eventos mock y se agregan en vivo desde la pestaña "Llamadas". El usuario mock es "Laura Méndez · Call center".
+**3.2 Sección Seguridad (independiente).** La auditoría es una medida de seguridad de datos, no una función del call center. Vive en su propia sección que se abre con la burbuja "Seguridad" (encima de "Call center") y tiene dos pestañas:
+- **Auditoría:** tabla de eventos (fecha y hora, usuario, acción, registro afectado y detalle) de todos los módulos, con eventos mock de controles de acceso y crecimiento en vivo desde el call center.
+- **Permisos:** matriz de roles (Voluntario/Capitán, Call center, Panel de campaña, Seguridad) contra permisos (ver su red, ver base completa, cédula completa, cambiar estado, exportar base, ver auditoría) y reglas de protección de datos (sin exportación masiva, cédula enmascarada, trazabilidad, Ley 1581).
 
 **3.3 Estados.** Se agrega el estado `noanswer` ("No contestó") al mapa de badges reutilizando el tono ámbar. `rejected` conserva el tono rojo.
 
