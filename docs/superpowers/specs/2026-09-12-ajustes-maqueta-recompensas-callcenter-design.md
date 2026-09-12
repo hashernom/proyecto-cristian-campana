@@ -57,7 +57,7 @@ Aplicar sobre la demo estática un conjunto de ajustes de producto: reemplazar l
 - **Auditoría:** tabla de eventos (fecha y hora, usuario, acción, registro afectado y detalle) de todos los módulos, con eventos mock de controles de acceso y crecimiento en vivo desde el call center.
 - **Permisos:** matriz de roles (Voluntario/Capitán, Call center, Panel de campaña, Seguridad) contra permisos (ver su red, ver base completa, cédula completa, cambiar estado, exportar base, ver auditoría) y reglas de protección de datos (sin exportación masiva, cédula enmascarada, trazabilidad, Ley 1581).
 
-**3.3 Estados.** Se agrega el estado `noanswer` ("No contestó") al mapa de badges reutilizando el tono ámbar. `rejected` conserva el tono rojo.
+**3.3 Estados.** Se agrega el estado `noanswer` ("No contestó") al mapa de badges reutilizando el tono ámbar. `rejected` conserva el tono rojo. La vista Voluntarios agrega la métrica "No contestaron" con ejemplos en la tabla y en la base mock, y la red de capitanes usa "Personas confirmadas / pendientes / rechazadas" en lugar de "Equipo".
 
 ### 4. Datos y utilidades
 
