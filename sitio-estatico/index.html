@@ -232,11 +232,22 @@
   .empty-state{background:#fff;border:1px dashed #D8DDEA;border-radius:14px;padding:32px;text-align:center;color:#9aa1b5;font-size:11px;}
 
   /* ---------- call center ---------- */
-  .cc-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;min-width:0;}
+  .cc-layout{display:grid;grid-template-columns:2fr 1fr;gap:16px;min-width:0;}
   .cc-search{width:100%;border:1.5px solid #E4E7F2;border-radius:999px;padding:10px 14px;font:600 11px Poppins,sans-serif;color:var(--ink);margin-bottom:10px;}
   .cc-search:focus-visible{outline:3px solid rgba(49,100,253,.24);outline-offset:2px;border-color:#C7D2FA;}
   .cc-table-note{font-size:9.5px;color:#9aa1b5;margin-top:10px;font-weight:600;}
+  .cc-table-panel .view-table{table-layout:fixed;min-width:0;}
+  .cc-table-panel .view-table th:nth-child(1),.cc-table-panel .view-table td:nth-child(1){width:22%;}
+  .cc-table-panel .view-table th:nth-child(2),.cc-table-panel .view-table td:nth-child(2){width:14%;}
+  .cc-table-panel .view-table th:nth-child(3),.cc-table-panel .view-table td:nth-child(3){width:14%;}
+  .cc-table-panel .view-table th:nth-child(4),.cc-table-panel .view-table td:nth-child(4){width:14%;}
+  .cc-table-panel .view-table th:nth-child(5),.cc-table-panel .view-table td:nth-child(5){width:24%;}
+  .cc-table-panel .view-table th:nth-child(6),.cc-table-panel .view-table td:nth-child(6){width:12%;}
+  .cc-table-panel .view-table td{overflow:hidden;text-overflow:ellipsis;}
+  .cc-table-panel .view-table td:nth-child(6){overflow:visible;text-overflow:clip;}
+  .cc-table-panel .view-table .cc-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
   .view-table tr.cc-row-active td{background:var(--blue-tint);}
+  .cc-row{cursor:pointer;}
   .cc-detail{display:flex;flex-direction:column;gap:12px;align-self:start;}
   .cc-detail-head{display:flex;align-items:center;gap:10px;}
   .cc-detail-name{font-size:12.5px;font-weight:800;}
@@ -560,27 +571,27 @@
         <div style="margin-top:26px;text-align:center;font-size:21px;font-weight:800;">Ranking</div>
         <div style="text-align:center;font-size:10px;opacity:.8;margin-top:-2px;">de los que más agregan personas</div>
         <div class="podium">
-          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">HP</div><div class="pname">Hernán<br>Pérez</div><div class="pmeta">88 personas</div></div>
-          <div class="pcol"><svg width="24" height="16" viewBox="0 0 24 16" fill="#FCEE21" style="margin-bottom:-3px;"><path d="M2 14l-2-9 5 3 5-7 5 7 5-3-2 9z"/></svg><div class="pav" style="width:58px;height:58px;font-size:17px;">JZ</div><div class="pname">Juan Pablo<br>Zuluaga</div><div class="pmeta">108 personas</div></div>
-          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">CV</div><div class="pname">Carmen<br>Villalobos</div><div class="pmeta">82 personas</div></div>
+          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">HP</div><div class="pname">Hernán<br>Pérez</div><div class="pmeta">92 personas</div></div>
+          <div class="pcol"><svg width="24" height="16" viewBox="0 0 24 16" fill="#FCEE21" style="margin-bottom:-3px;"><path d="M2 14l-2-9 5 3 5-7 5 7 5-3-2 9z"/></svg><div class="pav" style="width:58px;height:58px;font-size:17px;">JZ</div><div class="pname">Juan Pablo<br>Zuluaga</div><div class="pmeta">112 personas</div></div>
+          <div class="pcol"><div class="pav" style="width:44px;height:44px;font-size:13px;">CV</div><div class="pname">Carmen<br>Villalobos</div><div class="pmeta">85 personas</div></div>
         </div>
         <div class="listwrap">
-          <div class="row"><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">108 personas en su red</div></div><div class="icons">
+          <div class="row"><div><div class="rname">Juan Pablo Zuluaga</div><div class="rmeta">112 personas en su red</div></div><div class="icons">
             <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
             <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
             <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
-          <div class="row"><div><div class="rname">Hernán Pérez</div><div class="rmeta">88 personas en su red</div></div><div class="icons">
+          <div class="row"><div><div class="rname">Hernán Pérez</div><div class="rmeta">92 personas en su red</div></div><div class="icons">
             <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
             <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
             <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
-          <div class="row"><div><div class="rname">Carmen Villalobos</div><div class="rmeta">82 personas en su red</div></div><div class="icons">
+          <div class="row"><div><div class="rname">Carmen Villalobos</div><div class="rmeta">85 personas en su red</div></div><div class="icons">
             <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
             <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
             <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
           </div></div>
-          <div class="row"><div><div class="rname">Susana Ramírez</div><div class="rmeta">72 personas en su red</div></div><div class="icons">
+          <div class="row"><div><div class="rname">Susana Ramírez</div><div class="rmeta">75 personas en su red</div></div><div class="icons">
             <span class="ic sel" style="background:#E3F7EB;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0BA451" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
             <span class="ic" style="background:#FCF1DE;color:#E8A93B;font-weight:900;">−</span>
             <span class="ic" style="background:#FCE7E7;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#EB1F27" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
@@ -671,11 +682,11 @@
               <div class="ph">Quiénes están sumando más personas confirmadas</div>
               <div class="tbl-wrap"><table>
                 <tr><th>Capitán</th><th>Barrio</th><th>Agreg.</th><th>Avance</th><th>Estado</th></tr>
-                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>108</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>82</td><td><div class="bar2"><i style="width:88%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>88</td><td><div class="bar2"><i style="width:65%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>72</td><td><div class="bar2"><i style="width:57%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
-                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>80</td><td><div class="bar2"><i style="width:70%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">JZ</div>Juan Pablo Zuluaga</div></td><td>Cristo Rey</td><td>112</td><td><div class="bar2"><i style="width:82%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">CV</div>Carmen Villalobos</div></td><td>Buenos Aires</td><td>85</td><td><div class="bar2"><i style="width:88%;"></i></div></td><td><span class="badge ok">Al día</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">HP</div>Hernán Pérez</div></td><td>La Piñuela</td><td>92</td><td><div class="bar2"><i style="width:65%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">SR</div>Susana Ramírez</div></td><td>Villa Nueva</td><td>75</td><td><div class="bar2"><i style="width:57%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
+                <tr><td><div class="nm"><div class="av2">DL</div>David Londoño</div></td><td>Cristo Rey</td><td>83</td><td><div class="bar2"><i style="width:70%;"></i></div></td><td><span class="badge pend">Seguimiento</span></td></tr>
               </table></div>
             </div>
             <div class="panel">
@@ -1110,7 +1121,7 @@
       '<div class="view-stats">'+dashboardMetrics([
         {value:'124',label:'Capitanes activos',delta:'+9 esta semana'},
         {value:'18',label:'En seguimiento',delta:'14% del total'},
-        {value:'83,3',label:'Promedio por capitán',delta:'Personas por red'}
+        {value:(campaignMockData.capitanes.reduce(function(sum, captain){ return sum + captain.team.length; }, 0) / campaignMockData.capitanes.length).toFixed(1).replace('.', ','),label:'Promedio por capitán',delta:'Personas por red'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Ranking de capitanes</h3><div class="ph">Avance de cada líder frente a su meta de confirmados.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
@@ -1668,6 +1679,11 @@
 
   const callCenterStatusLabels = {ok:'Confirmado', pending:'Pendiente', rejected:'Rechazo', noanswer:'No contestó'};
 
+  function callCenterBadge(status){
+    const tones = {ok:'ok', pending:'pend', rejected:'no', noanswer:'pend'};
+    return '<span class="badge '+(tones[status] || 'pend')+'">'+(callCenterStatusLabels[status] || status)+'</span>';
+  }
+
   function auditTimestamp(){
     const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
     const now = new Date();
@@ -1748,14 +1764,13 @@
     }).join('');
     const rows = shown.map(function(person){
       const index = volunteerRegistry.indexOf(person);
-      const active = index === activeCallCenterIndex ? ' class="cc-row-active"' : '';
-      return '<tr'+active+'><td><div class="person"><div class="av2">'+escapeHtml(person.initials)+'</div>'+escapeHtml(person.name)+'</div></td>'+
+      const active = index === activeCallCenterIndex ? ' cc-row-active' : '';
+      return '<tr class="cc-row'+active+'" data-demo-action="cc-select" data-cc="'+index+'"><td><div class="person"><div class="av2">'+escapeHtml(person.initials)+'</div><span class="cc-name">'+escapeHtml(person.name)+'</span></div></td>'+
         '<td class="muted">'+escapeHtml(person.phone)+'</td>'+
         '<td class="muted">'+escapeHtml(person.neighborhood)+'</td>'+
         '<td class="muted">'+escapeHtml(maskDocument(person.document))+'</td>'+
         '<td class="muted">'+escapeHtml(person.pollingStation || '—')+'</td>'+
-        '<td>'+dashboardBadge(person.status)+'</td>'+
-        '<td><button class="view-action" type="button" data-demo-action="cc-select" data-cc="'+index+'">Abrir</button></td></tr>';
+        '<td>'+callCenterBadge(person.status)+'</td></tr>';
     }).join('');
     const tableNote = entries.length > shown.length
       ? 'Mostrando '+shown.length+' de '+formatNumber(entries.length)+' registros · usa la búsqueda para filtrar.'
@@ -1771,7 +1786,7 @@
         '<div class="view-panel cc-table-panel"><h3>Llamadas asignadas</h3><div class="ph">Busca por nombre, cédula o barrio. Solo el call center puede cambiar el estado.</div>'+
           '<input class="cc-search" type="search" placeholder="Buscar por nombre, cédula o barrio..." value="'+escapeHtml(activeCallCenterQuery)+'" data-cc-search>'+
           '<div class="filter-chips">'+chips+'</div>'+
-          '<div class="view-table-wrap"><table class="view-table"><thead><tr><th>Nombre</th><th>Número</th><th>Barrio</th><th>Cédula</th><th>Puesto</th><th>Estado</th><th></th></tr></thead><tbody>'+(rows || '<tr><td colspan="7" class="muted">Sin registros para este filtro.</td></tr>')+'</tbody></table></div>'+
+          '<div class="view-table-wrap"><table class="view-table"><thead><tr><th>Nombre</th><th>Número</th><th>Barrio</th><th>Cédula</th><th>Puesto</th><th>Estado</th></tr></thead><tbody>'+(rows || '<tr><td colspan="6" class="muted">Sin registros para este filtro.</td></tr>')+'</tbody></table></div>'+
           '<div class="cc-table-note">'+tableNote+'</div>'+
         '</div>'+
         '<aside class="view-panel cc-detail">'+renderCallCenterDetail()+'</aside>'+
@@ -1806,6 +1821,7 @@
     document.querySelector('#desktopApp .dtop h2').textContent = meta.title;
     document.querySelector('#desktopApp .dtop .sub').textContent = meta.subtitle;
     document.querySelector('#desktopApp .dcontent').scrollTop = 0;
+    if(dashboardRenderers[viewId]) renderDashboardView(viewId);
     if(viewId === 'resumen' && ocanaLeafletMap){
       const wasHidden = ocanaLeafletMap.getSize().x === 0;
       setTimeout(function(){
