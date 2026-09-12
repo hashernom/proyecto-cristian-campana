@@ -1539,17 +1539,6 @@
     return station.captainIds.indexOf(captain.id) !== -1;
   }
 
-  function captainStationSummary(captain){
-    return stationsForCaptain(captain.id).reduce(function(summary, station){
-      const assigned = stationNumber(station.assigned);
-      const registered = Math.min(stationNumber(station.registered), assigned);
-      summary.covered += assigned > 0 ? 1 : 0;
-      summary.assigned += assigned;
-      summary.registered += registered;
-      return summary;
-    }, {covered:0, assigned:0, registered:0});
-  }
-
   function captainConfirmed(captain){
     return captainNetworkCounts(captain.team).ok || 0;
   }
@@ -1616,15 +1605,15 @@
       ? 'Meta cumplida · beneficio desbloqueado'
       : 'Faltan '+formatNumber(remaining)+' confirmados para el siguiente beneficio';
     return '<button class="back-link" type="button" data-demo-action="back-to-capitanes"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 19l-7-7 7-7"/></svg>Volver a capitanes</button>'+
-      '<div class="view-heading"><div><h3>Red de '+escapeHtml(captain.name)+'</h3><p>'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</p></div><div class="view-note">'+captain.team.length+' personas en la red</div></div>'+
+      '<div class="view-heading"><div><h3>Red de '+escapeHtml(captain.name)+'</h3><p>'+escapeHtml(captain.neighborhood)+' · '+escapeHtml(captain.comuna||'')+'</p></div><div class="view-note">'+stationsForCaptain(captain.id).length+' puestos de votación</div></div>'+
       '<div class="view-panel captain-goal">'+
         '<div class="captain-goal-head"><div><h3>Plan de recompensas</h3><div class="ph">Progreso del capitán en su red territorial.</div></div><div class="view-note">'+formatNumber(confirmed)+' / '+formatNumber(goal)+'</div></div>'+
         '<div class="captain-goal-track"><i class="'+(goalReached ? 'done' : '')+'" style="width:'+Math.min(goalProgress, 100)+'%;"></i></div>'+
         '<div class="captain-goal-meta"><span>'+goalProgress+'% de la meta</span><span class="'+(goalReached ? 'goal-done' : '')+'">'+goalMessage+'</span></div>'+
       '</div>'+
       '<div class="view-stats">'+dashboardMetrics([
-        {value:String(stationsForCaptain(captain.id).length), label:'Puestos de votación', delta:captainStationSummary(captain).covered+' con cobertura'},
-        {value:String(counts.ok||0), label:'Personas confirmadas', delta:captain.team.length+' en total'},
+        {value:String(captain.team.length), label:'Personas en la red', delta:String(counts.ok||0)+' confirmadas'},
+        {value:String(counts.ok||0), label:'Personas confirmadas', delta:(captain.team.length ? Math.round(((counts.ok||0) / captain.team.length) * 100) : 0)+'% de la red'},
         {value:String(counts.pending||0), label:'Personas pendientes', delta:'Por confirmar', valueTone:'pend'},
         {value:String(counts.noanswer||0), label:'Personas sin respuesta', delta:'No contestaron', valueTone:'info'},
         {value:String(counts.rejected||0), label:'Personas rechazadas', delta:'Requieren revisión', tone:'warn', valueTone:'warn'}
