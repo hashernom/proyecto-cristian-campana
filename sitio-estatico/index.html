@@ -302,7 +302,7 @@
   .map-chips{display:flex;flex-wrap:wrap;gap:6px;}
   .map-chip{font-size:9.5px;font-weight:700;color:var(--blue);background:var(--blue-tint);border-radius:999px;
      padding:6px 10px;}
-  .map-station-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;}
+  .map-station-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
   .map-station-stat{background:#F8F9FC;border-radius:9px;padding:8px 5px;text-align:center;}
   .map-station-stat .v{font-size:12px;font-weight:800;line-height:1.1;}
   .map-station-stat .l{font-size:7.5px;color:#9aa1b5;font-weight:600;margin-top:3px;line-height:1.2;}
@@ -730,37 +730,37 @@
   const ocanaZones = [
     {
       id:'comuna-1', code:'Comuna 1', name:'Central · José Eusebio Caro', shortName:'Central',
-      support:52, volunteers:512, captains:22, stationGoal:4, trend:'+3% esta semana',
+      support:52, volunteers:512, captains:22, trend:'+3% esta semana',
       barrios:['Las Llanadas','20 de Julio','El Llano Echávez','Las Cajas','Barrios Unidos','Santa Ana','San José','Hacaritama','Tacaloa','San Agustín','La Modelo','Caracolí','El Playón'],
       topBarrios:[{name:'Hacaritama',pct:59},{name:'La Modelo',pct:55},{name:'20 de Julio',pct:48}]
     },
     {
       id:'comuna-2', code:'Comuna 2', name:'Nororiental · Cristo Rey', shortName:'Cristo Rey',
-      support:74, volunteers:890, captains:38, stationGoal:5, trend:'+9% esta semana',
+      support:74, volunteers:890, captains:38, trend:'+9% esta semana',
       barrios:['Cristo Rey','El Dorado','Nuevo Horizonte','Cañaveral','El Carmen','Simón Bolívar','Sesquicentenario','Fundadores','Comuneros','Urb. Los Alpes','El Retiro','El Peñón','Urb. Bruselas','Betania','Nueve de Octubre','Palomar'],
       topBarrios:[{name:'Cristo Rey',pct:81},{name:'El Dorado',pct:76},{name:'Simón Bolívar',pct:70}]
     },
     {
       id:'comuna-3', code:'Comuna 3', name:'Suroriental · Olaya Herrera', shortName:'Olaya Herrera',
-      support:63, volunteers:780, captains:33, stationGoal:5, trend:'+6% esta semana',
+      support:63, volunteers:780, captains:33, trend:'+6% esta semana',
       barrios:['Olaya Herrera','La Piñuela-San Antonio','El Carretero','Villa Nueva','Camino Real','Santa Lucía','Gustavo Alayón','La Palmita','Las Mercedes','La Costa','La Favorita','La Quinta','San Fermín','El Llanito','La Esperanza','Doce de Octubre','El Bosque','Los Almendros','Jorge Eliécer Gaitán','Belén','La Paz'],
       topBarrios:[{name:'La Piñuela',pct:68},{name:'Villa Nueva',pct:64},{name:'El Carretero',pct:58}]
     },
     {
       id:'comuna-4', code:'Comuna 4', name:'Suroccidental · Adolfo Milanés', shortName:'Adolfo Milanés',
-      support:39, volunteers:350, captains:15, stationGoal:3, trend:'+1% esta semana',
+      support:39, volunteers:350, captains:15, trend:'+1% esta semana',
       barrios:['Marabel','Marabelito','La Torcoroma','Juan XXIII','Santa Cruz','El Tejarito','Junín','La Libertad','El Landia','La Esmeralda','Nueva España','IV Centenario','Camilo Torres','San Rafael','Primero de Mayo'],
       topBarrios:[{name:'Marabel',pct:44},{name:'La Torcoroma',pct:40},{name:'Juan XXIII',pct:36}]
     },
     {
       id:'comuna-5', code:'Comuna 5', name:'Francisco Fernández de Contreras', shortName:'Fdez. de Contreras',
-      support:58, volunteers:560, captains:24, stationGoal:4, trend:'+5% esta semana',
+      support:58, volunteers:560, captains:24, trend:'+5% esta semana',
       barrios:['Buenos Aires','La Primavera','Las Palmeras','Ciudad Jardín','El Lago','Las Ferias','El Llano','Las Llanadas','Punta del Llano','Tutumalito','El Uvito','Villas de Antón'],
       topBarrios:[{name:'Buenos Aires',pct:66},{name:'La Primavera',pct:60},{name:'Ciudad Jardín',pct:53}]
     },
     {
       id:'comuna-6', code:'Comuna 6', name:'Ciudadela Norte', shortName:'Ciudadela Norte',
-      support:46, volunteers:390, captains:17, stationGoal:3, trend:'+2% esta semana',
+      support:46, volunteers:390, captains:17, trend:'+2% esta semana',
       barrios:['José Antonio Galán','Santa Clara','Bermejal','Colinas de la Florida','El Líbano','La Ondina','La Gloria','2 de Octubre','Villa Paraíso','Los Cristales','La Perla','Los Sauces','Villamar','La Riviera','Altos del Norte'],
       topBarrios:[{name:'José Antonio Galán',pct:51},{name:'Santa Clara',pct:47},{name:'Bermejal',pct:42}]
     }
@@ -1041,7 +1041,7 @@
   function stationsForZone(comunaId){ return pollingStations.filter(function(station){ return station.comunaId === comunaId; }); }
   function stationsForCaptain(captainId){ return pollingStations.filter(function(station){ return station.captainIds.indexOf(captainId) !== -1; }); }
   function stationProgress(station){ const assigned = stationNumber(station.assigned); const registered = Math.min(stationNumber(station.registered), assigned); return assigned ? Math.round((registered / assigned) * 100) : 0; }
-  function zoneStationSummary(comunaId){ const stations = stationsForZone(comunaId); const zone = ocanaZones.find(function(item){ return item.id === comunaId; }); const stationGoal = zone && Number.isFinite(zone.stationGoal) && zone.stationGoal > 0 ? zone.stationGoal : Math.max(stations.length, 2); return stations.reduce(function(summary, station){ const assigned = stationNumber(station.assigned); const registered = Math.min(stationNumber(station.registered), assigned); summary.assigned += assigned; summary.registered += registered; summary.covered += assigned > 0 ? 1 : 0; return summary; }, {stationGoal:stationGoal, covered:0, assigned:0, registered:0, total:stations.length}); }
+  function zoneStationSummary(comunaId){ const stations = stationsForZone(comunaId); return stations.reduce(function(summary, station){ const assigned = stationNumber(station.assigned); const registered = Math.min(stationNumber(station.registered), assigned); summary.assigned += assigned; summary.registered += registered; summary.covered += assigned > 0 ? 1 : 0; return summary; }, {covered:0, assigned:0, registered:0, total:stations.length}); }
 
   function dashboardBadge(status){
     const labels = {
@@ -1174,8 +1174,7 @@
         '<div class="map-side-stat"><div class="v">'+zone.captains+'</div><div class="l">Capitanes</div></div>'+
       '</div>'+
       '<div style="font-size:9.5px;color:var(--green);font-weight:700;">'+escapeHtml(zone.trend)+'</div>'+
-      '<div><h4>Estaciones de votación</h4><div class="map-station-summary">'+
-        '<div class="map-station-stat"><div class="v">'+stationSummary.stationGoal+'</div><div class="l">Meta puestos</div></div>'+
+      '<div><h4>Puestos de votación</h4><div class="map-station-summary">'+
         '<div class="map-station-stat"><div class="v">'+stationSummary.covered+'</div><div class="l">Puestos cubiertos</div></div>'+
         '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.assigned)+'</div><div class="l">Asignadas</div></div>'+
         '<div class="map-station-stat"><div class="v">'+formatNumber(stationSummary.registered)+'</div><div class="l">Confirmadas</div></div>'+
