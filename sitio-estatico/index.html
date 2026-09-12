@@ -383,7 +383,6 @@
   .station-reference{display:inline-flex;margin-top:8px;padding:5px 8px;border-radius:999px;background:#FCF1DE;color:#9A6916;
     font-size:8px;font-weight:700;}
   .station-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px;}
-  .station-metrics.three{grid-template-columns:repeat(3,minmax(0,1fr));}
   .station-metric{background:#F8F9FC;border-radius:9px;padding:8px 6px;text-align:center;}
   .station-metric .v{display:block;font-size:13px;font-weight:800;line-height:1.1;}
   .station-metric .l{display:block;font-size:8px;color:#9aa1b5;font-weight:600;margin-top:3px;}
@@ -1115,6 +1114,13 @@
         const station = captainStations.length ? captainStations[i % captainStations.length] : null;
         captain.team.push(makeTeamMember(captain, zone, station, 'rejected', random));
       }
+      captain.team.forEach(function(member, index){
+        if(!member.pollingStationId){
+          const station = captainStations.length ? captainStations[index % captainStations.length] : null;
+          member.pollingStationId = station ? station.id : '';
+          member.pollingStation = station ? station.name : '';
+        }
+      });
     });
   }
 
@@ -1440,7 +1446,8 @@
       return member.pollingStationId === station.id && member.status !== 'rejected';
     });
     const registered = members.filter(function(member){ return member.status === 'ok'; }).length;
-    return {assigned:members.length, registered:registered, pending:members.length - registered};
+    const noanswer = members.filter(function(member){ return member.status === 'noanswer'; }).length;
+    return {assigned:members.length, registered:registered, pending:members.length - registered - noanswer, noanswer:noanswer};
   }
 
   function renderPollingStationCard(station, reference, titleId, captainIndex){
@@ -1464,15 +1471,19 @@
     const assigned = totals.assigned;
     const registered = Math.min(totals.registered, assigned);
     const pending = captain ? totals.pending : Math.max(0, assigned - registered);
+    const noanswer = captain ? totals.noanswer : 0;
     const progress = assigned ? Math.round((registered / assigned) * 100) : 0;
     const metaTile = captain
       ? ''
       : '<div class="station-metric"><span class="v">'+formatNumber(station.meta)+'</span><span class="l">Meta</span></div>';
+    const noanswerTile = captain
+      ? '<div class="station-metric"><span class="v">'+formatNumber(noanswer)+'</span><span class="l">Sin respuesta</span></div>'
+      : '';
     return head+
-      '<div class="station-metrics'+(captain ? ' three' : '')+'">'+metaTile+
+      '<div class="station-metrics">'+metaTile+
         '<div class="station-metric"><span class="v">'+formatNumber(assigned)+'</span><span class="l">Asignadas</span></div>'+
         '<div class="station-metric"><span class="v">'+formatNumber(registered)+'</span><span class="l">Confirmadas</span></div>'+
-        '<div class="station-metric"><span class="v">'+formatNumber(pending)+'</span><span class="l">Pendientes</span></div></div>'+
+        '<div class="station-metric"><span class="v">'+formatNumber(pending)+'</span><span class="l">Pendientes</span></div>'+noanswerTile+'</div>'+
       '<div class="station-progress" aria-label="'+progress+'% de confirmación"><i style="width:'+progress+'%;"></i></div>'+
       '<div class="station-progress-meta"><span>'+progress+'% de confirmación</span><span>'+formatNumber(registered)+' de '+formatNumber(assigned)+'</span></div>';
   }
