@@ -40,7 +40,7 @@ Aplicar sobre la demo estática un conjunto de ajustes de producto: reemplazar l
 
 **2.4 Red del capitán.**
 - Se elimina la tarjeta flotante sobre el mapa (`.captain-map-card`) con el nombre del capitán y las métricas globales.
-- La fila de stats añade "Puestos de votación" con el total de puestos de su red (`stationsForCaptain`) y el detalle de cuántos tienen cobertura.
+- La fila de stats encabeza con "Personas en la red" (total) y sigue con confirmadas, pendientes, sin respuesta y rechazadas. Los puestos de votación ya no ocupan una tarjeta: se muestran como nota discreta en el encabezado de la vista, porque se infieren del mapa.
 - Los pines propios abren una ficha con las métricas del capitán en ese puesto: personas de su equipo asignadas (ok + pendientes + sin respuesta, sin rechazados), confirmadas, pendientes y sin respuesta, con avance sobre asignadas, de modo que confirmadas + pendientes + sin respuesta = asignadas y la suma de los pines cuadra con los stats de la red. No se muestran las cifras globales del puesto.
 - Los pines de otras redes muestran solo nombre, barrio y el aviso "Dato referencial · pertenece a otra red", sin métricas.
 - Se mantienen el toggle "Mostrar puestos de referencia" y el mapa Leaflet.
