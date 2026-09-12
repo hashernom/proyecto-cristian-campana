@@ -209,6 +209,9 @@
   .view-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;}
   .view-stats .stat{min-height:94px;}
   .stat .d.warn{color:var(--red);}
+  .stat .v.pend{color:var(--amber);}
+  .stat .v.info{color:#6b7280;}
+  .stat .v.warn{color:var(--red);}
   .view-panel{background:#fff;border:1px solid #ECEEF5;border-radius:14px;padding:18px;min-width:0;}
   .view-panel h3{font-size:13px;font-weight:700;margin:0 0 3px;}
   .view-panel .ph{font-size:10px;color:#9aa1b5;margin-bottom:13px;}
@@ -1106,7 +1109,7 @@
       const rejected = Math.round(stationNumber(captain.teamTarget) * 0.04);
       for(let i = 0; i < extra; i++){
         const station = captainStations.length ? captainStations[i % captainStations.length] : null;
-        captain.team.push(makeTeamMember(captain, zone, station, i < extraConfirmed ? 'ok' : 'pending', random));
+        captain.team.push(makeTeamMember(captain, zone, station, i < extraConfirmed ? 'ok' : (i % 7 === 0 ? 'noanswer' : 'pending'), random));
       }
       for(let i = 0; i < rejected; i++){
         const station = captainStations.length ? captainStations[i % captainStations.length] : null;
@@ -1159,7 +1162,8 @@
   function dashboardMetrics(items){
     return items.map(function(item){
       const toneClass = item.tone ? ' '+item.tone : '';
-      return '<div class="stat"><div class="v">'+item.value+'</div><div class="l">'+item.label+'</div><div class="d'+toneClass+'">'+item.delta+'</div></div>';
+      const valueClass = item.valueTone ? ' '+item.valueTone : '';
+      return '<div class="stat"><div class="v'+valueClass+'">'+item.value+'</div><div class="l">'+item.label+'</div><div class="d'+toneClass+'">'+item.delta+'</div></div>';
     }).join('');
   }
 
@@ -1193,10 +1197,10 @@
     return '<div class="view-heading"><div><h3>Voluntarios registrados</h3><p>La red completa de personas que participan en la campaña.</p></div><div class="view-note">'+formatNumber(registry.ok)+' confirmados</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
         {value:formatNumber(registry.ok),label:'Confirmados',delta:'+186 esta semana'},
-        {value:formatNumber(registry.pending),label:'Pendientes',delta:pendingPct+'% del total'},
-        {value:formatNumber(noanswer),label:'No contestaron',delta:noanswerPct+'% del total'},
+        {value:formatNumber(registry.pending),label:'Pendientes',delta:pendingPct+'% del total',valueTone:'pend'},
+        {value:formatNumber(noanswer),label:'No contestaron',delta:noanswerPct+'% del total',valueTone:'info'},
         {value:'82',label:'Nuevos hoy',delta:'+12 vs. ayer'},
-        {value:formatNumber(registry.rejected),label:'Rechazados',delta:rejectedPct+'% del total',tone:'warn'}
+        {value:formatNumber(registry.rejected),label:'Rechazados',delta:rejectedPct+'% del total',tone:'warn',valueTone:'warn'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Nuevos ingresos</h3><div class="ph">Últimas personas registradas por la red de capitanes.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Voluntario</th><th>Barrio</th><th>Capitán</th><th>Registro</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }
@@ -1586,6 +1590,7 @@
       {key:'all', label:'Todos'},
       {key:'ok', label:'Confirmados'},
       {key:'pending', label:'Pendientes'},
+      {key:'noanswer', label:'No contestaron'},
       {key:'rejected', label:'Rechazados'}
     ];
     const chips = filters.map(function(filter){
@@ -1609,8 +1614,9 @@
       '<div class="view-stats">'+dashboardMetrics([
         {value:String(stationsForCaptain(captain.id).length), label:'Puestos de votación', delta:captainStationSummary(captain).covered+' con cobertura'},
         {value:String(counts.ok||0), label:'Personas confirmadas', delta:captain.team.length+' en total'},
-        {value:String(counts.pending||0), label:'Personas pendientes', delta:'Por confirmar'},
-        {value:String(counts.rejected||0), label:'Personas rechazadas', delta:'Requieren revisión', tone:'warn'}
+        {value:String(counts.pending||0), label:'Personas pendientes', delta:'Por confirmar', valueTone:'pend'},
+        {value:String(counts.noanswer||0), label:'Personas sin respuesta', delta:'No contestaron', valueTone:'info'},
+        {value:String(counts.rejected||0), label:'Personas rechazadas', delta:'Requieren revisión', tone:'warn', valueTone:'warn'}
       ])+'</div>'+
       renderCaptainNetworkMap(captain)+
       '<div class="view-panel"><h3>Voluntarios de la red</h3><div class="ph">Filtra por estado de confirmación.</div><div class="filter-chips">'+chips+'</div>'+captainNetworkRows(captain.team, activeCaptainFilter)+'</div>';
@@ -1838,8 +1844,8 @@
       '<div class="view-stats">'+dashboardMetrics([
         {value:formatNumber(volunteerRegistry.length),label:'Registros',delta:'Base total de la red'},
         {value:formatNumber(counts.ok),label:'Confirmados',delta:'Listos para votar'},
-        {value:formatNumber(counts.pending),label:'Pendientes',delta:'Por confirmar'},
-        {value:formatNumber(counts.noanswer || 0),label:'No contestó',delta:'Reintentar mañana',tone:'warn'}
+        {value:formatNumber(counts.pending),label:'Pendientes',delta:'Por confirmar',valueTone:'pend'},
+        {value:formatNumber(counts.noanswer || 0),label:'No contestó',delta:'Reintentar mañana',tone:'warn',valueTone:'info'}
       ])+'</div>'+
       '<div class="cc-layout">'+
         '<div class="view-panel cc-table-panel"><h3>Llamadas asignadas</h3><div class="ph">Busca por nombre, cédula o barrio. Solo el call center puede cambiar el estado.</div>'+
