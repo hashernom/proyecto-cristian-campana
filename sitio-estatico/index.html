@@ -1189,12 +1189,10 @@
         '<td>'+escapeHtml(captain.neighborhood)+'</td><td>'+captain.team.length+'</td><td><div class="bar2"><i style="width:'+Math.min(goalProgress, 100)+'%;"></i></div><div class="muted">'+goalProgress+'% de meta</div></td>'+
         '<td>'+captainStatusBadge(captain.status)+'</td><td><button class="view-action" type="button" data-demo-action="captain" data-captain="'+index+'">Ver red</button></td></tr>';
     }).join('');
-    const totalCaptains = campaignMockData.capitanes.length;
-    const companions = campaignMockData.capitanes.filter(function(captain){ return captain.status === 'follow'; }).length;
     return '<div class="view-heading"><div><h3>Capitanes de la red</h3><p>Quiénes están sumando más personas confirmadas a la campaña.</p></div><div class="view-note">Actualizado hoy · 09:40</div></div>'+
       '<div class="view-stats">'+dashboardMetrics([
-        {value:String(totalCaptains),label:'Capitanes activos',delta:'Red de la campaña'},
-        {value:String(companions),label:'Por acompañar',delta:(totalCaptains ? Math.round((companions / totalCaptains) * 100) : 0)+'% del total',valueTone:'pend'},
+        {value:'124',label:'Capitanes activos',delta:'+9 esta semana'},
+        {value:'18',label:'Por acompañar',delta:'14% del total',valueTone:'pend'},
         {value:(campaignMockData.capitanes.reduce(function(sum, captain){ return sum + captain.team.length; }, 0) / campaignMockData.capitanes.length).toFixed(1).replace('.', ','),label:'Promedio por capitán',delta:'Personas por red'}
       ])+'</div>'+
       '<div class="view-panel"><h3>Ranking de capitanes</h3><div class="ph">Avance de cada líder frente a su meta de confirmados.</div><div class="view-table-wrap"><table class="view-table"><thead><tr><th>Capitán</th><th>Barrio</th><th>Agregados</th><th>Avance</th><th>Estado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
